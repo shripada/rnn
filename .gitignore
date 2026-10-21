@@ -1,0 +1,6 @@
+.venv/
+.DS_Store
+__pycache__/
+*.pyc
+# trained checkpoints: regenerate with `uv run demo/char_rnn.py train`
+*.pt

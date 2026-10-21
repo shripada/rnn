@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RNN Core Sheet</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="reference">
+<main>
+<p class="kicker">Reference · Recurrent Neural Networks</p>
+<h1>RNN Core Cheat Sheet</h1>
+<p class="subtitle">The vanilla RNN and its gated successors. Grows as the course does.</p>
+
+<h2>The equation</h2>
+<div class="eq"><span class="h">h<sub>t</sub></span> = tanh( W<sub>hh</sub>·<span class="h">h<sub>t−1</sub></span> + W<sub>xh</sub>·<span class="x">x<sub>t</sub></span> + b<sub>h</sub> ) &nbsp;&nbsp;·&nbsp;&nbsp; <span class="y">y<sub>t</sub></span> = W<sub>hy</sub>·<span class="h">h<sub>t</sub></span> &nbsp;&nbsp;·&nbsp;&nbsp; <span class="h">h<sub>0</sub></span> = 0</div>
+<p class="notes">Subscripts read “to, from” (W<sub>xh</sub>: x → h). Column-vector convention as in <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">Karpathy</a>; <a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn.html"><em>Dive into Deep Learning</em> (D2L) §9.4</a> uses row vectors (<span class="mono">X<sub>t</sub>W<sub>xh</sub></span>), which transposes the matrices.</p>
+
+<h2>Shapes</h2>
+<table>
+  <tr><th>Symbol</th><th>Meaning</th><th>Shape (column vectors)</th></tr>
+  <tr><td class="x">x<sub>t</sub></td><td>input at step t</td><td class="mono">d</td></tr>
+  <tr><td class="h">h<sub>t</sub></td><td>hidden state: running summary / memory</td><td class="mono">n</td></tr>
+  <tr><td class="y">y<sub>t</sub></td><td>output at step t</td><td class="mono">k</td></tr>
+  <tr><td>W<sub>xh</sub></td><td>input → hidden</td><td class="mono">n × d</td></tr>
+  <tr><td>W<sub>hh</sub></td><td>hidden → hidden (the recurrence)</td><td class="mono">n × n</td></tr>
+  <tr><td>W<sub>hy</sub></td><td>hidden → output</td><td class="mono">k × n</td></tr>
+</table>
+<p>Parameter count: <span class="mono">n·d + n·n + n + k·n (+ k)</span>. It is <strong>independent of sequence length T</strong>.</p>
+
+<h2>Key ideas</h2>
+<table>
+  <tr><th>Idea</th><th>One-liner</th><th>Source</th></tr>
+  <tr><td>Recurrence</td><td>The cell's previous output (h<sub>t−1</sub>) is fed back in as an extra input.</td><td><a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">Karpathy</a></td></tr>
+  <tr><td>Hidden state</td><td>A fixed-size vector summarising the sequence so far; the only thing passed forward in time.</td><td><a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn.html">D2L §9.4</a></td></tr>
+  <tr><td>Unrolling</td><td>Drawing the loop as a chain of identical cells, one per time step. Adds no parameters.</td><td><a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Olah</a></td></tr>
+  <tr><td>Parameter sharing</td><td>Same weights at every step → any sequence length, fixed parameter count, patterns generalise across positions.</td><td><a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn.html">D2L §9.4</a>, <a href="https://www.deeplearningbook.org/contents/rnn.html">Goodfellow Ch. 10</a></td></tr>
+  <tr><td>Order sensitivity</td><td>Shuffling inputs changes h<sub>T</sub>, because each step depends on the previous one.</td><td>Lesson 1</td></tr>
+  <tr><td>Fading memory</td><td>Repeated multiplication by |w| &lt; 1 shrinks old information step after step. This is the root of vanishing gradients.</td><td><a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Olah</a></td></tr>
+</table>
+
+<h2>Task shapes</h2>
+<p class="notes">Same cell every time; the task decides which steps get an input and which outputs are used. Shapes from <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">Karpathy</a>; seq2seq from <a href="https://d2l.ai/chapter_recurrent-modern/seq2seq.html"><em>Dive into Deep Learning</em> §10.7</a>.</p>
+<table>
+  <tr><th>Shape</th><th>Inputs → outputs</th><th>Output read from</th><th>Example</th></tr>
+  <tr><td>One-to-one</td><td>1 → 1</td><td>(no recurrence)</td><td>Image classification</td></tr>
+  <tr><td>One-to-many</td><td>1 → T</td><td>Every step; each output fed back as next input</td><td>Image captioning, generation</td></tr>
+  <tr><td>Many-to-one</td><td>T → 1</td><td>Final hidden state h<sub>T</sub> only</td><td>Sentiment, spam, forecasting one value</td></tr>
+  <tr><td>Many-to-many (synced)</td><td>T → T, aligned</td><td>Every step</td><td>Word tagging, per-frame video labels, char-RNN <em>training</em></td></tr>
+  <tr><td>Encoder–decoder (seq2seq)</td><td>T → T′, unaligned</td><td>Decoder steps, until &lt;eos&gt;</td><td>Translation, summarisation</td></tr>
+</table>
+<p><strong>Aligned?</strong> If output t corresponds to input t, use synced. If not (lengths or order differ), use encoder–decoder: the encoder's final hidden state is the fixed-size <strong>context vector c</strong>, which is the bottleneck that attention later removes (<a href="https://arxiv.org/abs/1409.0473">Bahdanau et al. 2014</a>).</p>
+
+<h2>Training: BPTT &amp; gradients</h2>
+<p><strong>BPTT</strong> = unroll, then ordinary backprop over the chain (<a href="https://d2l.ai/chapter_recurrent-neural-networks/bptt.html"><em>Dive into Deep Learning</em> §9.7</a>). Shared weights → the gradient of W<sub>hh</sub> is a <strong>sum of contributions from every step</strong>.</p>
+<div class="eq">signal k steps back ≈ f<sup>k</sup>, &nbsp; f = ∂h<sub>t</sub>/∂h<sub>t−1</sub> = w<sub>h</sub> · tanh′ &nbsp; (matrix case: W<sub>hh</sub> · diag(tanh′); eigenvalues &lt; 1 vanish, &gt; 1 explode)</div>
+<table>
+  <tr><th>f</th><th>10 steps</th><th>50 steps</th></tr>
+  <tr><td class="mono">0.5</td><td class="mono">≈ 0.001</td><td class="mono">≈ 1e−15</td></tr>
+  <tr><td class="mono">0.9</td><td class="mono">≈ 0.35</td><td class="mono">≈ 0.005</td></tr>
+  <tr><td class="mono">1.5</td><td class="mono">≈ 58</td><td class="mono">≈ 6e8</td></tr>
+</table>
+<table>
+  <tr><th>Problem</th><th>Fix</th><th>Note</th></tr>
+  <tr><td>Exploding</td><td>Gradient norm clipping (<a href="https://arxiv.org/abs/1211.5063">Pascanu et al.</a>)</td><td>Rescale the gradient to norm θ, keeping its direction. Can't fix vanishing.</td></tr>
+  <tr><td>Vanishing</td><td>LSTM / GRU</td><td>Architectural: a path through time without repeated squashing (see below).</td></tr>
+  <tr><td>Long sequences</td><td>Truncated BPTT</td><td>Backprop only τ steps; cheaper, but loses long-range gradients.</td></tr>
+</table>
+<p>tanh′ ≤ 1, so vanishing is the default; healthy long-range gradients need f ≈ 1 exactly.</p>
+
+<h2>Gated cells: LSTM &amp; GRU</h2>
+<p class="notes">σ = sigmoid (0…1), ⊙ = entry-by-entry product, [h, x] = the two vectors stacked. Every W has shape <span class="mono">n × (n + d)</span>.</p>
+<table>
+  <tr><th>LSTM (Lesson 4)</th><th>GRU (Lesson 5)</th></tr>
+  <tr><td class="mono">f = σ(W<sub>f</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>f</sub>)<br>i = σ(W<sub>i</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>i</sub>)<br>c̃ = tanh(W<sub>c</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>c</sub>)<br>o = σ(W<sub>o</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>o</sub>)<br>c<sub>t</sub> = f ⊙ c<sub>t−1</sub> + i ⊙ c̃<br>h<sub>t</sub> = o ⊙ tanh(c<sub>t</sub>)</td>
+      <td class="mono">r = σ(W<sub>r</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>r</sub>)<br>z = σ(W<sub>z</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>z</sub>)<br>h̃ = tanh(W<sub>h</sub>·[r ⊙ h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>h</sub>)<br>h<sub>t</sub> = z ⊙ h<sub>t−1</sub> + (1 − z) ⊙ h̃<br><span class="notes">(D2L / PyTorch: z = 1 keeps. Olah swaps z and 1 − z.)</span></td></tr>
+</table>
+<table>
+  <tr><th></th><th>Vanilla RNN</th><th>LSTM</th><th>GRU</th></tr>
+  <tr><td>States</td><td>h</td><td>c, h</td><td>h</td></tr>
+  <tr><td>Gates</td><td>none</td><td>forget, input, output</td><td>update, reset</td></tr>
+  <tr><td>Parameters</td><td class="mono">1 × (n(n+d) + n)</td><td class="mono">≈ 4×</td><td class="mono">≈ 3×</td></tr>
+  <tr><td>Per-step gradient factor (direct path)</td><td class="mono">W<sub>hh</sub> · tanh′</td><td class="mono">f<sub>t</sub> (c → c)</td><td class="mono">z<sub>t</sub> (h → h)</td></tr>
+  <tr><td>Hide memory from output?</td><td>no</td><td>yes (o ≈ 0)</td><td>no</td></tr>
+  <tr><td>Origin</td><td></td><td><a href="https://www.bioinf.jku.at/publications/older/2604.pdf">Hochreiter &amp; Schmidhuber 1997</a>; forget gate <a href="https://direct.mit.edu/neco/article/12/10/2451/6415">Gers et al. 2000</a></td><td><a href="https://arxiv.org/abs/1406.1078">Cho et al. 2014</a></td></tr>
+</table>
+<p><strong>Hold a value:</strong> LSTM f = 1, i = 0; GRU z = 1. <strong>Why gates fix vanishing:</strong> the memory is updated by <em>adding</em>, so the gradient along it is just a gate value, which the network can keep near 1 (no weight matrix, no tanh in the path). Tip: initialise the LSTM forget-gate bias to about 1 (<a href="https://proceedings.mlr.press/v37/jozefowicz15.html">Jozefowicz et al. 2015</a>). <strong>Which?</strong> Similar accuracy (<a href="https://arxiv.org/abs/1412.3555">Chung et al. 2014</a>, <a href="https://arxiv.org/abs/1503.04069">Greff et al. 2015</a>); GRU is lighter, LSTM can hide memory. Pick by validation score.</p>
+
+<h2>Interview one-liner</h2>
+<div class="callout interview"><p>“An RNN applies the same cell at every time step. The cell combines the current input with a hidden state carried over from the previous step, so the hidden state acts as a memory of the sequence so far. Because the weights are shared across time, the model handles variable-length sequences with a fixed number of parameters.”</p></div>
+
+<nav class="course"><a href="../lessons/0001-the-hidden-state.html">Lesson 1: The Hidden State</a><a href="../lessons/0002-task-shapes.html">Lesson 2: Sequence Task Shapes</a><a href="../lessons/0003-vanishing-gradients.html">Lesson 3: Vanishing Gradients</a><a href="../lessons/0004-lstm.html">Lesson 4: LSTM</a><a href="../lessons/0005-gru.html">Lesson 5: GRU</a></nav>
+</main>
+</body>
+</html>

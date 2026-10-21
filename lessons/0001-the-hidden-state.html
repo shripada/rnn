@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hidden State</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+
+<p class="kicker">Lesson 1 · Recurrent Neural Networks · ~20 min</p>
+<h1>The Hidden State</h1>
+<p class="subtitle">One loop, one vector, and the whole idea of an RNN.</p>
+
+<p><strong>By the end you can</strong> draw an unrolled RNN, write its update equation from memory, and explain in one sentence why it can read a sequence of any length. That is the first five minutes of almost every RNN interview question.</p>
+
+<h2>The problem: networks with no memory</h2>
+
+<p>A feed-forward network, the kind you already know, takes a fixed-size input and returns an output. Every input is processed in isolation: nothing carries over from one call to the next.</p>
+
+<p>Language, audio, stock prices and sensor readings are <em>sequences</em>. Their meaning depends on order and on what came before. Colah's example: in <q>I grew up in France… I speak fluent <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></q>, the word you need is set by context several words back.<a class="cite" href="#n2">2</a> A feed-forward net has two problems here:</p>
+<ol>
+  <li>It wants a <strong>fixed input size</strong>, but sentences have different lengths.</li>
+  <li>It has <strong>no memory</strong>, so it can't use what it saw earlier.</li>
+</ol>
+
+<blockquote>“The core reason that recurrent nets are more exciting is that they allow us to operate over <em>sequences</em> of vectors.”<cite>Andrej Karpathy, <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of RNNs</a></cite></blockquote>
+
+<h2>The idea: feed the network its own output</h2>
+
+<p>An RNN reads the sequence <strong>one element at a time</strong>. At each step it takes two things in: the current input <span class="x">x<sub>t</sub></span> and its own <span class="h">hidden state</span> from the previous step, <span class="h">h<sub>t−1</sub></span>. It combines them into a new hidden state <span class="h">h<sub>t</sub></span>.</p>
+
+<p>The hidden state is a vector that works as a <strong>running summary of everything seen so far</strong>. That vector is the network's memory.</p>
+
+<div class="eq"><span class="h">h<sub>t</sub></span> = tanh( W<sub>hh</sub>·<span class="h">h<sub>t−1</sub></span> + W<sub>xh</sub>·<span class="x">x<sub>t</sub></span> + b<sub>h</sub> )<br><span class="y">y<sub>t</sub></span> = W<sub>hy</sub>·<span class="h">h<sub>t</sub></span></div>
+<p class="eq-legend">Two terms inside the tanh: one from the previous hidden state, one from the current input.<a class="cite" href="#n1">1</a> The hidden state starts at <span class="h">h<sub>0</sub></span> = 0. Read the subscripts as “to, from”: W<sub>xh</sub> maps <span class="x">x</span> into <span class="h">h</span>.</p>
+
+<p>Look at the equation. It's an ordinary dense layer with one extra input, and that extra input is the layer's own previous output. Everything else about RNNs follows from this.</p>
+
+<h2>Unrolling: the loop drawn out over time</h2>
+
+<figure>
+<svg viewBox="0 0 640 200" role="img" aria-label="A folded RNN cell with a self-loop, equal to four unrolled cells chained left to right, each sharing the same weights">
+  <defs>
+    <marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-hf"/></marker>
+    <marker id="ax" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-xf"/></marker>
+    <marker id="ay" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-yf"/></marker>
+  </defs>
+  <!-- folded -->
+  <rect x="45" y="82" width="50" height="36" rx="6" class="d-h" stroke-width="1.6"/>
+  <text x="70" y="105" text-anchor="middle" class="d-hf" font-style="italic" font-size="15">h</text>
+  <path d="M95 92 C138 80 138 122 97 110" class="d-h" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="128" y="78" class="d-m" font-size="11">W<tspan baseline-shift="sub" font-size="8">hh</tspan></text>
+  <line x1="70" y1="165" x2="70" y2="121" class="d-x" stroke-width="1.4" marker-end="url(#ax)"/>
+  <text x="70" y="182" text-anchor="middle" class="d-xf" font-style="italic" font-size="14">x</text>
+  <line x1="70" y1="82" x2="70" y2="44" class="d-y" stroke-width="1.4" marker-end="url(#ay)"/>
+  <text x="70" y="32" text-anchor="middle" class="d-yf" font-style="italic" font-size="14">y</text>
+  <text x="168" y="108" text-anchor="middle" class="d-t" font-size="26">=</text>
+  <!-- unrolled -->
+  <text x="208" y="92" class="d-m" font-size="11" text-anchor="middle">h₀=0</text>
+  <line x1="192" y1="100" x2="222" y2="100" class="d-h" stroke-width="1.4" marker-end="url(#ah)"/>
+  <g id="cells"></g>
+  <script>
+  (function(){
+    const NS="http://www.w3.org/2000/svg", g=document.getElementById("cells");
+    const mk=(t,a,txt)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);if(txt)n.textContent=txt;g.appendChild(n);return n;};
+    [250,350,450,550].forEach((cx,i)=>{
+      mk("rect",{x:cx-25,y:82,width:50,height:36,rx:6,class:"d-h","stroke-width":1.6});
+      mk("text",{x:cx,y:105,"text-anchor":"middle",class:"d-hf","font-style":"italic","font-size":14},"h"+"₁₂₃₄"[i]);
+      mk("line",{x1:cx,y1:165,x2:cx,y2:121,class:"d-x","stroke-width":1.4,"marker-end":"url(#ax)"});
+      mk("text",{x:cx,y:182,"text-anchor":"middle",class:"d-xf","font-style":"italic","font-size":14},"x"+"₁₂₃₄"[i]);
+      mk("line",{x1:cx,y1:82,x2:cx,y2:44,class:"d-y","stroke-width":1.4,"marker-end":"url(#ay)"});
+      mk("text",{x:cx,y:32,"text-anchor":"middle",class:"d-yf","font-style":"italic","font-size":14},"y"+"₁₂₃₄"[i]);
+      mk("text",{x:cx+5,y:148,class:"d-m","font-size":10},"Wxh");
+      mk("text",{x:cx+5,y:66,class:"d-m","font-size":10},"Why");
+      if(i<3){
+        mk("line",{x1:cx+25,y1:100,x2:cx+72,y2:100,class:"d-h","stroke-width":1.4,"marker-end":"url(#ah)"});
+        mk("text",{x:cx+50,y:93,"text-anchor":"middle",class:"d-m","font-size":10},"Whh");
+      }
+    });
+  })();
+  </script>
+</svg>
+<figcaption>Left: the RNN as written, a cell with a loop. Right: the same cell <em>unrolled</em> over four time steps. Every box uses the <strong>same</strong> W<sub>xh</sub>, W<sub>hh</sub>, W<sub>hy</sub>.</figcaption>
+</figure>
+
+<blockquote>“A recurrent neural network can be thought of as multiple copies of the same network, each passing a message to a successor.”<cite>Christopher Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a></cite></blockquote>
+
+<p>Unrolling doesn't add any parameters. It's only a way of drawing the computation so you can see the time steps, and you'll need this picture when we get to training (backpropagation through time).</p>
+
+<h2>Parameter sharing: why any length works</h2>
+
+<p>The <strong>same three weight matrices are reused at every time step</strong>. A 5-word sentence and a 500-word essay run through the exact same weights; the essay just takes more loop iterations. As <em>Dive into Deep Learning</em> puts it, “the parametrization cost of an RNN does not grow as the number of time steps increases.”<a class="cite" href="#n3">3</a></p>
+
+<p>This one design choice answers both problems from the top of the page:</p>
+<ul>
+  <li><strong>Any length:</strong> you keep looping until the sequence ends.</li>
+  <li><strong>Memory:</strong> <span class="h">h<sub>t</sub></span> carries information forward from step to step.</li>
+</ul>
+<p>It also <strong>generalises across positions</strong>: a pattern learned at step 3 is recognised at step 30, because the same weights are applied at both.<a class="cite" href="#n4">4</a></p>
+
+<div class="callout interview">
+<p>“An RNN applies the same cell at every time step. The cell combines the current input with a hidden state carried over from the previous step, so the hidden state acts as a memory of the sequence so far. Because the weights are shared across time, the model handles variable-length sequences with a fixed number of parameters.”</p>
+</div>
+
+<h3>Shapes (interviewers love these)</h3>
+<p>Suppose each input <span class="x">x<sub>t</sub></span> has <em>d</em> features, the hidden state has <em>n</em> units, and the output has <em>k</em> values. Using column vectors as above:</p>
+<table>
+  <tr><th>Matrix</th><th>Maps</th><th>Shape</th></tr>
+  <tr><td>W<sub>xh</sub></td><td>input → hidden</td><td class="mono">n × d</td></tr>
+  <tr><td>W<sub>hh</sub></td><td>hidden → hidden</td><td class="mono">n × n</td></tr>
+  <tr><td>W<sub>hy</sub></td><td>hidden → output</td><td class="mono">k × n</td></tr>
+</table>
+<p class="notes"><em>Dive into Deep Learning</em> (D2L) writes the same equation with row vectors (<span class="mono">X<sub>t</sub>W<sub>xh</sub></span>), so its matrices are the transposes of these.<a class="cite" href="#n3">3</a> If asked, state which convention you're using. W<sub>hh</sub> is square in both.</p>
+
+<h2>Play: a one-number RNN</h2>
+
+<p>Here's the smallest possible RNN: the input, hidden state and every weight is a single number. The input sequence is a single “spike” at step 1 followed by zeros, so whatever shows up in <span class="h">h<sub>2</sub>…h<sub>6</sub></span> is purely <strong>memory</strong> of that spike. Move the sliders and complete the three challenges.</p>
+
+<div class="panel" id="sim" data-rnn-sim data-wx="1" data-wh="0.5" data-b="0" data-seq="1,0,0,0,0,0"></div>
+<div class="panel" id="challenges">
+    <div class="challenge" data-c="forget"><span class="tick">○</span><span><strong>Amnesia.</strong> Make the network forget instantly: <span class="h">h<sub>2</sub>…h<sub>6</sub></span> all zero, while <span class="h">h<sub>1</sub></span> still reacts to the spike.</span></div>
+    <div class="challenge" data-c="remember"><span class="tick">○</span><span><strong>Long memory.</strong> With b = 0 and the spike only at step 1, keep <span class="h">h<sub>6</sub></span> ≥ 0.5.</span></div>
+    <div class="challenge" data-c="flip"><span class="tick">○</span><span><strong>Flip-flop.</strong> With only the step-1 spike, make <span class="h">h</span> change sign at every step.</span></div>
+</div>
+
+<p>Notice what you just found. With w<sub>h</sub> = 0 the recurrent term disappears and you have a plain feed-forward net applied at each step. With |w<sub>h</sub>| below 1 the memory <strong>fades a little more at every step</strong>, because the signal keeps getting multiplied by a small number. Keep that in mind: in Lesson 3 it becomes the <em>vanishing gradient</em> problem, which is why LSTMs exist.<a class="cite" href="#n2">2</a></p>
+
+<h2>Check yourself</h2>
+
+<div class="quiz">
+  <div class="q">1. What does an RNN pass from one time step to the next?</div>
+  <button class="opt" data-correct>The hidden state vector</button>
+  <button class="opt">The raw input sequence</button>
+  <button class="opt">A freshly learned weight</button>
+  <button class="opt">The final output label</button>
+  <div class="why">The hidden state <span class="h">h<sub>t</sub></span> is the only thing that flows forward through time. The weights are fixed and shared, and the input arrives one element per step.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">2. The same RNN reads a 10-step sequence, then a 1000-step one. How many distinct W<sub>hh</sub> matrices does it use?</div>
+  <button class="opt" data-correct>One, reused every step</button>
+  <button class="opt">Ten, then one thousand</button>
+  <button class="opt">One per hidden unit</button>
+  <button class="opt">Two, input and output</button>
+  <div class="why">That's parameter sharing. Unrolling only draws copies of the cell; the parameter count doesn't grow with sequence length.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">3. Set W<sub>hh</sub> = 0 in a trained RNN. What have you effectively built?</div>
+  <button class="opt" data-correct>A plain feedforward network</button>
+  <button class="opt">A perfect memory network</button>
+  <button class="opt">An exploding gradient network</button>
+  <button class="opt">An inputless constant network</button>
+  <div class="why">With no recurrent term, <span class="h">h<sub>t</sub></span> = tanh(W<sub>xh</sub><span class="x">x<sub>t</sub></span> + b). Each step only sees its own input, which is exactly the Amnesia challenge.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">4. Inputs have 3 features and the hidden state has 4 units. Shape of W<sub>xh</sub> (column-vector convention)?</div>
+  <button class="opt" data-correct>4 × 3</button>
+  <button class="opt">3 × 4</button>
+  <button class="opt">4 × 4</button>
+  <button class="opt">3 × 3</button>
+  <div class="why">W<sub>xh</sub> maps a 3-vector to a 4-vector, so it's (output × input) = 4 × 3. W<sub>hh</sub> would be 4 × 4. In <em>Dive into Deep Learning</em>'s row-vector form it's written 3 × 4.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">5. Why might a vanilla RNN struggle to use a word from 50 steps earlier?</div>
+  <button class="opt" data-correct>Repeated multiplication keeps shrinking the signal</button>
+  <button class="opt">The hidden state resets every step</button>
+  <button class="opt">Weights are relearned at every step</button>
+  <button class="opt">All inputs are processed in parallel</button>
+  <div class="why">You saw this in the simulator: with |w<sub>h</sub>| &lt; 1 the spike fades geometrically. Colah: “as that gap grows, RNNs become unable to learn to connect the information.”<a class="cite" href="#n2">2</a> More on this in Lesson 3.</div>
+</div>
+<p class="quiz-score" data-quiz-score></p>
+
+<h2>Say it out loud</h2>
+<p>Answer each one <strong>aloud or on paper before you reveal it</strong>, the way you would in an interview. Struggling to recall is the point: it's what makes this stick.</p>
+
+<details class="recall"><summary>Why can't a plain feed-forward network handle sentences well?</summary>
+<div class="answer">It needs a fixed input size and it has no memory between inputs. Sentences vary in length, and their meaning depends on earlier words.</div></details>
+
+<details class="recall"><summary>Write the hidden-state update equation and name each part.</summary>
+<div class="answer"><span class="mono">h_t = tanh(W_hh·h_{t−1} + W_xh·x_t + b_h)</span>: the previous hidden state, the current input, a bias, and a squashing nonlinearity. Output: <span class="mono">y_t = W_hy·h_t</span>.</div></details>
+
+<details class="recall"><summary>Draw a 3-step unrolled RNN. What's shared between the boxes?</summary>
+<div class="answer">Three cells left to right, each with x<sub>t</sub> below, y<sub>t</sub> above, and an h arrow into the next cell. All three cells use the same W<sub>xh</sub>, W<sub>hh</sub>, W<sub>hy</sub> and b. Only h changes.</div></details>
+
+<details class="recall"><summary>If you shuffle the order of the inputs, does the final hidden state change? Why?</summary>
+<div class="answer">Yes, in general. Each step's h depends on the previous h, so the computation is order-sensitive. Try it in the simulator with the input boxes. That order sensitivity is what makes RNNs suited to sequences.</div></details>
+
+<h2>Read next (≈15 min)</h2>
+<p><strong>Primary source:</strong> Christopher Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">“Understanding LSTM Networks”</a>. Read only the first two sections, <em>Recurrent Neural Networks</em> and <em>The Problem of Long-Term Dependencies</em>, and stop at “LSTM Networks.” The diagrams will look familiar now, and the second section sets up Lesson 3.</p>
+<p><strong>If you have time:</strong> the first section of Karpathy's <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">“Unreasonable Effectiveness”</a>, with its diagram of five boxes (one-to-one through many-to-many). That diagram is the subject of Lesson 2.</p>
+
+<div class="ask">
+<strong>Stuck or curious?</strong> Ask me, your teacher, in the terminal. Anything unclear here, “how would I say this in an interview?”, or a challenge you couldn't crack. When you're done, tell me how the quiz went so I can pitch the next lesson right.
+</div>
+
+<h2>Notes</h2>
+<ol class="notes">
+  <li id="n1">Karpathy, <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of Recurrent Neural Networks</a> (2015): “There are two terms inside of the tanh…”; parameters are <span class="mono">W_hh, W_xh, W_hy</span>.</li>
+  <li id="n2">Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a> (2015), sections “Recurrent Neural Networks” and “The Problem of Long-Term Dependencies.”</li>
+  <li id="n3">Zhang, Lipton, Li &amp; Smola, <a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn.html"><em>Dive into Deep Learning</em> §9.4 “Recurrent Neural Networks”</a>, eq. 9.4.5 and the paragraph on parametrization cost.</li>
+  <li id="n4">Goodfellow, Bengio &amp; Courville, <a href="https://www.deeplearningbook.org/contents/rnn.html"><em>Deep Learning</em> Ch. 10</a>, on parameter sharing across time.</li>
+</ol>
+
+<nav class="course">
+  <span>← Start of course</span>
+  <a href="../reference/rnn-core.html">Reference: RNN core cheat sheet</a>
+  <a href="0002-task-shapes.html">Lesson 2: Sequence task shapes →</a>
+</nav>
+
+</main>
+<script src="../assets/quiz.js"></script>
+<script src="../assets/rnn-sim.js"></script>
+<script>
+// Challenge checks for the simulator: immediate, automatic feedback.
+(function () {
+  const sim = document.getElementById("sim");
+  const challenges = document.getElementById("challenges");
+  const onlySpike = (x) => x[0] !== 0 && x.slice(1).every((v) => v === 0);
+  const checks = {
+    forget: ({ h }) => Math.abs(h[0]) > 0.1 && h.slice(1).every((v) => Math.abs(v) < 0.01),
+    remember: ({ x, h, b }) => onlySpike(x) && Math.abs(b) < 0.01 && h[5] >= 0.5,
+    flip: ({ x, h }) => onlySpike(x) && h.every((v, i) => i === 0 || (Math.sign(v) === -Math.sign(h[i - 1]) && Math.abs(v) > 0.02)),
+  };
+  sim.addEventListener("rnn:update", (e) => {
+    challenges.querySelectorAll(".challenge").forEach((c) => {
+      if (c.classList.contains("done")) return;
+      if (checks[c.dataset.c](e.detail)) {
+        c.classList.add("done");
+        c.querySelector(".tick").textContent = "✓";
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

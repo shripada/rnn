@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LSTM: Gated Memory</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+
+<p class="kicker">Lesson 4 · Recurrent Neural Networks · ~25 min</p>
+<h1>LSTM: Gated Memory</h1>
+<p class="subtitle">A second, protected memory that is updated by adding, not by squashing.</p>
+
+<p><strong>By the end you can</strong> draw an LSTM cell, write its six equations, say what each gate does in one sentence, and explain <em>why</em> the cell state lets the gradient survive many steps when a vanilla RNN's doesn't. That last part is the interview payoff: “How does an LSTM fix vanishing gradients?”</p>
+
+<h2>Warm-up: Lesson 3</h2>
+<p>Answer from memory, then reveal.</p>
+
+<details class="recall"><summary>Why does the gradient vanish in a vanilla RNN? One sentence.</summary>
+<div class="answer">Going back k steps multiplies k per-step factors f = w<sub>h</sub> × tanh′, and when f &lt; 1 the product f<sup>k</sup> shrinks exponentially.</div></details>
+
+<details class="recall"><summary>Why can't gradient clipping fix vanishing?</summary>
+<div class="answer">Clipping only scales a gradient <em>down</em>. A vanished gradient has nothing left to scale up.</div></details>
+
+<details class="recall"><summary>Lesson 3 said vanishing needs “an architectural fix”. What property would that fix need?</summary>
+<div class="answer">A path through time where the per-step factor can stay close to 1, so the signal isn't shrunk at every step. Keep this in mind: the LSTM's cell state is that path.</div></details>
+
+<h2>The idea: a second memory that is changed by adding</h2>
+<p>In a vanilla RNN, the whole memory goes through <span class="mono">tanh(W<sub>hh</sub>·h + …)</span> at every step. It gets multiplied by the same matrix and squashed every time, whether or not anything new happened. That repeated multiply-and-squash is exactly what killed the gradient in Lesson 3.</p>
+<p>The Long Short-Term Memory (LSTM), from Hochreiter &amp; Schmidhuber (1997),<a class="cite" href="#n1">1</a> adds a second state vector, the <strong>cell state</strong> <span class="h">c<sub>t</sub></span>, which is <em>not</em> pushed through a weight matrix at each step. Each step can only do two simple things to it:</p>
+<ol>
+  <li><strong>erase</strong> some of it (multiply each entry by a number between 0 and 1), and</li>
+  <li><strong>write</strong> something new into it (add a vector).</li>
+</ol>
+<p>Olah's image: <q>The cell state is kind of like a conveyor belt.</q><a class="cite" href="#n2">2</a> It runs straight through every step, and things are taken off it or put on it along the way. The ordinary hidden state <span class="h">h<sub>t</sub></span> still exists. It's the cell's <em>output</em>, a filtered view of what's on the belt.</p>
+
+<h2>Gates: learned valves</h2>
+<p>Who decides how much to erase, write and show? Small neural networks called <strong>gates</strong>. Each gate looks at the current input and the previous hidden state and outputs a vector of numbers between 0 and 1, using the <strong>sigmoid</strong> σ (an S-curve like tanh, but from 0 to 1 instead of −1 to 1). That vector is multiplied entry by entry (written ⊙) with whatever the gate controls.</p>
+<p>Olah: <q>Gates are a way to optionally let information through.</q> <q>A value of zero means “let nothing through,” while a value of one means “let everything through!”</q><a class="cite" href="#n2">2</a></p>
+<p>The key word is <strong>learned</strong>. The gates have their own weights, trained by BPTT like everything else, so the network learns <em>when</em> to remember and when to forget, based on what it's reading.</p>
+
+<h2>The LSTM cell</h2>
+
+<figure>
+<svg viewBox="0 0 640 270" role="img" aria-label="LSTM cell: the cell state runs along the top through a multiply (forget gate) and an add (input gate times candidate). Below, four boxes (forget sigma, input sigma, candidate tanh, output sigma) read the previous hidden state and input. The output gate multiplies tanh of the cell state to give the new hidden state.">
+  <defs>
+    <marker id="l4a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-hf"/></marker>
+    <marker id="l4x" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-xf"/></marker>
+  </defs>
+  <rect x="70" y="22" width="500" height="200" rx="14" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
+  <!-- cell state belt -->
+  <line x1="10" y1="50" x2="186" y2="50" class="d-h" stroke-width="3"/>
+  <line x1="214" y1="50" x2="316" y2="50" class="d-h" stroke-width="3"/>
+  <line x1="344" y1="50" x2="620" y2="50" class="d-h" stroke-width="3" marker-end="url(#l4a)"/>
+  <text x="14" y="40" class="d-hf" font-size="14" font-style="italic">c<tspan font-size="10" dy="3">t−1</tspan></text>
+  <text x="596" y="40" class="d-hf" font-size="14" font-style="italic">c<tspan font-size="10" dy="3">t</tspan></text>
+  <circle cx="200" cy="50" r="13" class="d-h" stroke-width="1.8"/><text x="200" y="55" text-anchor="middle" class="d-hf" font-size="15">×</text>
+  <circle cx="330" cy="50" r="13" class="d-h" stroke-width="1.8"/><text x="330" y="56" text-anchor="middle" class="d-hf" font-size="17">+</text>
+  <!-- h_{t-1} and x_t bus -->
+  <line x1="10" y1="200" x2="470" y2="200" class="d-h" stroke-width="1.5"/>
+  <text x="14" y="192" class="d-hf" font-size="14" font-style="italic">h<tspan font-size="10" dy="3">t−1</tspan></text>
+  <line x1="110" y1="262" x2="110" y2="203" class="d-x" stroke-width="1.5" marker-end="url(#l4x)"/>
+  <text x="120" y="258" class="d-xf" font-size="14" font-style="italic">x<tspan font-size="10" dy="3">t</tspan></text>
+  <!-- gate boxes -->
+  <g font-size="13" text-anchor="middle">
+    <line x1="200" y1="200" x2="200" y2="156" class="d-h" stroke-width="1.2"/>
+    <rect x="182" y="132" width="36" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="200" y="149" class="d-hf">σ</text>
+    <line x1="200" y1="132" x2="200" y2="65" class="d-h" stroke-width="1.2" marker-end="url(#l4a)"/>
+    <text x="186" y="104" class="d-m" font-style="italic" text-anchor="end">f<tspan font-size="9" dy="3">t</tspan></text>
+
+    <line x1="280" y1="200" x2="280" y2="156" class="d-h" stroke-width="1.2"/>
+    <rect x="262" y="132" width="36" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="280" y="149" class="d-hf">σ</text>
+    <text x="266" y="124" class="d-m" font-style="italic" text-anchor="end">i<tspan font-size="9" dy="3">t</tspan></text>
+    <line x1="380" y1="200" x2="380" y2="156" class="d-h" stroke-width="1.2"/>
+    <rect x="358" y="132" width="44" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="380" y="149" class="d-hf">tanh</text>
+    <text x="396" y="124" class="d-m" font-style="italic" text-anchor="start">c̃<tspan font-size="9" dy="3">t</tspan></text>
+    <polyline points="280,132 280,100 316,100" class="d-h" stroke-width="1.2" fill="none"/>
+    <polyline points="380,132 380,100 344,100" class="d-h" stroke-width="1.2" fill="none"/>
+    <circle cx="330" cy="100" r="13" class="d-h" stroke-width="1.8"/><text x="330" y="105" class="d-hf" font-size="15">×</text>
+    <line x1="330" y1="87" x2="330" y2="65" class="d-h" stroke-width="1.2" marker-end="url(#l4a)"/>
+
+    <line x1="470" y1="200" x2="470" y2="186" class="d-h" stroke-width="1.2"/>
+    <rect x="452" y="162" width="36" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="470" y="179" class="d-hf">σ</text>
+    <text x="456" y="156" class="d-m" font-style="italic" text-anchor="end">o<tspan font-size="9" dy="3">t</tspan></text>
+    <line x1="488" y1="174" x2="517" y2="174" class="d-h" stroke-width="1.2" marker-end="url(#l4a)"/>
+    <!-- tanh(c) and output -->
+    <line x1="530" y1="50" x2="530" y2="96" class="d-h" stroke-width="1.2"/>
+    <rect x="508" y="96" width="44" height="22" rx="11" class="d-h" stroke-width="1.5"/><text x="530" y="112" class="d-hf" font-size="12">tanh</text>
+    <line x1="530" y1="118" x2="530" y2="160" class="d-h" stroke-width="1.2" marker-end="url(#l4a)"/>
+    <circle cx="530" cy="174" r="13" class="d-h" stroke-width="1.8"/><text x="530" y="179" class="d-hf" font-size="15">×</text>
+    <polyline points="530,187 530,240 620,240" class="d-h" stroke-width="1.8" fill="none" marker-end="url(#l4a)"/>
+  </g>
+  <text x="596" y="232" class="d-hf" font-size="14" font-style="italic">h<tspan font-size="10" dy="3">t</tspan></text>
+  <text x="360" y="40" class="d-m" font-size="11">the cell state: only × and +</text>
+</svg>
+<figcaption>One LSTM step. The top line is the <span class="h">cell state</span>: the forget gate f<sub>t</sub> multiplies it (erase), then i<sub>t</sub> ⊙ c̃<sub>t</sub> is added (write). No weight matrix and no squashing sit on that line. The output gate o<sub>t</sub> decides how much of tanh(c<sub>t</sub>) becomes the new hidden state h<sub>t</sub>. Drawn after Olah.<a class="cite" href="#n2">2</a></figcaption>
+</figure>
+
+<p>All four boxes read the same thing, <span class="mono">[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>]</span> (the two vectors stacked), each with its own weights:</p>
+
+<div class="eq" style="text-align:left;line-height:1.9">
+f<sub>t</sub> = σ( W<sub>f</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>f</sub> ) &nbsp;&nbsp;&nbsp;forget gate<br>
+i<sub>t</sub> = σ( W<sub>i</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>i</sub> ) &nbsp;&nbsp;&nbsp;input gate<br>
+c̃<sub>t</sub> = tanh( W<sub>c</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>c</sub> ) &nbsp;candidate<br>
+o<sub>t</sub> = σ( W<sub>o</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>o</sub> ) &nbsp;&nbsp;&nbsp;output gate<br>
+<span class="h">c<sub>t</sub></span> = f<sub>t</sub> ⊙ <span class="h">c<sub>t−1</sub></span> + i<sub>t</sub> ⊙ c̃<sub>t</sub><br>
+<span class="h">h<sub>t</sub></span> = o<sub>t</sub> ⊙ tanh(<span class="h">c<sub>t</sub></span>)
+</div>
+<p class="eq-legend">The first four lines are each “Lesson 1's equation with a different activation”. Only the last two are new, and they contain no weight matrices at all. <em>Dive into Deep Learning</em> (D2L) §10.1 writes the same thing in row-vector form with separate W<sub>x·</sub> and W<sub>h·</sub> matrices.<a class="cite" href="#n3">3</a></p>
+
+<table>
+  <tr><th>Part</th><th>Range</th><th>Job, in one sentence</th></tr>
+  <tr><td><strong>Forget gate</strong> f<sub>t</sub></td><td class="mono">0…1</td><td>How much of each entry of the old cell state to keep (1 = keep all, 0 = wipe).</td></tr>
+  <tr><td><strong>Input gate</strong> i<sub>t</sub></td><td class="mono">0…1</td><td>How much of the new candidate to write onto the belt.</td></tr>
+  <tr><td><strong>Candidate</strong> c̃<sub>t</sub></td><td class="mono">−1…1</td><td>What could be written: a vanilla-RNN-style proposal built from the input.</td></tr>
+  <tr><td><strong>Output gate</strong> o<sub>t</sub></td><td class="mono">0…1</td><td>How much of the memory to reveal as h<sub>t</sub>, which is what the rest of the network (and the next step's gates) see.</td></tr>
+</table>
+
+<div class="callout">
+<p><strong>Two states, two jobs.</strong> <span class="h">c<sub>t</sub></span> is the long-term store: it can hold a value unchanged for as long as the forget gate stays at 1. <span class="h">h<sub>t</sub></span> is the working output: the part of the memory that matters <em>right now</em>. D2L notes that with the output gate near 0, a memory cell can <q>accrue information across many time steps without impacting the rest of the network</q>.<a class="cite" href="#n3">3</a></p>
+</div>
+
+<h2>Play: you are the gates</h2>
+<p>A one-number LSTM over 8 steps. In a real LSTM the gate values are computed from the input; here <strong>you</strong> set them, playing the part of trained gate weights. Click a gate to cycle 0 → 0.5 → 1. To keep the arithmetic visible, the candidate is just c̃ = tanh(x). Bars fill with the size of each value: orange for positive, blue for negative.</p>
+
+<div class="panel" id="lsim" data-gate-sim="lstm" data-seq="2,0,0,1,0,0,0,0"></div>
+<div class="panel" id="lchallenges">
+  <div class="challenge" data-c="hold"><span class="tick">○</span><span><strong>Store and hold.</strong> Write x<sub>1</sub> into the cell and keep c between 0.9 and 1 at <em>every</em> step. (Watch out for the distraction at step 4.)</span></div>
+  <div class="challenge" data-c="forget"><span class="tick">○</span><span><strong>Forget on cue.</strong> Hold c ≥ 0.9 through step 5, then make it exactly 0 at steps 6–8.</span></div>
+  <div class="challenge" data-c="silent"><span class="tick">○</span><span><strong>Silent memory.</strong> Keep h at 0 for steps 1–7 but make h<sub>8</sub> ≥ 0.7. The memory must be there all along without showing.</span></div>
+  <div class="challenge" data-c="count"><span class="tick">○</span><span><strong>Add it up.</strong> Get c<sub>8</sub> above 1.5. A vanilla RNN's tanh output can never leave −1…1. Can the cell state?</span></div>
+</div>
+
+<p>What you just did, in words:</p>
+<ul>
+  <li><strong>Holding</strong> needs f = 1 and i = 0. D2L: <q>If the forget gate is always 1 and the input gate is always 0,</q> the cell state <q>will remain constant forever, passing unchanged to each subsequent time step.</q><a class="cite" href="#n3">3</a> A vanilla RNN has no setting that does this; you saw its memory fade in Lesson 1.</li>
+  <li><strong>Forgetting</strong> is a deliberate act (f = 0), not something that happens by accident. The forget gate wasn't in the 1997 LSTM; Gers, Schmidhuber &amp; Cummins added it in 2000 so the cell could reset itself.<a class="cite" href="#n4">4</a></li>
+  <li><strong>Silent memory</strong> is what the output gate is for: separate “what I know” (c) from “what I say now” (h).</li>
+  <li><strong>Adding up</strong> works because c is updated with <em>+</em>. It is a running sum, so it can count or accumulate evidence.</li>
+</ul>
+
+<h2>Why this fixes vanishing gradients</h2>
+<p>Use Lesson 3's tool: how much does a nudge to c<sub>t−1</sub> move c<sub>t</sub>? Look at c<sub>t</sub> = f<sub>t</sub> ⊙ c<sub>t−1</sub> + i<sub>t</sub> ⊙ c̃<sub>t</sub>. Along the belt, the answer is simply:</p>
+<div class="eq">∂c<sub>t</sub> / ∂c<sub>t−1</sub> = f<sub>t</sub> &nbsp;&nbsp;(along the belt, entry by entry)</div>
+<p>So going back k steps along the belt multiplies k forget-gate values. Compare the per-step factor in each model:</p>
+<table>
+  <tr><th></th><th>Vanilla RNN</th><th>LSTM cell state</th></tr>
+  <tr><td>Per-step factor</td><td class="mono">W<sub>hh</sub> × tanh′</td><td class="mono">f<sub>t</sub></td></tr>
+  <tr><td>Weight matrix in the path?</td><td>Yes, the same one every step</td><td>No</td></tr>
+  <tr><td>Squashing in the path?</td><td>Yes, tanh′ ≤ 1 every step</td><td>No</td></tr>
+  <tr><td>Who sets it?</td><td>Fixed by W<sub>hh</sub>; can't be both 1 for “remember” and different for “forget”</td><td>The network, <strong>per step and per entry</strong>, based on the input</td></tr>
+  <tr><td>Can it sit at ≈ 1?</td><td>Only at a knife edge (Lesson 3)</td><td>Yes: f = 1 is just “keep”, a normal state for a gate</td></tr>
+</table>
+<p>Hochreiter &amp; Schmidhuber called this the <em>constant error carousel</em>: a self-loop with factor 1, so error can circulate back through time without shrinking.<a class="cite" href="#n1">1</a> D2L describes the same self-connection as <q>ensuring that the gradient can pass across many time steps without vanishing or exploding</q>.<a class="cite" href="#n3">3</a></p>
+
+<div class="panel" id="hsim" data-highway-sim data-gate-name="forget gate f" data-cell-name="LSTM cell path" data-g="0.97" data-t="50"></div>
+<div class="panel" id="hchallenges">
+  <div class="challenge" data-c="long"><span class="tick">○</span><span><strong>The long haul.</strong> With T = 100, keep the LSTM's signal at step 1 above 0.1 while the RNN's is below 10<sup>−6</sup>.</span></div>
+  <div class="challenge" data-c="close"><span class="tick">○</span><span><strong>Gate shut.</strong> With T ≥ 20, make the LSTM's signal vanish too (below 0.001). This is what forgetting looks like from the gradient's side.</span></div>
+  <div class="challenge" data-c="same"><span class="tick">○</span><span><strong>Same factor, same fate.</strong> With T ≥ 20, set the forget gate equal to the RNN's factor w<sub>h</sub> × tanh′ (within 0.005). What happens to the two curves?</span></div>
+</div>
+<p>The last challenge is the subtle point. The arithmetic is identical: both are “factor to the power k”. The difference is <strong>which factors are easy to reach</strong>. For the RNN, 0.99 needs w<sub>h</sub> and tanh′ both near 1 at every step, a knife edge that also fixes how fast <em>everything</em> fades. For the LSTM, 0.99 is just “forget gate open”, which a gate can output whenever the input calls for it, and close again when it doesn't.</p>
+
+<p>Three honest caveats, all interview-worthy:</p>
+<ul>
+  <li><strong>It isn't magic, it's learned.</strong> The belt only carries gradient while the forget gate is near 1. That's why a common practical trick is to initialise the forget-gate bias to a positive value (about 1), so the cell starts out remembering. Jozefowicz, Zaremba &amp; Sutskever found this simple change helped LSTMs a lot.<a class="cite" href="#n5">5</a></li>
+  <li><strong>Only the belt is protected.</strong> Gradient also flows through h and through the gates, and those paths still have weight matrices and squashing. LSTMs <em>alleviate</em> vanishing; they don't make sequences of any length easy.</li>
+  <li><strong>Exploding is less of a problem, but not gone.</strong> f ≤ 1, so the belt can't blow up, but the other paths can, so people still use gradient clipping with LSTMs. The demo does.</li>
+</ul>
+
+<h2>Shapes and cost</h2>
+<p>Each of the four boxes is a vanilla-RNN-sized layer: a matrix of shape <span class="mono">n × (n + d)</span> plus a bias of size n. So:</p>
+<div class="eq">LSTM parameters = 4 × ( n·(n + d) + n ) &nbsp;=&nbsp; about <strong>4×</strong> a vanilla RNN with the same hidden size n</div>
+<p>Both <span class="h">c<sub>t</sub></span> and <span class="h">h<sub>t</sub></span> have size n. Everything from Lessons 1–2 still holds: shared weights across time, any sequence length, same task shapes. You can drop an LSTM in wherever the diagrams in Lesson 2 had an RNN cell, which is what Sutskever et al.'s seq2seq model did.</p>
+
+<h2>Try it in the demo</h2>
+<p>The demo now takes <code>--cell lstm</code>. Train both and compare the Lesson 3 probe:</p>
+<pre class="eq" style="text-align:left">uv run demo/char_rnn.py train --details              # vanilla RNN
+uv run demo/char_rnn.py train --cell lstm --details  # LSTM
+uv run demo/char_rnn.py test  --cell lstm</pre>
+<p>From a real run (hidden size 256, 2000 rounds, M-series laptop CPU). The probe puts a loss on the last character and measures how much gradient reaches each step back:</p>
+<table>
+  <tr><th>Steps back</th><th>Vanilla RNN, trained</th><th>LSTM, untrained</th><th>LSTM, trained</th></tr>
+  <tr><td class="mono">0</td><td class="mono">1.3e−2</td><td class="mono">3.2e−3</td><td class="mono">1.9e−2</td></tr>
+  <tr><td class="mono">10</td><td class="mono">8.3e−4</td><td class="mono">4.4e−6</td><td class="mono">1.7e−3</td></tr>
+  <tr><td class="mono">40</td><td class="mono">1.1e−5</td><td class="mono">6.4e−12</td><td class="mono">2.8e−4</td></tr>
+  <tr><td class="mono">99</td><td class="mono">2.3e−9</td><td class="mono">1.9e−23</td><td class="mono">2.7e−6</td></tr>
+</table>
+<ul>
+  <li><strong>Trained LSTM vs trained RNN:</strong> about 25× more gradient 40 steps back, and about 1000× more at 99 steps. The trained LSTM's signal falls off far more slowly.</li>
+  <li><strong>The untrained LSTM is no better at all.</strong> Its gates start out at random, around 0.5, so the belt fades fast. The highway exists only once the network has <em>learned</em> to hold the forget gate open. (PyTorch starts the forget-gate bias at 0, not the +1 trick from the caveats above.)</li>
+  <li><strong>On the test text:</strong> 50.0% of next characters right (loss 1.77) vs the RNN's 47.1% (loss 1.85). A modest gain, because most of Shakespeare's next-character clues are only a few characters back, where the RNN does fine. It cost 3.5× the weights (347,457 vs 99,393) and about 3× the training time (80 s vs 24 s).</li>
+</ul>
+
+<div class="callout interview">
+<p>“An LSTM adds a cell state alongside the hidden state, controlled by three sigmoid gates. The forget gate scales the old cell state, the input gate scales a tanh candidate that gets added, and the output gate decides how much of tanh of the cell state becomes the hidden state. Because the cell state is updated additively, the gradient from c<sub>t</sub> to c<sub>t−1</sub> is just the forget gate, with no weight matrix or tanh in between. When the forget gate is near 1, the gradient passes back through many steps without vanishing. It has about four times the parameters of a vanilla RNN.”</p>
+</div>
+
+<h2>Check yourself</h2>
+
+<div class="quiz">
+  <div class="q">1. Which LSTM equation contains no weight matrix?</div>
+  <button class="opt" data-correct>The cell state update</button>
+  <button class="opt">The forget gate</button>
+  <button class="opt">The candidate c̃</button>
+  <button class="opt">The output gate</button>
+  <div class="why">c<sub>t</sub> = f<sub>t</sub> ⊙ c<sub>t−1</sub> + i<sub>t</sub> ⊙ c̃<sub>t</sub> only multiplies entry by entry and adds. That's why the gradient along it is just f<sub>t</sub>. (h<sub>t</sub> = o<sub>t</sub> ⊙ tanh(c<sub>t</sub>) has no matrix either, but it isn't an option here.)</div>
+</div>
+
+<div class="quiz">
+  <div class="q">2. Why do the gates use sigmoid rather than tanh?</div>
+  <button class="opt" data-correct>They need values between 0 and 1</button>
+  <button class="opt">Sigmoid has a larger slope than tanh</button>
+  <button class="opt">Sigmoid outputs can be negative</button>
+  <button class="opt">It halves the number of parameters</button>
+  <div class="why">A gate is a valve: 0 = let nothing through, 1 = let everything through. Sigmoid's 0…1 range is exactly that. The candidate uses tanh because it's content, which can be negative.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">3. You want the cell to hold a value unchanged for 50 steps. Which gate settings?</div>
+  <button class="opt" data-correct>Forget at 1, input at 0</button>
+  <button class="opt">Forget at 0, input at 1</button>
+  <button class="opt">Forget at 1, input at 1</button>
+  <button class="opt">Output at 0, forget at 0</button>
+  <div class="why">Keep everything (f = 1), write nothing (i = 0). That's the Store and hold challenge. The output gate doesn't affect what's stored, only what's shown.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">4. Along the cell state, what is the per-step gradient factor ∂c<sub>t</sub>/∂c<sub>t−1</sub>?</div>
+  <button class="opt" data-correct>The forget gate f<sub>t</sub></button>
+  <button class="opt">W<sub>hh</sub> times tanh′</button>
+  <button class="opt">The input gate i<sub>t</sub></button>
+  <button class="opt">Always exactly 1</button>
+  <div class="why">c<sub>t</sub> = f<sub>t</sub> ⊙ c<sub>t−1</sub> + …, so nudging c<sub>t−1</sub> moves c<sub>t</sub> by f<sub>t</sub>. It's exactly 1 only when the gate is fully open, which the network learns to do when it needs to remember.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">5. Hidden size n = 100, input size d = 50. Roughly how many weights in one LSTM layer?</div>
+  <button class="opt" data-correct>About 60,000</button>
+  <button class="opt">About 15,000</button>
+  <button class="opt">About 30,000</button>
+  <button class="opt">About 240,000</button>
+  <div class="why">4 × (n·(n + d) + n) = 4 × (100 × 150 + 100) = 60,400. A vanilla RNN of the same size is about 15,100, so the LSTM has 4× as many.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">6. Why might a model keep something in c<sub>t</sub> but set the output gate near 0?</div>
+  <button class="opt" data-correct>It's needed later, not now</button>
+  <button class="opt">To erase it from the cell</button>
+  <button class="opt">To stop the gradient exploding</button>
+  <button class="opt">To skip writing the candidate</button>
+  <div class="why">The output gate hides memory without erasing it. Example: remember an opening quote mark so you can close it later, without letting it affect every prediction in between. Erasing is the forget gate's job.</div>
+</div>
+<p class="quiz-score" data-quiz-score></p>
+
+<h2>Say it out loud</h2>
+
+<details class="recall"><summary>Draw an LSTM cell and name the three gates, with one sentence each.</summary>
+<div class="answer">Belt along the top: c<sub>t−1</sub> → × → + → c<sub>t</sub>. Forget gate (σ) feeds the ×: how much old memory to keep. Input gate (σ) times candidate (tanh) feeds the +: what new memory to write. Output gate (σ) times tanh(c<sub>t</sub>) gives h<sub>t</sub>: how much memory to show.</div></details>
+
+<details class="recall"><summary>How does an LSTM fix vanishing gradients? 30 seconds.</summary>
+<div class="answer">The cell state is updated additively, so the gradient from c<sub>t</sub> back to c<sub>t−1</sub> is just the forget gate: no weight matrix and no tanh at every step. When the forget gate is near 1 the gradient passes back almost unchanged over many steps. In a vanilla RNN the factor is W<sub>hh</sub> times tanh′, which is usually below 1, so it shrinks exponentially.</div></details>
+
+<details class="recall"><summary>What's the difference between c<sub>t</sub> and h<sub>t</sub>?</summary>
+<div class="answer">c<sub>t</sub> is the long-term memory, changed only by gated erase and add. h<sub>t</sub> = o<sub>t</sub> ⊙ tanh(c<sub>t</sub>) is the output: a filtered view of the memory, used for predictions and fed to the next step's gates. Both have size n.</div></details>
+
+<h2>Read next (≈15 min)</h2>
+<p><strong>Primary source:</strong> Christopher Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">“Understanding LSTM Networks”</a>. Read <em>LSTM Networks</em>, <em>The Core Idea Behind LSTMs</em> and <em>Step-by-Step LSTM Walk Through</em>. Stop at <em>Variants on Long Short Term Memory</em>: that's the next lesson (GRU). His diagrams are the ones interviewers expect you to draw.</p>
+<p><strong>Then:</strong> skim <em>Dive into Deep Learning</em> <a href="https://d2l.ai/chapter_recurrent-modern/lstm.html">§10.1 “Long Short-Term Memory (LSTM)”</a>, §10.1.1 only. Check that its equations match the six above.</p>
+
+<div class="ask">
+<strong>Stuck or curious?</strong> Ask me, your teacher, in the terminal. For example: “Why does h<sub>t</sub> need its own tanh?”, “What does the forget gate learn in practice?”, or “Can I draw this faster on a whiteboard?” Tell me how the challenges and quiz went, and paste the demo's two probe tables if you ran them.
+</div>
+
+<h2>Notes</h2>
+<ol class="notes">
+  <li id="n1">Hochreiter &amp; Schmidhuber, <a href="https://www.bioinf.jku.at/publications/older/2604.pdf">Long Short-Term Memory</a>, <em>Neural Computation</em> 9(8), 1997. Introduces the memory cell and the “constant error carousel”.</li>
+  <li id="n2">Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a> (2015), “The Core Idea Behind LSTMs.”</li>
+  <li id="n3">Zhang, Lipton, Li &amp; Smola, <a href="https://d2l.ai/chapter_recurrent-modern/lstm.html"><em>Dive into Deep Learning</em> §10.1 “Long Short-Term Memory (LSTM)”</a>: gate equations, the memory cell, and the forget = 1 / input = 0 case.</li>
+  <li id="n4">Gers, Schmidhuber &amp; Cummins, <a href="https://direct.mit.edu/neco/article/12/10/2451/6415">Learning to Forget: Continual Prediction with LSTM</a>, <em>Neural Computation</em> 12(10), 2000.</li>
+  <li id="n5">Jozefowicz, Zaremba &amp; Sutskever, <a href="https://proceedings.mlr.press/v37/jozefowicz15.html">An Empirical Exploration of Recurrent Network Architectures</a>, ICML 2015. Recommends a forget-gate bias of 1.</li>
+</ol>
+
+<nav class="course">
+  <a href="0003-vanishing-gradients.html">← Lesson 3: Vanishing Gradients</a>
+  <a href="../reference/rnn-core.html">Reference: RNN core cheat sheet</a>
+  <a href="0005-gru.html">Lesson 5: GRU →</a>
+</nav>
+
+</main>
+<script src="../assets/gate-sim.js"></script>
+<script src="../assets/highway-sim.js"></script>
+<script src="../assets/challenges.js"></script>
+<script src="../assets/quiz.js"></script>
+<script>
+const all = (a, p) => a.every(p);
+Challenges.attach(document.getElementById("lsim"), "gate:update", document.getElementById("lchallenges"), {
+  hold: ({ c }) => all(c, (v) => v >= 0.9 && v <= 1),
+  forget: ({ c }) => all(c.slice(0, 5), (v) => v >= 0.9) && all(c.slice(5), (v) => Math.abs(v) < 1e-9),
+  silent: ({ h }) => all(h.slice(0, 7), (v) => Math.abs(v) < 1e-9) && h[7] >= 0.7,
+  count: ({ c }) => c[7] > 1.5,
+});
+Challenges.attach(document.getElementById("hsim"), "highway:update", document.getElementById("hchallenges"), {
+  long: ({ T, rnn, gated }) => T === 100 && gated > 0.1 && rnn < 1e-6,
+  close: ({ T, gated }) => T >= 20 && gated < 1e-3,
+  same: ({ T, frnn, g }) => T >= 20 && Math.abs(frnn - g) <= 0.005,
+});
+</script>
+</body>
+</html>

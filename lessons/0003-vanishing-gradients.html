@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vanishing Gradients</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+
+<p class="kicker">Lesson 3 · Recurrent Neural Networks · ~25 min</p>
+<h1>Vanishing Gradients</h1>
+<p class="subtitle">How RNNs are trained, and why they forget anything far back.</p>
+
+<p><strong>By the end you can</strong> explain backpropagation through time, show why the gradient shrinks or blows up as it travels back through the steps, and name the standard fix for each problem. “Why do vanilla RNNs struggle with long sequences?” is probably the most-asked RNN interview question, and this lesson is the answer.</p>
+
+<h2>Warm-up: Lessons 1 &amp; 2, mixed</h2>
+<p>Answer from memory, then reveal.</p>
+
+<details class="recall"><summary>In the Lesson 1 simulator, what happened to the spike's memory when |w<sub>h</sub>| was below 1?</summary>
+<div class="answer">It faded a little more at each step, because the signal kept getting multiplied by a number smaller than 1. Hold on to that: this lesson is the same effect running <em>backwards</em>.</div></details>
+
+<details class="recall"><summary>Sentiment classification is which shape, and which hidden state feeds the classifier?</summary>
+<div class="answer">Many-to-one. The classifier uses the final hidden state h<sub>T</sub>, because it's the only one that has seen the whole sentence.</div></details>
+
+<details class="recall"><summary>What does a seq2seq encoder hand to the decoder?</summary>
+<div class="answer">A fixed-size context vector c, which is the encoder's final hidden state.</div></details>
+
+<h2>Backprop in two sentences</h2>
+<p>You know backprop conceptually. Here's all of it that this lesson needs:</p>
+<ol>
+  <li>A <strong><span class="g">gradient</span></strong> is a sensitivity: <em>if I nudge this number slightly, how much does the loss move?</em> Training nudges each weight in the direction that lowers the loss.</li>
+  <li>The <strong>chain rule</strong> says that sensitivities <strong>multiply along a path</strong>. If nudging A moves B three times as much, and nudging B moves C twice as much, then nudging A moves C <strong>3 × 2 = 6</strong> times as much.</li>
+</ol>
+<p>That's it. Keep “<em>multiply along the path</em>” in mind; the rest of the lesson follows from it.</p>
+
+<h2>Backpropagation through time (BPTT)</h2>
+<p>To train an RNN you <strong>unroll it</strong> (Lesson 1) and run ordinary backprop over the unrolled chain. D2L: <q>This procedure requires us to expand (or unroll) the computational graph of an RNN one time step at a time.</q><a class="cite" href="#n1">1</a> Because the chain is laid out in time, it's called <em>backpropagation through time</em>.</p>
+
+<figure>
+<svg viewBox="0 0 640 190" role="img" aria-label="Five unrolled RNN cells; the loss at the last step sends gradient arrows backward along the hidden-state chain, getting thinner at each step">
+  <defs>
+    <marker id="g3a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-hf"/></marker>
+    <marker id="g3g" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-gf"/></marker>
+  </defs>
+  <g id="bptt"></g>
+  <script>
+  (function(){
+    const NS="http://www.w3.org/2000/svg", g=document.getElementById("bptt");
+    const mk=(t,a,txt)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);if(txt!=null)n.textContent=txt;g.appendChild(n);return n;};
+    const xs=[70,180,290,400,510], cy=95;
+    xs.forEach((cx,i)=>{
+      mk("rect",{x:cx-24,y:cy-16,width:48,height:32,rx:6,class:"d-h","stroke-width":1.5});
+      mk("text",{x:cx,y:cy+5,"text-anchor":"middle",class:"d-hf","font-style":"italic","font-size":13},"h"+"₁₂₃₄₅"[i]);
+      mk("text",{x:cx,y:178,"text-anchor":"middle",class:"d-xf","font-style":"italic","font-size":13},"x"+"₁₂₃₄₅"[i]);
+      mk("line",{x1:cx,y1:164,x2:cx,y2:cy+18,class:"d-x","stroke-width":1.2});
+      if(i<4){
+        mk("line",{x1:cx+25,y1:cy-6,x2:xs[i+1]-27,y2:cy-6,class:"d-h","stroke-width":1.2,"marker-end":"url(#g3a)",opacity:.6});
+        const w=[1,1.6,2.4,3.4][i]; // thinner further back
+        mk("line",{x1:xs[i+1]-25,y1:cy+8,x2:cx+28,y2:cy+8,class:"d-g","stroke-width":w,"marker-end":"url(#g3g)"});
+        mk("text",{x:(cx+xs[i+1])/2,y:cy+30,"text-anchor":"middle",class:"d-gf","font-size":10.5},"× wₕ·tanh′");
+      }
+    });
+    mk("line",{x1:510,y1:cy-17,x2:510,y2:42,class:"d-y","stroke-width":1.3});
+    mk("rect",{x:486,y:14,width:48,height:26,rx:4,class:"d-g","stroke-width":1.5});
+    mk("text",{x:510,y:32,"text-anchor":"middle",class:"d-gf","font-size":13,"font-weight":600},"Loss");
+    mk("text",{x:580,y:cy-2,class:"d-m","font-size":11},"forward →");
+    mk("text",{x:566,y:cy+14,class:"d-gf","font-size":11},"← gradient");
+  })();
+  </script>
+</svg>
+<figcaption>Forward: information flows left to right. Backward: the <span class="g">gradient</span> flows right to left from the loss. To reach h<sub>1</sub> it has to pass through every step, and at each step it is <strong>multiplied</strong> by that step's local sensitivity.</figcaption>
+</figure>
+
+<h3>A twist: one weight, many contributions</h3>
+<p>Lesson 1's parameter sharing has a consequence here. W<sub>hh</sub> is used at <em>every</em> step, so its gradient is the <strong>sum of a contribution from every step</strong>: how much the loss would change through step 1's use of W<sub>hh</sub>, plus step 2's, and so on.<a class="cite" href="#n1">1</a> The contributions from early steps are the ones that would teach the network long-range patterns. The next section shows why those are the ones that get lost.</p>
+
+<h2>Why the gradient vanishes or explodes</h2>
+<p>Take the one-number RNN from Lesson 1: <span class="h">h<sub>t</sub></span> = tanh(w<sub>h</sub>·<span class="h">h<sub>t−1</sub></span> + w<sub>x</sub>·<span class="x">x<sub>t</sub></span>). How much does a nudge to <span class="h">h<sub>t−1</sub></span> move <span class="h">h<sub>t</sub></span>?</p>
+
+<div class="eq">∂h<sub>t</sub> / ∂h<sub>t−1</sub> = w<sub>h</sub> × tanh′(…) &nbsp;&nbsp;=: <strong>f</strong>, the per-step factor</div>
+<p class="eq-legend">tanh′ is the slope of tanh. It's at most 1, and it gets close to 0 when tanh saturates near ±1.</p>
+
+<p>By the chain rule, sensitivities multiply along the path. Going back <em>k</em> steps multiplies <em>k</em> of these factors together:</p>
+<div class="eq">signal reaching k steps back ≈ f × f × … × f = <strong>f<sup>k</sup></strong></div>
+
+<table>
+  <tr><th>Per-step factor f</th><th>After 10 steps</th><th>After 50 steps</th><th>Result</th></tr>
+  <tr><td class="mono">0.5</td><td class="mono">≈ 0.001</td><td class="mono">≈ 10<sup>−15</sup></td><td><strong>Vanishes</strong>: early steps get almost no learning signal</td></tr>
+  <tr><td class="mono">0.9</td><td class="mono">≈ 0.35</td><td class="mono">≈ 0.005</td><td>Still vanishes, just more slowly</td></tr>
+  <tr><td class="mono">1.0</td><td class="mono">1</td><td class="mono">1</td><td>Stable, but only exactly at this knife edge</td></tr>
+  <tr><td class="mono">1.5</td><td class="mono">≈ 58</td><td class="mono">≈ 6 × 10<sup>8</sup></td><td><strong>Explodes</strong>: huge updates, unstable training</td></tr>
+</table>
+
+<p>In a real RNN the factor is a matrix (W<sub>hh</sub> multiplied by the tanh slopes), and what decides the outcome is how much that matrix stretches or shrinks a vector. D2L puts it in terms of eigenvalues: <q>eigenvalues smaller than 1 vanish and eigenvalues larger than 1 diverge.</q><a class="cite" href="#n1">1</a> This was analysed by Bengio et al. in 1994 and in detail by Pascanu, Mikolov &amp; Bengio.<a class="cite" href="#n2">2</a></p>
+
+<div class="callout">
+<p><strong>Same effect, both directions.</strong> In Lesson 1, the <em>memory</em> of the spike faded going <em>forward</em>. Here the <em>learning signal</em> fades going <em>backward</em>. Both happen because the same factor is applied over and over. Colah's version: as the gap grows, <q>RNNs become unable to learn to connect the information.</q><a class="cite" href="#n3">3</a></p>
+</div>
+
+<h2>Play: watch the gradient travel back</h2>
+<p>The loss sits at the last step. Each bar shows how much <span class="g">gradient</span> reaches that step, on a <strong>log scale</strong> where each gridline is 1000× the one below it. Bars that fall off the bottom are effectively zero.</p>
+
+<div class="panel" id="gsim" data-grad-sim data-wh="0.9" data-slope="0.7" data-t="10" data-clip></div>
+<div class="panel" id="gchallenges">
+  <div class="challenge" data-c="vanish"><span class="tick">○</span><span><strong>Vanish.</strong> With T ≥ 20, get the signal reaching step 1 below 0.001.</span></div>
+  <div class="challenge" data-c="explode"><span class="tick">○</span><span><strong>Explode.</strong> With clipping off, push the signal reaching step 1 above 1000.</span></div>
+  <div class="challenge" data-c="tame"><span class="tick">○</span><span><strong>Tame it.</strong> Keep it exploding (above 1000 unclipped), then turn on clipping so no bar exceeds θ.</span></div>
+  <div class="challenge" data-c="knife"><span class="tick">○</span><span><strong>Knife edge.</strong> With T = 50 and clipping off, keep the signal reaching step 1 between 0.5 and 2. Notice how small the window is.</span></div>
+</div>
+
+<p>Two things to notice from that:</p>
+<ul>
+  <li><strong>Healthy long-range gradients need f ≈ 1 exactly.</strong> Training doesn't hold the weights at a knife edge, and tanh′ is usually below 1 anyway. So in practice <strong>vanishing is the default</strong>.</li>
+  <li><strong>Clipping shrank the exploding bars but didn't lift the vanishing ones.</strong> All clipping can do is scale the gradient down.</li>
+</ul>
+
+<h2>The fixes, and which problem each one solves</h2>
+<table>
+  <tr><th>Problem</th><th>Standard fix</th><th>How it works</th></tr>
+  <tr><td><strong>Exploding</strong></td><td>Gradient (norm) clipping</td><td>If the gradient's overall size exceeds a threshold θ, scale it down to θ, keeping its direction. Proposed by Pascanu et al.;<a class="cite" href="#n2">2</a> D2L calls it <q>vital for preventing the occasional massive gradients from destabilizing training.</q><a class="cite" href="#n4">4</a></td></tr>
+  <tr><td><strong>Vanishing</strong></td><td>Change the architecture: <strong>LSTM / GRU</strong></td><td>Add a path through time that the signal can travel without being squashed at every step. That's the next lesson. Clipping <q>does not address the problem of vanishing gradients.</q><a class="cite" href="#n4">4</a></td></tr>
+  <tr><td>Cost of long sequences</td><td>Truncated BPTT</td><td>Only backpropagate a fixed number of steps (τ) instead of the whole sequence. Cheaper and more stable, but it deliberately gives up on very long-range gradients.<a class="cite" href="#n1">1</a></td></tr>
+</table>
+
+<div class="callout interview">
+<p>“RNNs are trained with backpropagation through time: unroll the network and backprop through the chain. The gradient reaching a step k positions back is a product of k per-step Jacobians, roughly W<sub>hh</sub> times the tanh slope. If that factor is below 1 the gradient shrinks exponentially, so the network can't learn long-range dependencies. If it's above 1 the gradient explodes. Exploding is handled with gradient clipping. Vanishing needs an architectural fix, like the LSTM's gated cell state.”</p>
+</div>
+
+<h2>Check yourself</h2>
+
+<div class="quiz">
+  <div class="q">1. In BPTT, why is the gradient for W<sub>hh</sub> a sum over time steps?</div>
+  <button class="opt" data-correct>The same weights are used every step</button>
+  <button class="opt">Each step has its own W_hh copy</button>
+  <button class="opt">The loss is averaged across every batch</button>
+  <button class="opt">Summing is what prevents gradients from exploding</button>
+  <div class="why">Parameter sharing (Lesson 1). One W<sub>hh</sub> is used at every step, so each step contributes a piece of its gradient.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">2. The per-step factor is 0.5. Roughly how much signal is left 10 steps back?</div>
+  <button class="opt" data-correct>About one thousandth</button>
+  <button class="opt">About one tenth</button>
+  <button class="opt">About one half</button>
+  <button class="opt">About one twentieth</button>
+  <div class="why">0.5<sup>10</sup> = 1/1024 ≈ 0.001. The factors multiply; they don't add. That's why the decay is exponential.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">3. Which problem does gradient clipping solve?</div>
+  <button class="opt" data-correct>Exploding gradients only</button>
+  <button class="opt">Vanishing gradients only</button>
+  <button class="opt">Both problems equally</button>
+  <button class="opt">Training speed only</button>
+  <div class="why">Clipping can only scale gradients down. A vanished gradient has nothing to scale back up, which is what you saw in the Tame it challenge.<a class="cite" href="#n4">4</a></div>
+</div>
+
+<div class="quiz">
+  <div class="q">4. Why does the tanh activation make vanishing more likely?</div>
+  <button class="opt" data-correct>Its slope never exceeds one</button>
+  <button class="opt">Its output is always positive</button>
+  <button class="opt">It resets the hidden state</button>
+  <button class="opt">Its slope grows with input</button>
+  <div class="why">tanh′ ≤ 1, and it's near 0 when saturated, so every step's factor gets multiplied by something at most 1. (Its output ranges over −1…1, so it isn't always positive.)</div>
+</div>
+
+<div class="quiz">
+  <div class="q">5. A vanilla RNN reads a 100-word review whose sentiment hinges on word 3. What goes wrong?</div>
+  <button class="opt" data-correct>Word 3 gets almost no gradient</button>
+  <button class="opt">Word 3 is never seen at all</button>
+  <button class="opt">The final hidden state is reset</button>
+  <button class="opt">The weights for word 3 differ</button>
+  <div class="why">The loss is at step 100 (many-to-one), and its signal has to travel back about 97 steps to reach word 3. After that many multiplications it's essentially zero, so the network can't learn that word 3 mattered. The words do share weights, so “the weights for word 3 differ” is wrong.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">6. Truncated BPTT trades away what, in exchange for what?</div>
+  <button class="opt" data-correct>Exact long-range gradients for cheaper training</button>
+  <button class="opt">Model size for higher test accuracy</button>
+  <button class="opt">Shared weights for separate step weights</button>
+  <button class="opt">Forward speed for larger memory capacity</button>
+  <div class="why">Stopping the backward pass after τ steps makes training cheaper and more stable, but the gradient no longer includes contributions from further back.<a class="cite" href="#n1">1</a></div>
+</div>
+<p class="quiz-score" data-quiz-score></p>
+
+<h2>Say it out loud</h2>
+
+<details class="recall"><summary>Explain vanishing gradients in an RNN in 30 seconds.</summary>
+<div class="answer">Training unrolls the RNN and backprops through time. The gradient reaching k steps back is a product of k per-step factors (W<sub>hh</sub> × tanh slope). If those are below 1, the product shrinks exponentially, so early inputs get almost no learning signal and the network can't learn long-range dependencies.</div></details>
+
+<details class="recall"><summary>Exploding vs vanishing: which fix goes with which, and why can't clipping fix both?</summary>
+<div class="answer">Exploding → gradient clipping (rescale the gradient down to a threshold). Vanishing → architectural change (LSTM/GRU). Clipping can only shrink a gradient; it can't recover a signal that has already decayed to almost zero.</div></details>
+
+<details class="recall"><summary>Synced many-to-many has a loss at every step. How does that change which steps get gradient?</summary>
+<div class="answer">Every step now gets a strong gradient from its <em>own</em> nearby loss. But the long-range part (how step 3's loss depends on step 1) still has to travel back through the chain and still vanishes. So the model learns local patterns well and long-range ones poorly.</div></details>
+
+<h2>Read next (≈15 min)</h2>
+<p><strong>Primary source:</strong> <em>Dive into Deep Learning</em> (D2L), <a href="https://d2l.ai/chapter_recurrent-neural-networks/bptt.html">§9.7 “Backpropagation Through Time”</a>. Read the introduction and §9.7.1. You can skim the equations; look for the products of W<sub>hh</sub> terms and the sentence on eigenvalues. Then read the short <a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn-scratch.html">§9.5.3 “Gradient Clipping”</a> (skip the code).</p>
+<p><strong>Then:</strong> re-read the <em>“The Problem of Long-Term Dependencies”</em> section of <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Colah's post</a>. It should make much more sense now, and the next section of that post (LSTMs) is Lesson 4.</p>
+
+<div class="ask">
+<strong>Stuck or curious?</strong> Ask me, your teacher, in the terminal. For example: “Why not just use ReLU instead of tanh?”, “What's a Jacobian, in plain words?”, or “How would I draw this on a whiteboard?” Please also tell me how the quizzes went in Lessons 1–3. I'll record what you've got down and pitch the LSTM lesson to match.
+</div>
+
+<h2>Notes</h2>
+<ol class="notes">
+  <li id="n1">Zhang, Lipton, Li &amp; Smola, <a href="https://d2l.ai/chapter_recurrent-neural-networks/bptt.html"><em>Dive into Deep Learning</em> §9.7 “Backpropagation Through Time”</a>: unrolling, the eigenvalue argument, truncated BPTT (§9.7.1.2).</li>
+  <li id="n2">Pascanu, Mikolov &amp; Bengio, <a href="https://arxiv.org/abs/1211.5063">On the difficulty of training Recurrent Neural Networks</a> (2012; ICML 2013). It analyses “the vanishing and the exploding gradient problems detailed in Bengio et al. (1994)” and proposes “a gradient norm clipping strategy.”</li>
+  <li id="n3">Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a> (2015), “The Problem of Long-Term Dependencies.”</li>
+  <li id="n4"><a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn-scratch.html"><em>Dive into Deep Learning</em> §9.5.3 “Gradient Clipping”</a> and the §9.5 summary.</li>
+</ol>
+
+<nav class="course">
+  <a href="0002-task-shapes.html">← Lesson 2: Sequence Task Shapes</a>
+  <a href="../reference/rnn-core.html">Reference: RNN core cheat sheet</a>
+  <a href="0004-lstm.html">Lesson 4: LSTM →</a>
+</nav>
+
+</main>
+<script src="../assets/gradient-sim.js"></script>
+<script src="../assets/challenges.js"></script>
+<script src="../assets/quiz.js"></script>
+<script>
+Challenges.attach(document.getElementById("gsim"), "grad:update", document.getElementById("gchallenges"), {
+  vanish: ({ T, raw }) => T >= 20 && raw[0] < 1e-3,
+  explode: ({ raw, clip }) => !clip && raw[0] > 1000,
+  tame: ({ raw, g, clip, threshold }) => clip && raw[0] > 1000 && Math.max(...g) <= threshold + 1e-9,
+  knife: ({ T, raw, clip }) => T === 50 && !clip && raw[0] >= 0.5 && raw[0] <= 2,
+});
+</script>
+</body>
+</html>

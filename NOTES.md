@@ -1,0 +1,14 @@
+# Notes
+
+- Goal is interview/course/exam readiness: favour "explain it out loud" retrieval practice and whiteboard-style tasks.
+- Prefers concepts + intuition over code. Interactive visuals > code exercises.
+- Backprop knowledge is conceptual only: introduce chain-rule ideas gently when BPTT arrives.
+- Sessions are ~45 min: one lesson (~20 min) + primary-source reading (~20 min) + recap.
+- Mission's "interview / course / exam" wasn't narrowed further; ask which one if it would change emphasis.
+- Spell out source names in full (e.g. "Dive into Deep Learning (D2L)") the first time they appear on each page; don't use bare abbreviations.
+- 2026-10-16: asked for a runnable Python demo on a real problem. Built `demo/char_rnn.py` (char-RNN on tinyshakespeare, `uv run`, ~30 s on M5 CPU). The user does want some hands-on code despite "concepts first"; tie future lessons to the demo's flags and output. Mission still lists PyTorch as out of scope; asked the user whether to update it.
+- 2026-10-16: user asked not to introduce LSTM (or other later topics) before we've covered them. Keep demos, code and examples strictly to material already taught; at most name the next lesson's topic, never use or show it. Removed the `--cell lstm` option from the demo.
+- 2026-10-20: user asked to introduce LSTM then GRU. Built Lesson 4 (`lessons/0004-lstm.html`) and Lesson 5 (`lessons/0005-gru.html`), new assets `gate-sim.js` (hand-set gates, lstm|gru) and `highway-sim.js` (RNN vs gated gradient path), LSTM/GRU section on the cheat sheet, and `--cell rnn|lstm|gru` in the demo (re-added now that both are taught; per-cell model files). GRU convention used: D2L/PyTorch, z = 1 keeps. Next lesson named only: why attention replaced recurrence.
+- 2026-10-20: added `slides/lstm-gru.html`, a Part 2 reveal.js deck following `slides/rnn-intro.html` (same CSS inlined from it, same plain "blame" language, speaker notes). 17 slides, LSTM + GRU, demo numbers from this session; ends by naming attention only.
+- 2026-10-20: user asked for the LSTM/GRU deck to be "a bit more descriptive" with 3–4 more slides. Added 4 (now 21): inside a gate (sigmoid vs tanh, per-slot dials), LSTM step in four moves with D2L equations, "France" worked trace through keep/write/show, GRU step in three moves with equations.
+- 2026-10-21: user asked for a demo predicting words, not letters. Added `demo/word_rnn.py` (same 4 commands, lowercase word+punctuation tokens, vocab ≥3 in TRAIN + <unk>, nn.Embedding explained as one-hot·W_xh lookup, default --cell lstm, keeps best-val weights since it overfits after ~600 rounds). Models: demo/word-model-<cell>.pt. README section added. Same day: user asked why not word2vec; added `neighbours` command, fixed docstring (embedding E feeds the cell's own W_ih, so W_xh = W_ih·Eᵀ, not a pure lookup), and init embedding std=0.1 (default N(0,1) rows stayed near-random under Adam + early stop; output-layer rows had learned clean clusters).

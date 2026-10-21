@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sequence Task Shapes</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+
+<p class="kicker">Lesson 2 · Recurrent Neural Networks · ~20 min</p>
+<h1>Sequence Task Shapes</h1>
+<p class="subtitle">Same cell, different wiring: where the inputs go in and where the outputs come out.</p>
+
+<p><strong>By the end you can</strong> take any sequence problem an interviewer names, sketch the matching unrolled RNN, and say which outputs you actually use. You'll also be able to explain why translation needs an <em>encoder–decoder</em>.</p>
+
+<h2>Warm-up: from Lesson 1</h2>
+<p>Answer each from memory <strong>before</strong> you reveal it. Recalling after a gap is what moves knowledge into long-term memory.</p>
+
+<details class="recall"><summary>Write the hidden-state update equation.</summary>
+<div class="answer"><span class="mono">h_t = tanh(W_hh·h_{t−1} + W_xh·x_t + b_h)</span>, with <span class="mono">y_t = W_hy·h_t</span> and <span class="mono">h_0 = 0</span>.</div></details>
+
+<details class="recall"><summary>Why does the parameter count not depend on sequence length?</summary>
+<div class="answer">Parameter sharing: the same W<sub>xh</sub>, W<sub>hh</sub>, W<sub>hy</sub> are reused at every time step. A longer sequence just means more loop iterations.</div></details>
+
+<details class="recall"><summary>Inputs have 10 features, hidden size is 32. Shape of W<sub>hh</sub>?</summary>
+<div class="answer">32 × 32. It maps hidden to hidden, so it is always square (n × n), whatever the input size.</div></details>
+
+<p>If any of those were shaky, reopen the <a href="../reference/rnn-core.html">RNN core cheat sheet</a> before going on.</p>
+
+<h2>One idea: choose which steps get inputs and which give outputs</h2>
+
+<p>In Lesson 1 every step had an input <span class="x">x<sub>t</sub></span> and could produce an output <span class="y">y<sub>t</sub></span>. Real tasks don't all look like that. Sometimes there's one input and many outputs; sometimes many inputs and a single answer. The RNN cell <strong>doesn't change</strong>. What changes is:</p>
+<ol>
+  <li>at which steps you <strong>feed an input</strong>, and</li>
+  <li>at which steps you <strong>read an output</strong> (and compute the loss).</li>
+</ol>
+
+<blockquote>“Notice that in every case are no pre-specified constraints on the lengths sequences because the recurrent transformation (green) is fixed and can be applied as many times as we like.”<cite>Karpathy, <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of RNNs</a>. The typo is in the original. The “fixed recurrent transformation” is Lesson 1's parameter sharing.</cite></blockquote>
+
+<p>Karpathy groups tasks into five shapes.<a class="cite" href="#n1">1</a> Click through them:</p>
+
+<div data-rnn-shapes data-start="many-to-one"></div>
+
+<h2>Three details interviewers probe</h2>
+
+<h3>1 · Many-to-one: why the <em>last</em> hidden state?</h3>
+<p>For sentiment analysis you read the whole sentence and make one prediction. You attach the classifier to the <strong>final hidden state</strong> <span class="h">h<sub>T</sub></span>, because that is the only state that has seen every word: it's the running summary from Lesson 1, taken at the end. The outputs <span class="y">y<sub>1</sub>…y<sub>T−1</sub></span> are simply never computed or never used.</p>
+
+<h3>2 · One-to-many: the output becomes the next input</h3>
+<p>To generate a sequence, the network samples an output at step <em>t</em> and feeds it back in as the input at step <em>t</em>+1 (the dashed arrows). Karpathy's character-level model generates text exactly this way: <q>We sample from this distribution, and feed it right back in to get the next letter.</q><a class="cite" href="#n1">1</a></p>
+
+<h3>3 · Synced vs encoder–decoder: are the sequences aligned?</h3>
+<p>Both take a sequence in and give a sequence out. The question to ask is: <strong>does output <em>t</em> correspond to input <em>t</em>?</strong></p>
+<ul>
+  <li><strong>Yes</strong> (tag each word, label each video frame): the lengths match and the positions line up, so use <em>synced many-to-many</em>.</li>
+  <li><strong>No</strong> (translation): “I am hungry” → “J'ai faim” has a different length, and word order can differ. Output 1 may depend on input 3, which hasn't been read yet at step 1. So you have to <strong>read everything first</strong>.</li>
+</ul>
+
+<div data-rnn-shape="seq2seq"></div>
+
+<p>That's the <strong>encoder–decoder</strong> (seq2seq) design. An <em>encoder</em> RNN reads the input and compresses it into a fixed-size <strong>context vector</strong> <span class="h">c</span>, which is its final hidden state. A <em>decoder</em> RNN starts from <span class="h">c</span> and generates the output one token at a time, feeding each output back in, until it emits a special <span class="mono">&lt;eos&gt;</span> (end-of-sequence) token.<a class="cite" href="#n2">2</a> Sutskever, Vinyals &amp; Le made this work at scale for translation in 2014 with two LSTMs: one maps the input “to a vector of a fixed dimensionality,” the other decodes from it.<a class="cite" href="#n3">3</a></p>
+
+<div class="callout">
+<p><strong>Look ahead:</strong> squeezing a whole paragraph into one fixed vector <span class="h">c</span> is a squeeze. Bahdanau, Cho &amp; Bengio called it out directly: <q>the use of a fixed-length vector is a bottleneck</q>.<a class="cite" href="#n4">4</a> Their fix, letting the decoder look back at <em>every</em> encoder hidden state, is called <strong>attention</strong>. It's the bridge from RNNs to Transformers, and we'll return to it at the end of the course.</p>
+</div>
+
+<div class="callout interview">
+<p>“The RNN cell is the same in every setting; the task decides which steps receive inputs and which outputs we use. Classification is many-to-one: I use the final hidden state. Tagging is synced many-to-many. Translation needs an encoder–decoder because input and output lengths and orders differ: the encoder compresses the source into a context vector and the decoder generates until an end-of-sequence token.”</p>
+</div>
+
+<h2>Drill: name the shape</h2>
+<p>Eleven tasks, shuffled. Pick a shape for each and you'll get the diagram as feedback straight away. Any you miss come back at the end until you get them right. For each one, ask yourself: <em>how many inputs, how many outputs, and do they line up?</em></p>
+
+<div class="drill" data-options='[["one-to-one","One-to-one"],["one-to-many","One-to-many"],["many-to-one","Many-to-one"],["synced","Many-to-many (synced)"],["seq2seq","Encoder–decoder (seq2seq)"]]'>
+  <div class="card" data-answer="many-to-one">Flag an email as spam or not spam, reading it word by word.<div class="why">A whole sequence in, one label out. Classify from the final hidden state.</div></div>
+  <div class="card" data-answer="synced">Tag every word in a sentence as a person, place, or other (named-entity recognition).<div class="why">One label per word, aligned position by position.</div></div>
+  <div class="card" data-answer="seq2seq">Translate an English sentence into Hindi.<div class="why">The output length and word order differ from the input, so read everything first, then generate until &lt;eos&gt;.</div></div>
+  <div class="card" data-answer="one-to-many">Write a caption sentence for a photo.<div class="why">Karpathy's own example: one input (the image), then a sequence of words, each fed back in.</div></div>
+  <div class="card" data-answer="many-to-one">Predict tomorrow's temperature from the last 30 days of readings.<div class="why">Thirty inputs, one number out. Read it from the final hidden state.</div></div>
+  <div class="card" data-answer="one-to-many">Generate a melody given only a genre label like “jazz”.<div class="why">A single conditioning input, then free generation with outputs fed back as inputs.</div></div>
+  <div class="card" data-answer="one-to-one">Classify one 28×28 image of a handwritten digit.<div class="why">A fixed-size input and a fixed-size output with no sequence anywhere. You don't need recurrence.</div></div>
+  <div class="card" data-answer="synced">Mark every frame of a video as “goal scored” or “not”.<div class="why">Karpathy's example (5): one label per frame, aligned.</div></div>
+  <div class="card" data-answer="seq2seq">Summarise a news article into two sentences.<div class="why">Long input, short output, not aligned. Encode the article, then decode the summary.</div></div>
+  <div class="card" data-answer="synced">During training of a character-level text model, predict the next character at every position.<div class="why">A trap: generation is one-to-many, but <em>training</em> on known text is synced. Every input character has an aligned target (the next character), and each step's output gets a loss.</div></div>
+  <div class="card" data-answer="seq2seq">Answer a typed question with a full-sentence reply (a chatbot).<div class="why">Question in, a reply of any length out, not position-aligned. This is the classic seq2seq framing.</div></div>
+</div>
+
+<h2>Check yourself</h2>
+
+<div class="quiz">
+  <div class="q">1. In many-to-one sentiment classification, which hidden state feeds the classifier?</div>
+  <button class="opt" data-correct>Only the final hidden state</button>
+  <button class="opt">Only the first hidden state</button>
+  <button class="opt">The initial zero hidden state</button>
+  <button class="opt">A randomly sampled hidden state</button>
+  <div class="why">h<sub>T</sub> is the only state that has seen the whole sentence. (In practice people sometimes also pool all states, but the final hidden state is the canonical answer.)</div>
+</div>
+
+<div class="quiz">
+  <div class="q">2. Why is a synced many-to-many RNN a poor fit for English → French translation?</div>
+  <button class="opt" data-correct>Output length and order differ</button>
+  <button class="opt">French needs a larger vocabulary</button>
+  <button class="opt">Hidden states cannot hold words</button>
+  <button class="opt">Shared weights forbid two languages</button>
+  <div class="why">A synced model emits output t at step t, before it has read the rest of the sentence. Translation isn't aligned that way, which is why D2L calls the inputs and outputs “variable-length unaligned sequences.”<a class="cite" href="#n2">2</a></div>
+</div>
+
+<div class="quiz">
+  <div class="q">3. In the original seq2seq model, what passes from the encoder to the decoder?</div>
+  <button class="opt" data-correct>A fixed-size context vector</button>
+  <button class="opt">The raw input tokens</button>
+  <button class="opt">The encoder's weight matrices</button>
+  <button class="opt">One vector per word</button>
+  <div class="why">The encoder's final hidden state is the context vector. “One vector per word” is what <em>attention</em> later adds to fix the bottleneck.<a class="cite" href="#n4">4</a></div>
+</div>
+
+<div class="quiz">
+  <div class="q">4. When a char-RNN generates text, where does the input for step t+1 come from?</div>
+  <button class="opt" data-correct>The character sampled at step t</button>
+  <button class="opt">The true next character from data</button>
+  <button class="opt">A fresh random character each step</button>
+  <button class="opt">The same first character every time</button>
+  <div class="why">At generation time there's no ground truth, so the model feeds its own sample back in. During <em>training</em> you feed the true characters, which is why training is synced (the drill's trap card).</div>
+</div>
+
+<div class="quiz">
+  <div class="q">5. How does a seq2seq decoder know when to stop generating?</div>
+  <button class="opt" data-correct>It emits a special &lt;eos&gt; token</button>
+  <button class="opt">It always copies the input length</button>
+  <button class="opt">Its hidden state reaches exactly zero</button>
+  <button class="opt">It stops after ten fixed steps</button>
+  <div class="why">The end-of-sequence token is part of the vocabulary. The decoder learns to predict it when the output is complete.<a class="cite" href="#n2">2</a></div>
+</div>
+<p class="quiz-score" data-quiz-score></p>
+
+<h2>Say it out loud</h2>
+
+<details class="recall"><summary>Name all five shapes with one example each.</summary>
+<div class="answer">One-to-one (image classification) · one-to-many (image captioning) · many-to-one (sentiment) · synced many-to-many (per-frame video labels / word tagging) · encoder–decoder (translation).</div></details>
+
+<details class="recall"><summary>Sketch the encoder–decoder on paper. Where's the bottleneck?</summary>
+<div class="answer">Encoder cells read x<sub>1</sub>…x<sub>n</sub>, and the final hidden state becomes context c. Decoder cells start from c, take &lt;bos&gt; then each previous output as input, and emit y<sub>1</sub>… until &lt;eos&gt;. The bottleneck is c: the whole input has to fit into one fixed-size vector.</div></details>
+
+<details class="recall"><summary>Generation is one-to-many, but training a char-RNN is synced. Why the difference?</summary>
+<div class="answer">In training you know the whole text, so at every step you feed the real character and compare the output to the real next character. That's aligned, with a loss at every step. At generation time there's no text to feed, so the model feeds its own samples back in.</div></details>
+
+<h2>Read next (≈15 min)</h2>
+<p><strong>Primary source:</strong> <em>Dive into Deep Learning</em> (D2L), <a href="https://d2l.ai/chapter_recurrent-modern/seq2seq.html">§10.7 “Sequence-to-Sequence Learning for Machine Translation”</a>. Read the introduction and the encoder and decoder subsections, and skip the code. The figures match the encoder–decoder diagram above. (§10 also introduces LSTMs, which this course covers later, so don't worry about those parts.)</p>
+<p><strong>Re-read:</strong> the five-box diagram near the top of <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">Karpathy's post</a>. You should now be able to name every box without reading its caption.</p>
+
+<div class="ask">
+<strong>Stuck or curious?</strong> Ask me, your teacher, in the terminal. Good questions to try: “Is speech recognition synced or seq2seq?” or “How would I use an RNN for stock prediction in an interview answer?” Also tell me your drill and quiz scores so I can pitch Lesson 3 (backpropagation through time) correctly.
+</div>
+
+<h2>Notes</h2>
+<ol class="notes">
+  <li id="n1">Karpathy, <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of Recurrent Neural Networks</a> (2015): the five-shape diagram and its caption, and the character-level sampling loop.</li>
+  <li id="n2">Zhang, Lipton, Li &amp; Smola, <a href="https://d2l.ai/chapter_recurrent-modern/seq2seq.html"><em>Dive into Deep Learning</em> §10.7</a>: the encoder turns “a variable-length sequence” into “a fixed-shape hidden state”; “&lt;eos&gt;” marks the end; inputs and outputs are “variable-length unaligned sequences.”</li>
+  <li id="n3">Sutskever, Vinyals &amp; Le, <a href="https://arxiv.org/abs/1409.3215">Sequence to Sequence Learning with Neural Networks</a> (2014).</li>
+  <li id="n4">Bahdanau, Cho &amp; Bengio, <a href="https://arxiv.org/abs/1409.0473">Neural Machine Translation by Jointly Learning to Align and Translate</a> (2014; ICLR 2015).</li>
+</ol>
+
+<nav class="course">
+  <a href="0001-the-hidden-state.html">← Lesson 1: The Hidden State</a>
+  <a href="../reference/rnn-core.html">Reference: RNN core cheat sheet</a>
+  <a href="0003-vanishing-gradients.html">Lesson 3: Vanishing Gradients →</a>
+</nav>
+
+</main>
+<script src="../assets/rnn-shapes.js"></script>
+<script src="../assets/drill.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

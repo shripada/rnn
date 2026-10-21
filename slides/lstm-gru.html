@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memory With a Door</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>/*!
+* reveal.js 5.1.0
+* https://revealjs.com
+* MIT licensed
+*
+* Copyright (C) 2011-2024 Hakim El Hattab, https://hakim.se
+*/.reveal .r-stretch,.reveal .stretch{max-width:none;max-height:none}.reveal pre.r-stretch code,.reveal pre.stretch code{height:100%;max-height:100%;box-sizing:border-box}.reveal .r-fit-text{display:inline-block;white-space:nowrap}.reveal .r-stack{display:grid;grid-template-rows:100%}.reveal .r-stack>*{grid-area:1/1;margin:auto}.reveal .r-hstack,.reveal .r-vstack{display:flex}.reveal .r-hstack img,.reveal .r-hstack video,.reveal .r-vstack img,.reveal .r-vstack video{min-width:0;min-height:0;object-fit:contain}.reveal .r-vstack{flex-direction:column;align-items:center;justify-content:center}.reveal .r-hstack{flex-direction:row;align-items:center;justify-content:center}.reveal .items-stretch{align-items:stretch}.reveal .items-start{align-items:flex-start}.reveal .items-center{align-items:center}.reveal .items-end{align-items:flex-end}.reveal .justify-between{justify-content:space-between}.reveal .justify-around{justify-content:space-around}.reveal .justify-start{justify-content:flex-start}.reveal .justify-center{justify-content:center}.reveal .justify-end{justify-content:flex-end}html.reveal-full-page{width:100%;height:100%;height:100vh;height:calc(var(--vh,1vh) * 100);height:100svh;overflow:hidden}.reveal-viewport{height:100%;overflow:hidden;position:relative;line-height:1;margin:0;background-color:#fff;color:#000;--r-controls-spacing:12px}.reveal-viewport:fullscreen{top:0!important;left:0!important;width:100%!important;height:100%!important;transform:none!important}.reveal .fragment{transition:all .2s ease}.reveal .fragment:not(.custom){opacity:0;visibility:hidden;will-change:opacity}.reveal .fragment.visible{opacity:1;visibility:inherit}.reveal .fragment.disabled{transition:none}.reveal .fragment.grow{opacity:1;visibility:inherit}.reveal .fragment.grow.visible{transform:scale(1.3)}.reveal .fragment.shrink{opacity:1;visibility:inherit}.reveal .fragment.shrink.visible{transform:scale(.7)}.reveal .fragment.zoom-in{transform:scale(.1)}.reveal .fragment.zoom-in.visible{transform:none}.reveal .fragment.fade-out{opacity:1;visibility:inherit}.reveal .fragment.fade-out.visible{opacity:0;visibility:hidden}.reveal .fragment.semi-fade-out{opacity:1;visibility:inherit}.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.strike{opacity:1;visibility:inherit}.reveal .fragment.strike.visible{text-decoration:line-through}.reveal .fragment.fade-up{transform:translate(0,40px)}.reveal .fragment.fade-up.visible{transform:translate(0,0)}.reveal .fragment.fade-down{transform:translate(0,-40px)}.reveal .fragment.fade-down.visible{transform:translate(0,0)}.reveal .fragment.fade-right{transform:translate(-40px,0)}.reveal .fragment.fade-right.visible{transform:translate(0,0)}.reveal .fragment.fade-left{transform:translate(40px,0)}.reveal .fragment.fade-left.visible{transform:translate(0,0)}.reveal .fragment.current-visible,.reveal .fragment.fade-in-then-out{opacity:0;visibility:hidden}.reveal .fragment.current-visible.current-fragment,.reveal .fragment.fade-in-then-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-semi-out{opacity:0;visibility:hidden}.reveal .fragment.fade-in-then-semi-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.fade-in-then-semi-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.highlight-blue,.reveal .fragment.highlight-current-blue,.reveal .fragment.highlight-current-green,.reveal .fragment.highlight-current-red,.reveal .fragment.highlight-green,.reveal .fragment.highlight-red{opacity:1;visibility:inherit}.reveal .fragment.highlight-red.visible{color:#ff2c2d}.reveal .fragment.highlight-green.visible{color:#17ff2e}.reveal .fragment.highlight-blue.visible{color:#1b91ff}.reveal .fragment.highlight-current-red.current-fragment{color:#ff2c2d}.reveal .fragment.highlight-current-green.current-fragment{color:#17ff2e}.reveal .fragment.highlight-current-blue.current-fragment{color:#1b91ff}.reveal:after{content:"";font-style:italic}.reveal iframe{z-index:1}.reveal a{position:relative}@keyframes bounce-right{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(10px)}30%{transform:translateX(-5px)}}@keyframes bounce-left{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(-10px)}30%{transform:translateX(5px)}}@keyframes bounce-down{0%,10%,25%,40%,50%{transform:translateY(0)}20%{transform:translateY(10px)}30%{transform:translateY(-5px)}}.reveal .controls{display:none;position:absolute;top:auto;bottom:var(--r-controls-spacing);right:var(--r-controls-spacing);left:auto;z-index:11;color:#000;pointer-events:none;font-size:10px}.reveal .controls button{position:absolute;padding:0;background-color:transparent;border:0;outline:0;cursor:pointer;color:currentColor;transform:scale(.9999);transition:color .2s ease,opacity .2s ease,transform .2s ease;z-index:2;pointer-events:auto;font-size:inherit;visibility:hidden;opacity:0;-webkit-appearance:none;-webkit-tap-highlight-color:transparent}.reveal .controls .controls-arrow:after,.reveal .controls .controls-arrow:before{content:"";position:absolute;top:0;left:0;width:2.6em;height:.5em;border-radius:.25em;background-color:currentColor;transition:all .15s ease,background-color .8s ease;transform-origin:.2em 50%;will-change:transform}.reveal .controls .controls-arrow{position:relative;width:3.6em;height:3.6em}.reveal .controls .controls-arrow:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal .controls .controls-arrow:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}.reveal .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(40deg)}.reveal .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-40deg)}.reveal .controls .controls-arrow:active:before{transform:translateX(.5em) translateY(1.55em) rotate(36deg)}.reveal .controls .controls-arrow:active:after{transform:translateX(.5em) translateY(1.55em) rotate(-36deg)}.reveal .controls .navigate-left{right:6.4em;bottom:3.2em;transform:translateX(-10px)}.reveal .controls .navigate-left.highlight{animation:bounce-left 2s 50 both ease-out}.reveal .controls .navigate-right{right:0;bottom:3.2em;transform:translateX(10px)}.reveal .controls .navigate-right .controls-arrow{transform:rotate(180deg)}.reveal .controls .navigate-right.highlight{animation:bounce-right 2s 50 both ease-out}.reveal .controls .navigate-up{right:3.2em;bottom:6.4em;transform:translateY(-10px)}.reveal .controls .navigate-up .controls-arrow{transform:rotate(90deg)}.reveal .controls .navigate-down{right:3.2em;bottom:-1.4em;padding-bottom:1.4em;transform:translateY(10px)}.reveal .controls .navigate-down .controls-arrow{transform:rotate(-90deg)}.reveal .controls .navigate-down.highlight{animation:bounce-down 2s 50 both ease-out}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled{opacity:.3}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled:hover{opacity:1}.reveal .controls[data-controls-back-arrows=hidden] .navigate-up.enabled{opacity:0;visibility:hidden}.reveal .controls .enabled{visibility:visible;opacity:.9;cursor:pointer;transform:none}.reveal .controls .enabled.fragmented{opacity:.5}.reveal .controls .enabled.fragmented:hover,.reveal .controls .enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled{opacity:.3}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=hidden] .navigate-left.enabled{opacity:0;visibility:hidden}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled{opacity:.3}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled:hover{opacity:1}.reveal.rtl .controls[data-controls-back-arrows=hidden] .navigate-right.enabled{opacity:0;visibility:hidden}.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-down,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-up{display:none}.reveal:not(.has-vertical-slides) .controls .navigate-left,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-left{bottom:1.4em;right:5.5em}.reveal:not(.has-vertical-slides) .controls .navigate-right,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-right{bottom:1.4em;right:.5em}.reveal:not(.has-horizontal-slides) .controls .navigate-up{right:1.4em;bottom:5em}.reveal:not(.has-horizontal-slides) .controls .navigate-down{right:1.4em;bottom:.5em}.reveal.has-dark-background .controls{color:#fff}.reveal.has-light-background .controls{color:#000}.reveal.no-hover .controls .controls-arrow:active:before,.reveal.no-hover .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal.no-hover .controls .controls-arrow:active:after,.reveal.no-hover .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}@media screen and (min-width:500px){.reveal-viewport{--r-controls-spacing:0.8em}.reveal .controls[data-controls-layout=edges]{top:0;right:0;bottom:0;left:0}.reveal .controls[data-controls-layout=edges] .navigate-down,.reveal .controls[data-controls-layout=edges] .navigate-left,.reveal .controls[data-controls-layout=edges] .navigate-right,.reveal .controls[data-controls-layout=edges] .navigate-up{bottom:auto;right:auto}.reveal .controls[data-controls-layout=edges] .navigate-left{top:50%;left:var(--r-controls-spacing);margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-right{top:50%;right:var(--r-controls-spacing);margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-up{top:var(--r-controls-spacing);left:50%;margin-left:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:calc(var(--r-controls-spacing) - 1.4em + .3em);left:50%;margin-left:-1.8em}}.reveal .progress{position:absolute;display:none;height:3px;width:100%;bottom:0;left:0;z-index:10;background-color:rgba(0,0,0,.2);color:#fff}.reveal .progress:after{content:"";display:block;position:absolute;height:10px;width:100%;top:-10px}.reveal .progress span{display:block;height:100%;width:100%;background-color:currentColor;transition:transform .8s cubic-bezier(.26,.86,.44,.985);transform-origin:0 0;transform:scaleX(0)}.reveal .slide-number{position:absolute;display:block;right:8px;bottom:8px;z-index:31;font-family:Helvetica,sans-serif;font-size:12px;line-height:1;color:#fff;background-color:rgba(0,0,0,.4);padding:5px}.reveal .slide-number a{color:currentColor}.reveal .slide-number-delimiter{margin:0 3px}.reveal{position:relative;width:100%;height:100%;overflow:hidden;touch-action:pinch-zoom}.reveal.embedded{touch-action:pan-y}.reveal.embedded.is-vertical-slide{touch-action:none}.reveal .slides{position:absolute;width:100%;height:100%;top:0;right:0;bottom:0;left:0;margin:auto;pointer-events:none;overflow:visible;z-index:1;text-align:center;perspective:600px;perspective-origin:50% 40%}.reveal .slides>section{perspective:600px}.reveal .slides>section,.reveal .slides>section>section{display:none;position:absolute;width:100%;pointer-events:auto;z-index:10;transform-style:flat;transition:transform-origin .8s cubic-bezier(.26,.86,.44,.985),transform .8s cubic-bezier(.26,.86,.44,.985),visibility .8s cubic-bezier(.26,.86,.44,.985),opacity .8s cubic-bezier(.26,.86,.44,.985)}.reveal[data-transition-speed=fast] .slides section{transition-duration:.4s}.reveal[data-transition-speed=slow] .slides section{transition-duration:1.2s}.reveal .slides section[data-transition-speed=fast]{transition-duration:.4s}.reveal .slides section[data-transition-speed=slow]{transition-duration:1.2s}.reveal .slides>section.stack{padding-top:0;padding-bottom:0;pointer-events:none;height:100%}.reveal .slides>section.present,.reveal .slides>section>section.present{display:block;z-index:11;opacity:1}.reveal .slides>section:empty,.reveal .slides>section>section:empty,.reveal .slides>section>section[data-background-interactive],.reveal .slides>section[data-background-interactive]{pointer-events:none}.reveal.center,.reveal.center .slides,.reveal.center .slides section{min-height:0!important}.reveal .slides>section:not(.present),.reveal .slides>section>section:not(.present){pointer-events:none}.reveal.overview .slides>section,.reveal.overview .slides>section>section{pointer-events:auto}.reveal .slides>section.future,.reveal .slides>section.future>section,.reveal .slides>section.past,.reveal .slides>section.past>section,.reveal .slides>section>section.future,.reveal .slides>section>section.past{opacity:0}.reveal .slides>section[data-transition=slide].past,.reveal .slides>section[data-transition~=slide-out].past,.reveal.slide .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=slide].future,.reveal .slides>section[data-transition~=slide-in].future,.reveal.slide .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=slide].past,.reveal .slides>section>section[data-transition~=slide-out].past,.reveal.slide .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=slide].future,.reveal .slides>section>section[data-transition~=slide-in].future,.reveal.slide .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides>section[data-transition=linear].past,.reveal .slides>section[data-transition~=linear-out].past,.reveal.linear .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=linear].future,.reveal .slides>section[data-transition~=linear-in].future,.reveal.linear .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=linear].past,.reveal .slides>section>section[data-transition~=linear-out].past,.reveal.linear .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=linear].future,.reveal .slides>section>section[data-transition~=linear-in].future,.reveal.linear .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides section[data-transition=default].stack,.reveal.default .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=default].past,.reveal .slides>section[data-transition~=default-out].past,.reveal.default .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=default].future,.reveal .slides>section[data-transition~=default-in].future,.reveal.default .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=default].past,.reveal .slides>section>section[data-transition~=default-out].past,.reveal.default .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=default].future,.reveal .slides>section>section[data-transition~=default-in].future,.reveal.default .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=convex].stack,.reveal.convex .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=convex].past,.reveal .slides>section[data-transition~=convex-out].past,.reveal.convex .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=convex].future,.reveal .slides>section[data-transition~=convex-in].future,.reveal.convex .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=convex].past,.reveal .slides>section>section[data-transition~=convex-out].past,.reveal.convex .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=convex].future,.reveal .slides>section>section[data-transition~=convex-in].future,.reveal.convex .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=concave].stack,.reveal.concave .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=concave].past,.reveal .slides>section[data-transition~=concave-out].past,.reveal.concave .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=concave].future,.reveal .slides>section[data-transition~=concave-in].future,.reveal.concave .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=concave].past,.reveal .slides>section>section[data-transition~=concave-out].past,.reveal.concave .slides>section>section:not([data-transition]).past{transform:translate3d(0,-80%,0) rotateX(-70deg) translate3d(0,-80%,0)}.reveal .slides>section>section[data-transition=concave].future,.reveal .slides>section>section[data-transition~=concave-in].future,.reveal.concave .slides>section>section:not([data-transition]).future{transform:translate3d(0,80%,0) rotateX(70deg) translate3d(0,80%,0)}.reveal .slides section[data-transition=zoom],.reveal.zoom .slides section:not([data-transition]){transition-timing-function:ease}.reveal .slides>section[data-transition=zoom].past,.reveal .slides>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section:not([data-transition]).past{visibility:hidden;transform:scale(16)}.reveal .slides>section[data-transition=zoom].future,.reveal .slides>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section:not([data-transition]).future{visibility:hidden;transform:scale(.2)}.reveal .slides>section>section[data-transition=zoom].past,.reveal .slides>section>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section>section:not([data-transition]).past{transform:scale(16)}.reveal .slides>section>section[data-transition=zoom].future,.reveal .slides>section>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section>section:not([data-transition]).future{transform:scale(.2)}.reveal.cube .slides{perspective:1300px}.reveal.cube .slides section{padding:30px;min-height:700px;backface-visibility:hidden;box-sizing:border-box;transform-style:preserve-3d}.reveal.center.cube .slides section{min-height:0}.reveal.cube .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);border-radius:4px;transform:translateZ(-20px)}.reveal.cube .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);transform:translateZ(-90px) rotateX(65deg)}.reveal.cube .slides>section.stack{padding:0;background:0 0}.reveal.cube .slides>section.past{transform-origin:100% 0;transform:translate3d(-100%,0,0) rotateY(-90deg)}.reveal.cube .slides>section.future{transform-origin:0 0;transform:translate3d(100%,0,0) rotateY(90deg)}.reveal.cube .slides>section>section.past{transform-origin:0 100%;transform:translate3d(0,-100%,0) rotateX(90deg)}.reveal.cube .slides>section>section.future{transform-origin:0 0;transform:translate3d(0,100%,0) rotateX(-90deg)}.reveal.page .slides{perspective-origin:0 50%;perspective:3000px}.reveal.page .slides section{padding:30px;min-height:700px;box-sizing:border-box;transform-style:preserve-3d}.reveal.page .slides section.past{z-index:12}.reveal.page .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);transform:translateZ(-20px)}.reveal.page .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);-webkit-transform:translateZ(-90px) rotateX(65deg)}.reveal.page .slides>section.stack{padding:0;background:0 0}.reveal.page .slides>section.past{transform-origin:0 0;transform:translate3d(-40%,0,0) rotateY(-80deg)}.reveal.page .slides>section.future{transform-origin:100% 0;transform:translate3d(0,0,0)}.reveal.page .slides>section>section.past{transform-origin:0 0;transform:translate3d(0,-40%,0) rotateX(80deg)}.reveal.page .slides>section>section.future{transform-origin:0 100%;transform:translate3d(0,0,0)}.reveal .slides section[data-transition=fade],.reveal.fade .slides section:not([data-transition]),.reveal.fade .slides>section>section:not([data-transition]){transform:none;transition:opacity .5s}.reveal.fade.overview .slides section,.reveal.fade.overview .slides>section>section{transition:none}.reveal .slides section[data-transition=none],.reveal.none .slides section:not([data-transition]){transform:none;transition:none}.reveal .pause-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;visibility:hidden;opacity:0;z-index:100;transition:all 1s ease}.reveal .pause-overlay .resume-button{position:absolute;bottom:20px;right:20px;color:#ccc;border-radius:2px;padding:6px 14px;border:2px solid #ccc;font-size:16px;background:0 0;cursor:pointer}.reveal .pause-overlay .resume-button:hover{color:#fff;border-color:#fff}.reveal.paused .pause-overlay{visibility:visible;opacity:1}.reveal .no-transition,.reveal .no-transition *,.reveal .slides.disable-slide-transitions section{transition:none!important}.reveal .slides.disable-slide-transitions section{transform:none!important}.reveal .backgrounds{position:absolute;width:100%;height:100%;top:0;left:0;perspective:600px}.reveal .slide-background{display:none;position:absolute;width:100%;height:100%;opacity:0;visibility:hidden;overflow:hidden;background-color:rgba(0,0,0,0);transition:all .8s cubic-bezier(.26,.86,.44,.985)}.reveal .slide-background-content{position:absolute;width:100%;height:100%;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background.stack{display:block}.reveal .slide-background.present{opacity:1;visibility:visible;z-index:2}.print-pdf .reveal .slide-background{opacity:1!important;visibility:visible!important}.reveal .slide-background video{position:absolute;width:100%;height:100%;max-width:none;max-height:none;top:0;left:0;object-fit:cover}.reveal .slide-background[data-background-size=contain] video{object-fit:contain}.reveal>.backgrounds .slide-background[data-background-transition=none],.reveal[data-background-transition=none]>.backgrounds .slide-background:not([data-background-transition]){transition:none}.reveal>.backgrounds .slide-background[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background:not([data-background-transition]){opacity:1}.reveal>.backgrounds .slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.past:not([data-background-transition]){transform:translate(-100%,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.future:not([data-background-transition]){transform:translate(100%,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){transform:translate(0,-100%)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){transform:translate(0,100%)}.reveal>.backgrounds .slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(-90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(-90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background:not([data-background-transition]){transition-timing-function:ease}.reveal>.backgrounds .slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal[data-transition-speed=fast]>.backgrounds .slide-background{transition-duration:.4s}.reveal[data-transition-speed=slow]>.backgrounds .slide-background{transition-duration:1.2s}.reveal [data-auto-animate-target^=unmatched]{will-change:opacity}.reveal section[data-auto-animate]:not(.stack):not([data-auto-animate=running]) [data-auto-animate-target^=unmatched]{opacity:0}.reveal.overview{perspective-origin:50% 50%;perspective:700px}.reveal.overview .slides{-moz-transform-style:preserve-3d}.reveal.overview .slides section{height:100%;top:0!important;opacity:1!important;overflow:hidden;visibility:visible!important;cursor:pointer;box-sizing:border-box}.reveal.overview .slides section.present,.reveal.overview .slides section:hover{outline:10px solid rgba(150,150,150,.4);outline-offset:10px}.reveal.overview .slides section .fragment{opacity:1;transition:none}.reveal.overview .slides section:after,.reveal.overview .slides section:before{display:none!important}.reveal.overview .slides>section.stack{padding:0;top:0!important;background:0 0;outline:0;overflow:visible}.reveal.overview .backgrounds{perspective:inherit;-moz-transform-style:preserve-3d}.reveal.overview .backgrounds .slide-background{opacity:1;visibility:visible;outline:10px solid rgba(150,150,150,.1);outline-offset:10px}.reveal.overview .backgrounds .slide-background.stack{overflow:visible}.reveal.overview .slides section,.reveal.overview-deactivating .slides section{transition:none}.reveal.overview .backgrounds .slide-background,.reveal.overview-deactivating .backgrounds .slide-background{transition:none}.reveal.rtl .slides,.reveal.rtl .slides h1,.reveal.rtl .slides h2,.reveal.rtl .slides h3,.reveal.rtl .slides h4,.reveal.rtl .slides h5,.reveal.rtl .slides h6{direction:rtl;font-family:sans-serif}.reveal.rtl code,.reveal.rtl pre{direction:ltr}.reveal.rtl ol,.reveal.rtl ul{text-align:right}.reveal.rtl .progress span{transform-origin:100% 0}.reveal.has-parallax-background .backgrounds{transition:all .8s ease}.reveal.has-parallax-background[data-transition-speed=fast] .backgrounds{transition-duration:.4s}.reveal.has-parallax-background[data-transition-speed=slow] .backgrounds{transition-duration:1.2s}.reveal>.overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;background:rgba(0,0,0,.95);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:all .3s ease}.reveal>.overlay .spinner{position:absolute;display:block;top:50%;left:50%;width:32px;height:32px;margin:-16px 0 0 -16px;z-index:10;background-image:url(data:image/gif;base64,R0lGODlhIAAgAPMAAJmZmf%2F%2F%2F6%2Bvr8nJybW1tcDAwOjo6Nvb26ioqKOjo7Ozs%2FLy8vz8%2FAAAAAAAAAAAACH%2FC05FVFNDQVBFMi4wAwEAAAAh%2FhpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh%2BQQJCgAAACwAAAAAIAAgAAAE5xDISWlhperN52JLhSSdRgwVo1ICQZRUsiwHpTJT4iowNS8vyW2icCF6k8HMMBkCEDskxTBDAZwuAkkqIfxIQyhBQBFvAQSDITM5VDW6XNE4KagNh6Bgwe60smQUB3d4Rz1ZBApnFASDd0hihh12BkE9kjAJVlycXIg7CQIFA6SlnJ87paqbSKiKoqusnbMdmDC2tXQlkUhziYtyWTxIfy6BE8WJt5YJvpJivxNaGmLHT0VnOgSYf0dZXS7APdpB309RnHOG5gDqXGLDaC457D1zZ%2FV%2FnmOM82XiHRLYKhKP1oZmADdEAAAh%2BQQJCgAAACwAAAAAIAAgAAAE6hDISWlZpOrNp1lGNRSdRpDUolIGw5RUYhhHukqFu8DsrEyqnWThGvAmhVlteBvojpTDDBUEIFwMFBRAmBkSgOrBFZogCASwBDEY%2FCZSg7GSE0gSCjQBMVG023xWBhklAnoEdhQEfyNqMIcKjhRsjEdnezB%2BA4k8gTwJhFuiW4dokXiloUepBAp5qaKpp6%2BHo7aWW54wl7obvEe0kRuoplCGepwSx2jJvqHEmGt6whJpGpfJCHmOoNHKaHx61WiSR92E4lbFoq%2BB6QDtuetcaBPnW6%2BO7wDHpIiK9SaVK5GgV543tzjgGcghAgAh%2BQQJCgAAACwAAAAAIAAgAAAE7hDISSkxpOrN5zFHNWRdhSiVoVLHspRUMoyUakyEe8PTPCATW9A14E0UvuAKMNAZKYUZCiBMuBakSQKG8G2FzUWox2AUtAQFcBKlVQoLgQReZhQlCIJesQXI5B0CBnUMOxMCenoCfTCEWBsJColTMANldx15BGs8B5wlCZ9Po6OJkwmRpnqkqnuSrayqfKmqpLajoiW5HJq7FL1Gr2mMMcKUMIiJgIemy7xZtJsTmsM4xHiKv5KMCXqfyUCJEonXPN2rAOIAmsfB3uPoAK%2B%2BG%2Bw48edZPK%2BM6hLJpQg484enXIdQFSS1u6UhksENEQAAIfkECQoAAAAsAAAAACAAIAAABOcQyEmpGKLqzWcZRVUQnZYg1aBSh2GUVEIQ2aQOE%2BG%2BcD4ntpWkZQj1JIiZIogDFFyHI0UxQwFugMSOFIPJftfVAEoZLBbcLEFhlQiqGp1Vd140AUklUN3eCA51C1EWMzMCezCBBmkxVIVHBWd3HHl9JQOIJSdSnJ0TDKChCwUJjoWMPaGqDKannasMo6WnM562R5YluZRwur0wpgqZE7NKUm%2BFNRPIhjBJxKZteWuIBMN4zRMIVIhffcgojwCF117i4nlLnY5ztRLsnOk%2BaV%2BoJY7V7m76PdkS4trKcdg0Zc0tTcKkRAAAIfkECQoAAAAsAAAAACAAIAAABO4QyEkpKqjqzScpRaVkXZWQEximw1BSCUEIlDohrft6cpKCk5xid5MNJTaAIkekKGQkWyKHkvhKsR7ARmitkAYDYRIbUQRQjWBwJRzChi9CRlBcY1UN4g0%2FVNB0AlcvcAYHRyZPdEQFYV8ccwR5HWxEJ02YmRMLnJ1xCYp0Y5idpQuhopmmC2KgojKasUQDk5BNAwwMOh2RtRq5uQuPZKGIJQIGwAwGf6I0JXMpC8C7kXWDBINFMxS4DKMAWVWAGYsAdNqW5uaRxkSKJOZKaU3tPOBZ4DuK2LATgJhkPJMgTwKCdFjyPHEnKxFCDhEAACH5BAkKAAAALAAAAAAgACAAAATzEMhJaVKp6s2nIkolIJ2WkBShpkVRWqqQrhLSEu9MZJKK9y1ZrqYK9WiClmvoUaF8gIQSNeF1Er4MNFn4SRSDARWroAIETg1iVwuHjYB1kYc1mwruwXKC9gmsJXliGxc%2BXiUCby9ydh1sOSdMkpMTBpaXBzsfhoc5l58Gm5yToAaZhaOUqjkDgCWNHAULCwOLaTmzswadEqggQwgHuQsHIoZCHQMMQgQGubVEcxOPFAcMDAYUA85eWARmfSRQCdcMe0zeP1AAygwLlJtPNAAL19DARdPzBOWSm1brJBi45soRAWQAAkrQIykShQ9wVhHCwCQCACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiRMDjI0Fd30%2FiI2UA5GSS5UDj2l6NoqgOgN4gksEBgYFf0FDqKgHnyZ9OX8HrgYHdHpcHQULXAS2qKpENRg7eAMLC7kTBaixUYFkKAzWAAnLC7FLVxLWDBLKCwaKTULgEwbLA4hJtOkSBNqITT3xEgfLpBtzE%2FjiuL04RGEBgwWhShRgQExHBAAh%2BQQJCgAAACwAAAAAIAAgAAAE7xDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfZiCqGk5dTESJeaOAlClzsJsqwiJwiqnFrb2nS9kmIcgEsjQydLiIlHehhpejaIjzh9eomSjZR%2BipslWIRLAgMDOR2DOqKogTB9pCUJBagDBXR6XB0EBkIIsaRsGGMMAxoDBgYHTKJiUYEGDAzHC9EACcUGkIgFzgwZ0QsSBcXHiQvOwgDdEwfFs0sDzt4S6BK4xYjkDOzn0unFeBzOBijIm1Dgmg5YFQwsCMjp1oJ8LyIAACH5BAkKAAAALAAAAAAgACAAAATwEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GGl6NoiPOH16iZKNlH6KmyWFOggHhEEvAwwMA0N9GBsEC6amhnVcEwavDAazGwIDaH1ipaYLBUTCGgQDA8NdHz0FpqgTBwsLqAbWAAnIA4FWKdMLGdYGEgraigbT0OITBcg5QwPT4xLrROZL6AuQAPUS7bxLpoWidY0JtxLHKhwwMJBTHgPKdEQAACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GAULDJCRiXo1CpGXDJOUjY%2BYip9DhToJA4RBLwMLCwVDfRgbBAaqqoZ1XBMHswsHtxtFaH1iqaoGNgAIxRpbFAgfPQSqpbgGBqUD1wBXeCYp1AYZ19JJOYgH1KwA4UBvQwXUBxPqVD9L3sbp2BNk2xvvFPJd%2BMFCN6HAAIKgNggY0KtEBAAh%2BQQJCgAAACwAAAAAIAAgAAAE6BDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfYIDMaAFdTESJeaEDAIMxYFqrOUaNW4E4ObYcCXaiBVEgULe0NJaxxtYksjh2NLkZISgDgJhHthkpU4mW6blRiYmZOlh4JWkDqILwUGBnE6TYEbCgevr0N1gH4At7gHiRpFaLNrrq8HNgAJA70AWxQIH1%2BvsYMDAzZQPC9VCNkDWUhGkuE5PxJNwiUK4UfLzOlD4WvzAHaoG9nxPi5d%2BjYUqfAhhykOFwJWiAAAIfkECQoAAAAsAAAAACAAIAAABPAQyElpUqnqzaciSoVkXVUMFaFSwlpOCcMYlErAavhOMnNLNo8KsZsMZItJEIDIFSkLGQoQTNhIsFehRww2CQLKF0tYGKYSg%2BygsZIuNqJksKgbfgIGepNo2cIUB3V1B3IvNiBYNQaDSTtfhhx0CwVPI0UJe0%2Bbm4g5VgcGoqOcnjmjqDSdnhgEoamcsZuXO1aWQy8KAwOAuTYYGwi7w5h%2BKr0SJ8MFihpNbx%2B4Erq7BYBuzsdiH1jCAzoSfl0rVirNbRXlBBlLX%2BBP0XJLAPGzTkAuAOqb0WT5AH7OcdCm5B8TgRwSRKIHQtaLCwg1RAAAOwAAAAAAAAAAAA%3D%3D);visibility:visible;opacity:.6;transition:all .3s ease}.reveal>.overlay header{position:absolute;left:0;top:0;width:100%;padding:5px;z-index:2;box-sizing:border-box}.reveal>.overlay header a{display:inline-block;width:40px;height:40px;line-height:36px;padding:0 10px;float:right;opacity:.6;box-sizing:border-box}.reveal>.overlay header a:hover{opacity:1}.reveal>.overlay header a .icon{display:inline-block;width:20px;height:20px;background-position:50% 50%;background-size:100%;background-repeat:no-repeat}.reveal>.overlay header a.close .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABkklEQVRYR8WX4VHDMAxG6wnoJrABZQPYBCaBTWAD2g1gE5gg6OOsXuxIlr40d81dfrSJ9V4c2VLK7spHuTJ/5wpM07QXuXc5X0opX2tEJcadjHuV80li/FgxTIEK/5QBCICBD6xEhSMGHgQPgBgLiYVAB1dpSqKDawxTohFw4JSEA3clzgIBPCURwE2JucBR7rhPJJv5OpJwDX+SfDjgx1wACQeJG1aChP9K/IMmdZ8DtESV1WyP3Bt4MwM6sj4NMxMYiqUWHQu4KYA/SYkIjOsm3BXYWMKFDwU2khjCQ4ELJUJ4SmClRArOCmSXGuKma0fYD5CbzHxFpCSGAhfAVSSUGDUk2BWZaff2g6GE15BsBQ9nwmpIGDiyHQddwNTMKkbZaf9fajXQca1EX44puJZUsnY0ObGmITE3GVLCbEhQUjGVt146j6oasWN+49Vph2w1pZ5EansNZqKBm1txbU57iRRcZ86RWMDdWtBJUHBHwoQPi1GV+JCbntmvok7iTX4/Up9mgyTc/FJYDTcndgH/AA5A/CHsyEkVAAAAAElFTkSuQmCC)}.reveal>.overlay header a.external .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAcElEQVRYR+2WSQoAIQwEzf8f7XiOMkUQxUPlGkM3hVmiQfQR9GYnH1SsAQlI4DiBqkCMoNb9y2e90IAEJPAcgdznU9+engMaeJ7Azh5Y1U67gAho4DqBqmB1buAf0MB1AlVBek83ZPkmJMGc1wAR+AAqod/B97TRpQAAAABJRU5ErkJggg==)}.reveal>.overlay .viewport{position:absolute;display:flex;top:50px;right:0;bottom:0;left:0}.reveal>.overlay.overlay-preview .viewport iframe{width:100%;height:100%;max-width:100%;max-height:100%;border:0;opacity:0;visibility:hidden;transition:all .3s ease}.reveal>.overlay.overlay-preview.loaded .viewport iframe{opacity:1;visibility:visible}.reveal>.overlay.overlay-preview.loaded .viewport-inner{position:absolute;z-index:-1;left:0;top:45%;width:100%;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-preview .x-frame-error{opacity:0;transition:opacity .3s ease .3s}.reveal>.overlay.overlay-preview.loaded .x-frame-error{opacity:1}.reveal>.overlay.overlay-preview.loaded .spinner{opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.overlay.overlay-help .viewport{overflow:auto;color:#fff}.reveal>.overlay.overlay-help .viewport .viewport-inner{width:600px;margin:auto;padding:20px 20px 80px 20px;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-help .viewport .viewport-inner .title{font-size:20px}.reveal>.overlay.overlay-help .viewport .viewport-inner table{border:1px solid #fff;border-collapse:collapse;font-size:16px}.reveal>.overlay.overlay-help .viewport .viewport-inner table td,.reveal>.overlay.overlay-help .viewport .viewport-inner table th{width:200px;padding:14px;border:1px solid #fff;vertical-align:middle}.reveal>.overlay.overlay-help .viewport .viewport-inner table th{padding-top:20px;padding-bottom:20px}.reveal .playback{position:absolute;left:15px;bottom:20px;z-index:30;cursor:pointer;transition:all .4s ease;-webkit-tap-highlight-color:transparent}.reveal.overview .playback{opacity:0;visibility:hidden}.reveal .hljs{min-height:100%}.reveal .hljs table{margin:initial}.reveal .hljs-ln-code,.reveal .hljs-ln-numbers{padding:0;border:0}.reveal .hljs-ln-numbers{opacity:.6;padding-right:.75em;text-align:right;vertical-align:top}.reveal .hljs.has-highlights tr:not(.highlight-line){opacity:.4}.reveal .hljs.has-highlights.fragment{transition:all .2s ease}.reveal .hljs:not(:first-child).fragment{position:absolute;top:0;left:0;width:100%;box-sizing:border-box}.reveal pre[data-auto-animate-target]{overflow:hidden}.reveal pre[data-auto-animate-target] code{height:100%}.reveal .roll{display:inline-block;line-height:1.2;overflow:hidden;vertical-align:top;perspective:400px;perspective-origin:50% 50%}.reveal .roll:hover{background:0 0;text-shadow:none}.reveal .roll span{display:block;position:relative;padding:0 2px;pointer-events:none;transition:all .4s ease;transform-origin:50% 0;transform-style:preserve-3d;backface-visibility:hidden}.reveal .roll:hover span{background:rgba(0,0,0,.5);transform:translate3d(0,0,-45px) rotateX(90deg)}.reveal .roll span:after{content:attr(data-title);display:block;position:absolute;left:0;top:0;padding:0 2px;backface-visibility:hidden;transform-origin:50% 0;transform:translate3d(0,110%,0) rotateX(-90deg)}.reveal aside.notes{display:none}.reveal .speaker-notes{display:none;position:absolute;width:33.3333333333%;height:100%;top:0;left:100%;padding:14px 18px 14px 18px;z-index:1;font-size:18px;line-height:1.4;border:1px solid rgba(0,0,0,.05);color:#222;background-color:#f5f5f5;overflow:auto;box-sizing:border-box;text-align:left;font-family:Helvetica,sans-serif;-webkit-overflow-scrolling:touch}.reveal .speaker-notes .notes-placeholder{color:#ccc;font-style:italic}.reveal .speaker-notes:focus{outline:0}.reveal .speaker-notes:before{content:"Speaker notes";display:block;margin-bottom:10px;opacity:.5}.reveal.show-notes{max-width:75%;overflow:visible}.reveal.show-notes .speaker-notes{display:block}@media screen and (min-width:1600px){.reveal .speaker-notes{font-size:20px}}@media screen and (max-width:1024px){.reveal.show-notes{border-left:0;max-width:none;max-height:70%;max-height:70vh;overflow:visible}.reveal.show-notes .speaker-notes{top:100%;left:0;width:100%;height:30vh;border:0}}@media screen and (max-width:600px){.reveal.show-notes{max-height:60%;max-height:60vh}.reveal.show-notes .speaker-notes{top:100%;height:40vh}.reveal .speaker-notes{font-size:14px}}.reveal .jump-to-slide{position:absolute;top:15px;left:15px;z-index:30;font-size:32px;-webkit-tap-highlight-color:transparent}.reveal .jump-to-slide-input{background:0 0;padding:8px;font-size:inherit;color:currentColor;border:0}.reveal .jump-to-slide-input::placeholder{color:currentColor;opacity:.5}.reveal.has-dark-background .jump-to-slide-input{color:#fff}.reveal.has-light-background .jump-to-slide-input{color:#222}.reveal .jump-to-slide-input:focus{outline:0}.zoomed .reveal *,.zoomed .reveal :after,.zoomed .reveal :before{backface-visibility:visible!important}.zoomed .reveal .controls,.zoomed .reveal .progress{opacity:0}.zoomed .reveal .roll span{background:0 0}.zoomed .reveal .roll span:after{visibility:hidden}.reveal-viewport.loading-scroll-mode{visibility:hidden}.reveal-viewport.reveal-scroll{margin:0 auto;overflow:auto;overflow-x:hidden;overflow-y:auto;z-index:1;--r-scrollbar-width:7px;--r-scrollbar-trigger-size:5px;--r-controls-spacing:8px}@media screen and (max-width:500px){.reveal-viewport.reveal-scroll{--r-scrollbar-width:3px;--r-scrollbar-trigger-size:3px}}.reveal-viewport.reveal-scroll .backgrounds,.reveal-viewport.reveal-scroll .controls,.reveal-viewport.reveal-scroll .playback,.reveal-viewport.reveal-scroll .progress,.reveal-viewport.reveal-scroll .slide-number,.reveal-viewport.reveal-scroll .speaker-notes{display:none!important}.reveal-viewport.reveal-scroll .overlay,.reveal-viewport.reveal-scroll .pause-overlay{position:fixed}.reveal-viewport.reveal-scroll .reveal{overflow:visible;touch-action:manipulation}.reveal-viewport.reveal-scroll .slides{position:static;pointer-events:initial;left:auto;top:auto;width:100%!important;margin:0;padding:0;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}.reveal-viewport.reveal-scroll .scroll-page{position:relative;width:100%;height:calc(var(--page-height) + var(--page-scroll-padding));z-index:1;overflow:visible}.reveal-viewport.reveal-scroll .scroll-page-sticky{position:sticky;height:var(--page-height);top:0}.reveal-viewport.reveal-scroll .scroll-page-content{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden}.reveal-viewport.reveal-scroll .scroll-page section{visibility:visible!important;display:block!important;position:absolute!important;width:var(--slide-width)!important;height:var(--slide-height)!important;top:50%!important;left:50%!important;opacity:1!important;transform:scale(var(--slide-scale)) translate(-50%,-50%)!important;transform-style:flat!important;transform-origin:0 0!important}.reveal-viewport.reveal-scroll .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important;visibility:visible;opacity:1;touch-action:manipulation}.reveal-viewport.reveal-scroll[data-scrollbar=auto]::-webkit-scrollbar,.reveal-viewport.reveal-scroll[data-scrollbar=true]::-webkit-scrollbar{display:none}.reveal-viewport.reveal-scroll[data-scrollbar=auto],.reveal-viewport.reveal-scroll[data-scrollbar=true]{scrollbar-width:none}.reveal-viewport.has-dark-background,.reveal.has-dark-background{--r-overlay-element-bg-color:240,240,240;--r-overlay-element-fg-color:0,0,0}.reveal-viewport.has-light-background,.reveal.has-light-background{--r-overlay-element-bg-color:0,0,0;--r-overlay-element-fg-color:240,240,240}.reveal-viewport.reveal-scroll .scrollbar{position:sticky;top:50%;z-index:20;opacity:0;transition:all .3s ease}.reveal-viewport.reveal-scroll .scrollbar.visible,.reveal-viewport.reveal-scroll .scrollbar:hover{opacity:1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-inner{position:absolute;width:var(--r-scrollbar-width);height:calc(var(--viewport-height) - var(--r-controls-spacing) * 2);right:var(--r-controls-spacing);top:0;transform:translateY(-50%);border-radius:var(--r-scrollbar-width);z-index:10}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-playhead{position:absolute;width:var(--r-scrollbar-width);height:var(--r-scrollbar-width);top:0;left:0;border-radius:var(--r-scrollbar-width);background-color:rgba(var(--r-overlay-element-bg-color),1);z-index:11;transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide{position:absolute;width:100%;background-color:rgba(var(--r-overlay-element-bg-color),.2);box-shadow:0 0 0 1px rgba(var(--r-overlay-element-fg-color),.1);border-radius:var(--r-scrollbar-width);transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide:after{content:"";position:absolute;width:200%;height:100%;top:0;left:-50%;background:rgba(0,0,0,0);z-index:-1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active,.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide:hover{background-color:rgba(var(--r-overlay-element-bg-color),.4)}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-trigger{position:absolute;width:100%;transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active.has-triggers{background-color:rgba(var(--r-overlay-element-bg-color),.4);z-index:10}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger:after{content:"";position:absolute;width:var(--r-scrollbar-trigger-size);height:var(--r-scrollbar-trigger-size);border-radius:20px;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(var(--r-overlay-element-bg-color),1);transition:transform .2s ease,opacity .2s ease;opacity:.4}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger.active:after,.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger.active~.scrollbar-trigger:after{opacity:1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger~.scrollbar-trigger.active:after{transform:translate(calc(var(--r-scrollbar-width) * -2),0);background-color:rgba(var(--r-overlay-element-bg-color),1)}html.reveal-print *{-webkit-print-color-adjust:exact}html.reveal-print{width:100%;height:100%;overflow:visible}html.reveal-print body{margin:0 auto!important;border:0;padding:0;float:none!important;overflow:visible}html.reveal-print .nestedarrow,html.reveal-print .reveal .controls,html.reveal-print .reveal .playback,html.reveal-print .reveal .progress,html.reveal-print .reveal.overview,html.reveal-print .state-background{display:none!important}html.reveal-print .reveal pre code{overflow:hidden!important}html.reveal-print .reveal{width:auto!important;height:auto!important;overflow:hidden!important}html.reveal-print .reveal .slides{position:static;width:100%!important;height:auto!important;zoom:1!important;pointer-events:initial;left:auto;top:auto;margin:0!important;padding:0!important;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}html.reveal-print .reveal .slides .pdf-page{position:relative;overflow:hidden;z-index:1;page-break-after:always}html.reveal-print .reveal .slides .pdf-page:last-of-type{page-break-after:avoid}html.reveal-print .reveal .slides section{visibility:visible!important;display:block!important;position:absolute!important;margin:0!important;padding:0!important;box-sizing:border-box!important;min-height:1px;opacity:1!important;transform-style:flat!important;transform:none!important}html.reveal-print .reveal section.stack{position:relative!important;margin:0!important;padding:0!important;page-break-after:avoid!important;height:auto!important;min-height:auto!important}html.reveal-print .reveal img{box-shadow:none}html.reveal-print .reveal .backgrounds{display:none}html.reveal-print .reveal .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important}html.reveal-print .reveal.show-notes{max-width:none;max-height:none}html.reveal-print .reveal .speaker-notes-pdf{display:block;width:100%;height:auto;max-height:none;top:auto;right:auto;bottom:auto;left:auto;z-index:100}html.reveal-print .reveal .speaker-notes-pdf[data-layout=separate-page]{position:relative;color:inherit;background-color:transparent;padding:20px;page-break-after:always;border:0}html.reveal-print .reveal .slide-number-pdf{display:block;position:absolute;font-size:14px;visibility:visible}html.reveal-print .aria-status{display:none}@media print{html:not(.print-pdf){overflow:visible;width:auto;height:auto}html:not(.print-pdf) body{margin:0;padding:0;overflow:visible}html:not(.print-pdf) .reveal{background:#fff;font-size:20pt}html:not(.print-pdf) .reveal .backgrounds,html:not(.print-pdf) .reveal .controls,html:not(.print-pdf) .reveal .progress,html:not(.print-pdf) .reveal .slide-number,html:not(.print-pdf) .reveal .state-background{display:none!important}html:not(.print-pdf) .reveal li,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal td{font-size:20pt!important;color:#000}html:not(.print-pdf) .reveal h1,html:not(.print-pdf) .reveal h2,html:not(.print-pdf) .reveal h3,html:not(.print-pdf) .reveal h4,html:not(.print-pdf) .reveal h5,html:not(.print-pdf) .reveal h6{color:#000!important;height:auto;line-height:normal;text-align:left;letter-spacing:normal}html:not(.print-pdf) .reveal h1{font-size:28pt!important}html:not(.print-pdf) .reveal h2{font-size:24pt!important}html:not(.print-pdf) .reveal h3{font-size:22pt!important}html:not(.print-pdf) .reveal h4{font-size:22pt!important;font-variant:small-caps}html:not(.print-pdf) .reveal h5{font-size:21pt!important}html:not(.print-pdf) .reveal h6{font-size:20pt!important;font-style:italic}html:not(.print-pdf) .reveal a:link,html:not(.print-pdf) .reveal a:visited{color:#000!important;font-weight:700;text-decoration:underline}html:not(.print-pdf) .reveal div,html:not(.print-pdf) .reveal ol,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal ul{visibility:visible;position:static;width:auto;height:auto;display:block;overflow:visible;margin:0;text-align:left!important}html:not(.print-pdf) .reveal pre,html:not(.print-pdf) .reveal table{margin-left:0;margin-right:0}html:not(.print-pdf) .reveal pre code{padding:20px}html:not(.print-pdf) .reveal blockquote{margin:20px 0}html:not(.print-pdf) .reveal .slides{position:static!important;width:auto!important;height:auto!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:0!important;zoom:1!important;transform:none!important;overflow:visible!important;display:block!important;text-align:left!important;perspective:none;perspective-origin:50% 50%}html:not(.print-pdf) .reveal .slides section{visibility:visible!important;position:static!important;width:auto!important;height:auto!important;display:block!important;overflow:visible!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:60px 20px!important;z-index:auto!important;opacity:1!important;page-break-after:always!important;transform-style:flat!important;transform:none!important;transition:none!important}html:not(.print-pdf) .reveal .slides section.stack{padding:0!important}html:not(.print-pdf) .reveal .slides section:last-of-type{page-break-after:avoid!important}html:not(.print-pdf) .reveal .slides section .fragment{opacity:1!important;visibility:visible!important;transform:none!important}html:not(.print-pdf) .reveal .r-fit-text{white-space:normal!important}html:not(.print-pdf) .reveal section img{display:block;margin:15px 0;background:#fff;border:1px solid #666;box-shadow:none}html:not(.print-pdf) .reveal section small{font-size:.8em}html:not(.print-pdf) .reveal .hljs{max-height:100%;white-space:pre-wrap;word-wrap:break-word;word-break:break-word;font-size:15pt}html:not(.print-pdf) .reveal .hljs .hljs-ln-numbers{white-space:nowrap}html:not(.print-pdf) .reveal .hljs td{font-size:inherit!important;color:inherit!important}}</style>
+<style>
+/* Layout: 1280×720 reveal canvas, left-aligned slides; a kicker names the part of the talk,
+   colour carries meaning (rust = memory/hidden state, blue = input, green = output), same as the course lessons. */
+:root {
+  --bg: #fffff8;
+  --fg: #1d1d1b;
+  --muted: #6b6a63;
+  --rule: #d9d6c8;
+  --panel: #f5f3e7;
+  --accent: #a3320b;   /* hidden state / memory */
+  --input: #2b5f8a;    /* inputs x_t */
+  --output: #4d7a2a;   /* outputs y_t */
+  --bad: #b3261e;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614; --fg: #e9e6da; --muted: #a29f93; --rule: #3a3933; --panel: #22211d;
+    --accent: #ef8a5f; --input: #7fb2dd; --output: #9ccc72; --bad: #f2766c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161614; --fg: #e9e6da; --muted: #a29f93; --rule: #3a3933; --panel: #22211d;
+  --accent: #ef8a5f; --input: #7fb2dd; --output: #9ccc72; --bad: #f2766c; color-scheme: dark;
+}
+html, body { height: 100%; }
+body, .reveal-viewport { background: var(--bg); color: var(--fg); }
+
+.reveal { font-family: var(--serif); font-size: 28px; line-height: 1.45; color: var(--fg); }
+.reveal .slides { text-align: left; }
+.reveal .slides > section { height: 100%; box-sizing: border-box; padding: 0; }
+.frame { height: 100%; display: flex; flex-direction: column; gap: 22px; }
+.frame.center { justify-content: center; }
+.reveal .kicker { font-family: var(--mono); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.reveal h1, .reveal h2, .reveal h3 { font-family: var(--serif); color: var(--fg); margin: 0; text-wrap: balance; }
+.reveal h1 { font-size: 84px; font-weight: 400; line-height: 1.05; letter-spacing: -.01em; }
+.reveal h2 { font-size: 50px; font-weight: 400; line-height: 1.12; }
+.reveal h3 { font-size: 26px; font-weight: 600; }
+.reveal p { margin: 0; max-width: 34em; }
+.reveal ul, .reveal ol { margin: 0; padding-left: 1.1em; display: grid; gap: 10px; }
+.reveal li { max-width: 34em; }
+.reveal em { font-style: italic; }
+.reveal strong { font-weight: 600; }
+.reveal code, .mono { font-family: var(--mono); font-size: .8em; }
+.lede { font-size: 32px; color: var(--muted); font-style: italic; }
+.small { font-size: 22px; color: var(--muted); }
+.h { color: var(--accent); font-weight: 600; }
+.x { color: var(--input); font-weight: 600; }
+.y { color: var(--output); font-weight: 600; }
+.grow { flex: 1; min-height: 0; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.cols > *, .cols3 > * { min-width: 0; }
+.panel { background: var(--panel); border-radius: 10px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+.rule-top { border-top: 1px solid var(--rule); padding-top: 18px; }
+.callout { border-left: 4px solid var(--accent); padding: 4px 0 4px 20px; font-size: 30px; }
+.eq { font-family: var(--mono); font-size: 26px; background: var(--panel); padding: 14px 20px; border-radius: 8px; display: inline-block; }
+.big-num { font-family: var(--mono); font-size: 64px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* Shared SVG vocabulary */
+svg text { font-family: var(--serif); }
+.s-h { stroke: var(--accent); } .s-x { stroke: var(--input); } .s-y { stroke: var(--output); } .s-m { stroke: var(--muted); } .s-bad { stroke: var(--bad); }
+.f-h { fill: var(--accent); } .f-x { fill: var(--input); } .f-y { fill: var(--output); } .f-m { fill: var(--muted); } .f-fg { fill: var(--fg); } .f-bad { fill: var(--bad); }
+.f-panel { fill: var(--panel); } .f-bg { fill: var(--bg); }
+.mono-t { font-family: var(--mono) !important; }
+
+/* Title strip: R O M E -> O */
+.strip { display: flex; align-items: center; gap: 10px; font-family: var(--mono); }
+.strip .c { width: 64px; height: 64px; border: 2px solid var(--input); color: var(--input); border-radius: 8px; display: grid; place-items: center; font-size: 34px; font-weight: 600; }
+.strip .arr { color: var(--accent); font-size: 26px; }
+.strip .c.out { border-color: var(--output); color: var(--output); border-style: dashed; }
+
+/* Word chips & vector strips */
+.chips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.chip { font-family: var(--mono); font-size: 24px; padding: 6px 14px; border: 1.5px solid var(--input); color: var(--input); border-radius: 6px; }
+.vec { display: inline-grid; grid-template-columns: repeat(8, 22px); gap: 3px; vertical-align: middle; }
+.vec i { height: 22px; border-radius: 3px; display: block; }
+.avg-row { display: grid; grid-template-columns: 420px 70px auto; align-items: center; gap: 16px; }
+
+/* Bars (predict + results) */
+.bars { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 48px 1fr 72px; align-items: center; gap: 12px; font-variant-numeric: tabular-nums; }
+.bar-row .ch { font-family: var(--mono); font-size: 26px; font-weight: 600; text-align: center; background: var(--panel); border-radius: 6px; }
+.bar-row .track { height: 22px; background: var(--panel); border-radius: 4px; overflow: hidden; }
+.bar-row .fill { display: block; height: 100%; border-radius: 4px; transition: width .25s; }
+.bar-row .pct { font-family: var(--mono); font-size: 20px; text-align: right; }
+.rnn .fill { background: var(--accent); } .base .fill { background: var(--muted); }
+.result-row { display: grid; grid-template-columns: 330px 1fr 110px; gap: 18px; align-items: center; }
+.result-row .track { height: 40px; background: var(--panel); border-radius: 6px; overflow: hidden; }
+.result-row .fill { display: block; height: 100%; }
+.result-row .pct { font-family: var(--mono); font-size: 30px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Controls */
+.reveal input[type=text], .reveal textarea {
+  font-family: var(--mono); font-size: 28px; color: var(--fg); background: var(--panel);
+  border: 1.5px solid var(--rule); border-radius: 8px; padding: 10px 14px; width: 100%; box-sizing: border-box; resize: none;
+}
+.reveal input[type=text]:focus, .reveal textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.reveal input[type=range] { width: 100%; accent-color: var(--accent); }
+.reveal button {
+  font-family: var(--serif); font-size: 22px; color: var(--fg); background: var(--panel);
+  border: 1.5px solid var(--rule); border-radius: 999px; padding: 6px 16px; cursor: pointer;
+}
+.reveal button:hover { border-color: var(--accent); }
+.reveal button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.reveal button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.reveal button[aria-pressed=true] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.ctl-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.label { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.gen-out { font-family: var(--mono); font-size: 20px; line-height: 1.4; white-space: pre-wrap; background: var(--panel); border-radius: 8px; padding: 16px 20px; margin: 0; overflow: auto; height: 100%; box-sizing: border-box; }
+.gen-out .p { color: var(--input); font-weight: 600; }
+.side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-height: 0; }
+.side-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
+.side .gen-out { font-size: 17px; flex: 1; min-height: 0; height: auto; }
+.sample { font-size: 22px; height: auto; align-self: start; }
+.inv { text-decoration: underline wavy var(--bad); text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+.nm { color: var(--accent); font-weight: 600; }
+.pu { color: var(--output); font-weight: 600; }
+.learned { font-size: 24px; gap: 14px !important; align-content: start; }
+.warn { color: var(--bad); font-size: 22px; min-height: 1.4em; }
+
+/* Fade dots */
+.dots { display: flex; align-items: center; gap: 18px; height: 80px; }
+.dots span { display: block; border-radius: 50%; background: var(--accent); }
+
+table.plain { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 26px; }
+table.plain th, table.plain td { padding: 8px 22px 8px 0; text-align: left; border-bottom: 1px solid var(--rule); }
+table.plain th { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+table.plain td.n { font-family: var(--mono); }
+
+pre.cmd { font-family: var(--mono); font-size: 22px; line-height: 1.6; background: var(--panel); border-radius: 8px; padding: 18px 22px; margin: 0; white-space: pre; overflow-x: auto; box-shadow: none; width: auto; }
+pre.cmd .c { color: var(--muted); }
+
+.reveal .controls { color: var(--accent); }
+.reveal .progress { color: var(--accent); }
+.reveal .slide-number { background: transparent; color: var(--muted); font-family: var(--mono); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .bar-row .fill { transition: none; } }
+
+
+/* ---- Part 2 additions (gated cells) ---- */
+.word-gap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 30px; }
+.word-gap .chip.far { border-color: var(--accent); color: var(--accent); }
+.word-gap .chip.out { border-color: var(--output); color: var(--output); border-style: dashed; }
+.word-gap .dots-txt { color: var(--muted); font-style: italic; font-size: 24px; }
+
+/* gate grid (slide 10) */
+.gates { display: grid; grid-template-columns: 170px repeat(8, 1fr); gap: 6px; font-family: var(--mono); font-size: 20px; align-items: stretch; }
+.gates .lab { font-family: var(--serif); font-size: 22px; display: flex; align-items: center; }
+.gates .lab.h { color: var(--accent); } .gates .lab.x { color: var(--input); }
+.gates .hd { text-align: center; color: var(--muted); font-size: 16px; }
+.gates .inp { text-align: center; padding: 8px 0; border-radius: 6px; color: var(--input); border: 1.5px solid var(--rule); }
+.gates .inp.on { border-color: var(--input); font-weight: 600; }
+.reveal .gates button.g { font-family: var(--mono); font-size: 20px; padding: 8px 0; border-radius: 6px; border: 1.5px solid var(--accent); }
+.gates .out { text-align: center; padding: 8px 0; border-radius: 6px; border: 1.5px solid var(--rule);
+  background: linear-gradient(to top, color-mix(in srgb, var(--accent) 40%, transparent) var(--fill, 0%), var(--bg) var(--fill, 0%)); }
+.chal { display: grid; gap: 8px; font-size: 22px; }
+.chal div { display: flex; gap: 12px; align-items: baseline; }
+.chal .tk { font-family: var(--mono); color: var(--muted); width: 1.2em; flex: none; }
+.chal .done { color: var(--muted); } .chal .done .tk { color: var(--output); }
+
+/* valve + mix bars (slides 6, 14) */
+.meter { display: grid; grid-template-columns: 200px 1fr 90px; gap: 16px; align-items: center; font-size: 24px; }
+.meter .track { height: 36px; background: var(--panel); border-radius: 6px; overflow: hidden; display: flex; }
+.meter .fill { display: block; height: 100%; transition: width .15s; }
+.meter .v { font-family: var(--mono); font-size: 24px; text-align: right; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .meter .fill { transition: none; } }
+
+/* blame race (slide 12) */
+.race { display: grid; grid-template-columns: 260px repeat(4, 1fr); gap: 6px 16px; align-items: center; font-size: 24px; }
+.race .hd { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.race .cell { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; }
+.race .dot { border-radius: 50%; flex: none; }
+
+/* inside a gate (slide 8) */
+.flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 22px; }
+.flow .chip { font-size: 21px; }
+.flow .chip.hh { border-color: var(--accent); color: var(--accent); }
+.flow .box { padding: 6px 14px; border-radius: 6px; background: var(--panel); }
+.flow .box.dial-out { border: 1.5px solid var(--accent); color: var(--accent); font-weight: 600; }
+.flow .arr { color: var(--muted); }
+
+/* step-by-step equations (slides 9, 15) */
+.steps { display: grid; grid-template-columns: 44px 1fr 1.3fr; gap: 14px 22px; align-items: center; }
+.steps .n { font-family: var(--mono); font-size: 20px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); display: grid; place-items: center; }
+.steps .w { font-size: 23px; }
+.steps .e { font-family: var(--mono); font-size: 19px; line-height: 1.6; background: var(--panel); padding: 8px 14px; border-radius: 8px; }
+.steps .e.key { box-shadow: inset 0 0 0 2px var(--accent); }
+.steps .e .h, .steps .e .x { font-weight: 400; }
+
+/* France trace (slide 11) */
+table.trace { font-size: 22px; }
+table.trace td { vertical-align: middle; }
+table.trace td.ph { font-size: 20px; font-style: italic; }
+.dial { display: inline-block; min-width: 2.2em; text-align: center; font-family: var(--mono); font-size: 20px; border-radius: 6px; padding: 3px 8px; }
+.dial.on { background: var(--accent); color: var(--bg); font-weight: 600; }
+.dial.off { background: var(--panel); color: var(--muted); }
+</style>
+</head>
+<body style="margin:0">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-h"/></marker>
+    <marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-x"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-bad"/></marker>
+  </defs>
+</svg>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">Recurrent Neural Networks · Part 2</p>
+    <h1>Memory with a door</h1>
+    <p class="lede">How LSTMs and GRUs hold on to a memory for hundreds of steps.</p>
+    <div class="word-gap" style="margin-top:20px">
+      <span class="chip far">France</span><span class="h">→</span>
+      <span class="dots-txt">… forty words later …</span><span class="h">→</span>
+      <span class="chip out">French</span>
+    </div>
+  </div>
+  <aside class="notes">Welcome back. Last time ended on a problem: plain RNNs forget the far past. Today: two cells designed to fix that, the LSTM and the GRU. The strip is the kind of link we want: a clue from forty words ago deciding the next word.</aside>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Last time</p>
+    <h2>Plain RNNs forget the far past</h2>
+    <div class="cols grow" style="grid-template-columns: 1.1fr 1fr; align-items:center">
+      <ol style="font-size:28px">
+        <li>An RNN reads <strong>one step at a time</strong> and keeps a running <span class="h">memory</span>.</li>
+        <li>It uses the <strong>same weights at every step</strong>.</li>
+        <li>It learns by passing <strong>blame backwards through time</strong>, and that blame <strong>fades</strong> over long distances.</li>
+      </ol>
+      <div class="panel">
+        <span class="label">Blame, × 0.5 each step back</span>
+        <div class="dots" id="dots" aria-label="Dots shrinking by half each step"></div>
+        <p class="small">After 10 steps: about 0.001 of the blame is left. After 20: about one millionth.</p>
+      </div>
+    </div>
+    <p class="callout">Today: two cells built to fix this. The <strong>LSTM</strong> (1997) and the <strong>GRU</strong> (2014).</p>
+  </div>
+  <aside class="notes">Quick recap, ask the room for the three sentences before revealing. The key one is the third: blame fades as it travels back. We fixed exploding blame with clipping. Fading blame needs a new design, which is today.</aside>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Why it matters</p>
+    <h2>Some clues are a long way back</h2>
+    <div class="panel" style="font-size:32px;line-height:1.6">
+      <p>I grew up in <span class="x">France</span>. My parents moved to London when I was twelve, and I went to school there, played football every weekend and worked in a café for years, so these days I'm most comfortable in English, but I still speak fluent <span class="y">______</span>.</p>
+    </div>
+    <ul>
+      <li>The word that decides the blank is <strong>about 40 words back</strong>.</li>
+      <li>To learn that link, the blame for a wrong guess at the blank has to reach <span class="x">France</span>.</li>
+      <li>In a plain RNN it arrives as almost nothing, so the network never learns to remember it.</li>
+    </ul>
+  </div>
+  <aside class="notes">Ask: what's the blank? Everyone says French, because they kept "France" in mind across a long, distracting passage. That's a long-range dependency. Programming languages have the same thing: a bracket opened 50 lines earlier.</aside>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The root cause</p>
+    <h2>Every step rewrites the whole memory</h2>
+    <svg viewBox="0 0 1180 230" role="img" aria-label="Five steps; the memory passes through a mix-and-squash box at each one and fades" style="width:100%">
+      <g id="rewrite"></g>
+    </svg>
+    <ul>
+      <li>At every step, the plain RNN <strong>mixes</strong> the old memory with the new input and <strong>squashes</strong> the result.</li>
+      <li>That happens even when the input is just a space.</li>
+      <li>Blame travelling back goes through the same mixing and squashing at every step, so it shrinks every step too.</li>
+    </ul>
+  </div>
+  <aside class="notes">The fade is built in: same weights, same squash, every step, with no way to say "nothing happened, leave the memory alone". That missing ability is exactly what the LSTM adds.</aside>
+</section>
+
+<!-- 4b -->
+<section>
+  <div class="frame center">
+    <p class="kicker">A little history</p>
+    <h2>The LSTM: Hochreiter and Schmidhuber, 1997</h2>
+    <table class="plain" style="font-size:26px">
+      <tr><td class="n">1991</td><td>Sepp Hochreiter's thesis (Munich) shows why blame fades in plain RNNs: the problem from Part 1.</td></tr>
+      <tr><td class="n">1997</td><td>Hochreiter and Jürgen Schmidhuber publish the fix: <strong>Long Short-Term Memory</strong>.</td></tr>
+      <tr><td class="n">2000</td><td>Felix Gers, Schmidhuber and Fred Cummins add the <strong>forget gate</strong>.</td></tr>
+      <tr><td class="n">2010s</td><td>LSTMs power speech recognition and machine translation, including Google Translate.</td></tr>
+    </table>
+  </div>
+  <aside class="notes">The same person who diagnosed the fading-blame problem designed the fix six years later. The name: a short-term memory (the hidden state) that can last a long time.</aside>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The LSTM's idea</p>
+    <h2>Add a second memory that is left alone</h2>
+    <svg viewBox="0 0 1180 230" role="img" aria-label="A conveyor belt runs straight through five steps; at each step something can be erased from it or added to it" style="width:100%">
+      <g id="belt"></g>
+    </svg>
+    <div class="cols">
+      <ul>
+        <li>A new memory, the <span class="h">cell state</span>, runs straight through every step.</li>
+        <li>Each step can only do two things to it: <strong>erase</strong> some of it, or <strong>add</strong> something.</li>
+      </ul>
+      <div>
+        <p class="callout">“The cell state is kind of like a conveyor belt.”</p>
+        <p class="small" style="margin-top:8px">Christopher Olah, “Understanding LSTM Networks” (2015)</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Long Short-Term Memory, Hochreiter and Schmidhuber, 1997. The belt is not mixed with weights or squashed at every step. If a step decides nothing needs to change, the memory goes through exactly as it was. The old hidden state still exists, as the cell's output: we'll see that next.</aside>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Try it · gates</p>
+    <h2>Gates: learned dials from 0 to 1</h2>
+    <p>A gate multiplies a signal by a number between 0 and 1.</p>
+    <div class="panel" style="gap:18px">
+      <div class="meter"><span>signal in</span><span class="track"><span class="fill" style="width:80%;background:var(--input)"></span></span><span class="v">0.80</span></div>
+      <div class="meter"><label class="label" for="valve" style="font-size:18px">gate</label><input id="valve" type="range" min="0" max="1" step="0.05" value="0.5"><span class="v" id="valve-v">0.50</span></div>
+      <div class="meter"><span>signal out</span><span class="track"><span class="fill" id="valve-out" style="background:var(--accent)"></span></span><span class="v" id="valve-o"></span></div>
+      <p class="small" id="valve-msg"></p>
+    </div>
+    <p>Each gate is a <strong>tiny network</strong> that looks at the current letter and the memory, and sets its own dial. The dial settings are <strong>learned</strong> from data, like every other weight.</p>
+  </div>
+  <aside class="notes">Drag to 0: nothing gets through. Drag to 1: everything gets through. The important part is that the network learns when to open and close each gate, based on what it is reading. Olah: "A value of zero means let nothing through, while a value of one means let everything through."</aside>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The LSTM cell</p>
+    <h2>Three gates around the belt</h2>
+    <div class="cols grow" style="grid-template-columns: 1.35fr 1fr; align-items:center; gap:40px">
+      <svg viewBox="0 0 640 290" role="img" aria-label="LSTM cell: the belt runs along the top. The forget gate multiplies it, the input gate times the candidate is added to it, and the output gate multiplies tanh of the belt to give the output.">
+        <rect x="70" y="22" width="540" height="228" rx="14" fill="none" class="s-m" stroke-width="1.5" opacity=".5"/>
+        <line x1="10" y1="50" x2="186" y2="50" class="s-h" stroke-width="5"/>
+        <line x1="214" y1="50" x2="341" y2="50" class="s-h" stroke-width="5"/>
+        <line x1="369" y1="50" x2="618" y2="50" class="s-h" stroke-width="5" marker-end="url(#ah)"/>
+        <text x="14" y="16" class="f-h" font-size="18" font-style="italic">belt c<tspan font-size="13" dy="4">t−1</tspan></text>
+        <text x="636" y="16" text-anchor="end" class="f-h" font-size="18" font-style="italic">belt c<tspan font-size="13" dy="4">t</tspan></text>
+        <circle cx="200" cy="50" r="15" class="f-bg s-h" stroke-width="2.5"/><text x="200" y="57" text-anchor="middle" class="f-h" font-size="20">×</text>
+        <circle cx="355" cy="50" r="15" class="f-bg s-h" stroke-width="2.5"/><text x="355" y="58" text-anchor="middle" class="f-h" font-size="22">+</text>
+        <line x1="10" y1="230" x2="500" y2="230" class="s-h" stroke-width="2"/>
+        <text x="14" y="221" class="f-h" font-size="16" font-style="italic">old output h<tspan font-size="12" dy="4">t−1</tspan></text>
+        <line x1="110" y1="285" x2="110" y2="233" class="s-x" stroke-width="2" marker-end="url(#ax)"/>
+        <text x="120" y="282" class="f-x" font-size="16" font-style="italic">letter x<tspan font-size="12" dy="4">t</tspan></text>
+        <!-- forget gate -->
+        <line x1="200" y1="230" x2="200" y2="170" class="s-h" stroke-width="1.8"/>
+        <rect x="154" y="120" width="92" height="50" rx="6" class="f-panel s-h" stroke-width="2"/>
+        <text x="200" y="141" text-anchor="middle" class="f-h" font-size="16" font-weight="600">forget</text>
+        <text x="200" y="160" text-anchor="middle" class="f-m mono-t" font-size="13">σ → f<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="200" y1="120" x2="200" y2="68" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <!-- input gate -->
+        <line x1="305" y1="230" x2="305" y2="170" class="s-h" stroke-width="1.8"/>
+        <rect x="259" y="120" width="92" height="50" rx="6" class="f-panel s-h" stroke-width="2"/>
+        <text x="305" y="141" text-anchor="middle" class="f-h" font-size="16" font-weight="600">input</text>
+        <text x="305" y="160" text-anchor="middle" class="f-m mono-t" font-size="13">σ → i<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="305" y1="120" x2="343" y2="104" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <!-- candidate -->
+        <line x1="405" y1="230" x2="405" y2="170" class="s-h" stroke-width="1.8"/>
+        <rect x="359" y="120" width="92" height="50" rx="6" class="f-panel s-x" stroke-width="2"/>
+        <text x="405" y="141" text-anchor="middle" class="f-x" font-size="16" font-weight="600">candidate</text>
+        <text x="405" y="160" text-anchor="middle" class="f-m mono-t" font-size="13">tanh → c̃<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="405" y1="120" x2="367" y2="104" class="s-x" stroke-width="1.8" marker-end="url(#ax)"/>
+        <circle cx="355" cy="95" r="13" class="f-bg s-h" stroke-width="2.5"/><text x="355" y="101" text-anchor="middle" class="f-h" font-size="18">×</text>
+        <line x1="355" y1="82" x2="355" y2="67" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <!-- output gate -->
+        <line x1="500" y1="230" x2="500" y2="208" class="s-h" stroke-width="1.8"/>
+        <rect x="454" y="158" width="92" height="50" rx="6" class="f-panel s-h" stroke-width="2"/>
+        <text x="500" y="179" text-anchor="middle" class="f-h" font-size="16" font-weight="600">output</text>
+        <text x="500" y="198" text-anchor="middle" class="f-m mono-t" font-size="13">σ → o<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="546" y1="183" x2="573" y2="183" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <line x1="590" y1="50" x2="590" y2="166" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <text x="597" y="112" class="f-m mono-t" font-size="13">tanh</text>
+        <circle cx="590" cy="183" r="15" class="f-bg s-h" stroke-width="2.5"/><text x="590" y="190" text-anchor="middle" class="f-h" font-size="20">×</text>
+        <polyline points="590,198 590,268 636,268" fill="none" class="s-h" stroke-width="2.5" marker-end="url(#ah)"/>
+        <text x="540" y="284" class="f-y" font-size="16" font-style="italic">output h<tspan font-size="12" dy="4">t</tspan></text>
+      </svg>
+      <div style="display:grid;gap:14px;font-size:24px">
+        <p><strong class="h">Forget gate f<sub>t</sub></strong> (keep?): how much of the old belt to keep. 1 = keep it all, 0 = wipe it.</p>
+        <p><strong class="h">Input gate i<sub>t</sub></strong> (write?): how much of the candidate to add to the belt.</p>
+        <p><strong class="x">Candidate c̃<sub>t</sub></strong> (new info): what could be written. Not a gate.</p>
+        <p><strong class="h">Output gate o<sub>t</sub></strong> (show?): how much of the belt to show as the output right now.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Walk the picture left to right. The belt only ever meets a multiply (keep) and an add (write). The output is a filtered view of the belt, so the cell can know something without saying it yet. The original 1997 LSTM had no forget gate; Gers and colleagues added it in 2000 so the cell could reset itself. The next two slides open the boxes: what a gate is made of, then the full step as equations.</aside>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The LSTM cell · inside a gate</p>
+    <h2>Every gate is a tiny network</h2>
+    <div class="flow">
+      <span class="chip hh">old output h<sub>t−1</sub></span><span class="arr">+</span>
+      <span class="chip">letter x<sub>t</sub></span><span class="arr">→</span>
+      <span class="box">its own weights + bias</span><span class="arr">→</span>
+      <span class="box">squash</span><span class="arr">→</span>
+      <span class="box dial-out">one dial per memory slot</span>
+    </div>
+    <div class="cols grow" style="grid-template-columns: 1.15fr 1fr; align-items:center; gap:40px">
+      <ul style="font-size:23px">
+        <li>All four boxes in the cell read the <strong>same two things</strong>: the cell's last output and the current letter.</li>
+        <li>Each box has its <strong>own weights</strong>, so each learns to react to different things. The write gate might learn to open on a capital letter; the keep gate might learn to close at a full stop.</li>
+        <li>The memory is a list of numbers (256 in our demo), and a gate sets <strong>one dial per number</strong>. It can keep one slot and wipe the slot next to it.</li>
+        <li>Gates squash with the <strong class="h">sigmoid</strong>, which outputs 0 to 1, like a dial. The new-info box uses <strong class="x">tanh</strong>, which outputs −1 to 1, because new info has to be able to push a slot down as well as up.</li>
+      </ul>
+      <div class="panel">
+        <span class="label">The two squashes</span>
+        <svg viewBox="0 0 520 250" role="img" aria-label="Sigmoid curve from 0 to 1, used by gates; tanh curve from minus 1 to 1, used by new info" style="width:100%">
+          <g id="curves"></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">A gate is the same shape as a plain RNN layer: weights times (old output, input), plus a bias, then a squash. The only difference is the squash. Sigmoid lands between 0 and 1, which is exactly what a dial needs: 0 lets nothing through, 1 lets everything through. The new-info box is content, not a dial, so it uses tanh and can be negative. Interview question to expect: "why sigmoid for gates and tanh for the candidate?" Gates work slot by slot: the forget gate is a whole list of dials, one for each number on the belt.</aside>
+</section>
+
+<!-- 9 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The LSTM cell · one full step</p>
+    <h2>One LSTM step, in four moves</h2>
+    <div class="steps">
+      <span class="n">1</span>
+      <div class="w"><strong>Keep?</strong> The forget gate decides how much of each belt slot to keep.</div>
+      <div class="e">f<sub>t</sub> = σ(W<sub>f</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>f</sub>)</div>
+      <span class="n">2</span>
+      <div class="w"><strong>Write?</strong> Draft some new info, and let the input gate decide how much of it to write.</div>
+      <div class="e">i<sub>t</sub> = σ(W<sub>i</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>i</sub>)<br>c̃<sub>t</sub> = tanh(W<sub>c</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>c</sub>)</div>
+      <span class="n">3</span>
+      <div class="w"><strong>Update the belt.</strong> Erase, then add.</div>
+      <div class="e key"><span class="h">c<sub>t</sub></span> = f<sub>t</sub> ⊙ <span class="h">c<sub>t−1</sub></span> + i<sub>t</sub> ⊙ c̃<sub>t</sub></div>
+      <span class="n">4</span>
+      <div class="w"><strong>Show?</strong> The output gate picks how much of the belt to show as this step's output.</div>
+      <div class="e">o<sub>t</sub> = σ(W<sub>o</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>o</sub>)<br><span class="y">h<sub>t</sub></span> = o<sub>t</sub> ⊙ tanh(<span class="h">c<sub>t</sub></span>)</div>
+    </div>
+    <p class="small rule-top">[h, x] means the two lists joined into one. ⊙ means multiply slot by slot. There are four weight matrices instead of one, which is why the LSTM is about 4× the size of a plain RNN.</p>
+  </div>
+  <aside class="notes">This is the slide to be able to write on a whiteboard. Read it as a story: keep, write, update, show. Point at move 3: the belt only meets a slot-by-slot multiply and an add. No weight matrix and no squash, which is why blame survives along it (right after the worked example). The output h_t goes two places: to the prediction, and back into all four boxes at the next step. Notation follows Dive into Deep Learning (D2L) §10.1 and Olah.</aside>
+</section>
+
+<!-- 10 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Try it · be the gates</p>
+    <h2>You are the gates</h2>
+    <p class="small">A one-number LSTM over 8 steps. Click a gate to cycle it 0 → ½ → 1. Something worth remembering arrives at step 1, and a distraction at step 4.</p>
+    <div class="gates" id="gates"></div>
+    <div class="cols" style="grid-template-columns: 1.4fr 1fr; align-items:start">
+      <div class="chal" id="chal">
+        <div data-c="hold"><span class="tk">○</span><span><strong>Hold it.</strong> Keep the belt at exactly 1 all the way to step 8.</span></div>
+        <div data-c="forget"><span class="tk">○</span><span><strong>Forget on cue.</strong> Hold it through step 5, then wipe it to 0 from step 6.</span></div>
+        <div data-c="secret"><span class="tk">○</span><span><strong>Keep a secret.</strong> Show 0 for steps 1–7, then show 1 at step 8.</span></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:flex-end"><button id="gates-reset">Reset</button></div>
+    </div>
+  </div>
+  <aside class="notes">Simplified so the arithmetic is visible: belt = keep × old belt + write × input, output = show × belt. In a real LSTM the gates set themselves from the input; here the audience plays that role. Hold it: write at step 1, keep = 1 after that, and don't write at step 4. Forget: keep = 0 at step 6. Secret: show = 0 until step 8. A plain RNN can't do any of these: its memory fades whatever you do.</aside>
+</section>
+
+<!-- 11 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Worked example</p>
+    <h2>Following “France” through the gates</h2>
+    <p class="small">One memory slot, in an ideal trained LSTM. Here is what its three dials should do as it reads the sentence from slide 3.</p>
+    <table class="plain trace">
+      <tr><th>reading…</th><th>keep</th><th>write</th><th>show</th><th>what happens</th></tr>
+      <tr><td class="ph">“I grew up in <span class="x">France</span>.”</td><td><span class="dial on">1</span></td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><strong>Store it.</strong> The slot now holds “France”.</td></tr>
+      <tr><td class="ph">“My parents moved … a café for years,”</td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><span class="dial off">0</span></td><td><strong>Hold it</strong> for about 35 words, saying nothing.</td></tr>
+      <tr><td class="ph">“most comfortable in <span class="x">English</span>,”</td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><span class="dial off">0</span></td><td><strong>Ignore the bait.</strong> Another language, but this slot doesn't take it.</td></tr>
+      <tr><td class="ph">“but I still speak fluent <span class="y">___</span>”</td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><span class="dial on">1</span></td><td><strong>Show it now.</strong> The output carries “France”, so the guess is <span class="y">French</span>.</td></tr>
+    </table>
+    <p class="callout">A plain RNN would have to carry “France” through 40 rounds of mix-and-squash. The LSTM only needs one dial to stay at 1.</p>
+  </div>
+  <aside class="notes">This is "you are the gates" applied to the real sentence. Stress that it's idealised: real dials are fuzzy (0.97, not 1), and the job is spread across many slots. Training finds these settings because the blame for a wrong guess at the blank can now travel back to "France" along the belt while keep stays near 1. That's the next slide. Ask: which dial would you get wrong if you let the "English" phrase in? (write.) What if the cell had no show gate? (It would have to push "France" into every output for 40 words. That's exactly the GRU's situation.)</aside>
+</section>
+
+<!-- 12 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Why it works</p>
+    <h2>On the belt, blame is only multiplied by the keep gate</h2>
+    <p>Going back one step along the belt, the blame is multiplied by the <strong>forget gate</strong>. No weights, no squashing.</p>
+    <div class="panel" style="gap:16px">
+      <div class="meter" style="grid-template-columns: 260px 1fr 90px"><label class="label" for="keep" style="font-size:18px">LSTM keep gate</label><input id="keep" type="range" min="0.5" max="1" step="0.005" value="0.98"><span class="v" id="keep-v">0.980</span></div>
+      <div class="race" id="race"></div>
+    </div>
+    <p class="callout">A plain RNN can't hold its multiplier at 1: the same weights and squashing apply every step. A gate can sit at 1 whenever the network wants to remember.</p>
+  </div>
+  <aside class="notes">The maths is the same "multiply by the same number again and again". The difference is which numbers are reachable. For the plain RNN the multiplier is set by its weights and the squash, and in practice it's well below 1 (0.6 here). For the LSTM it's a gate value, and "keep everything" is a normal thing for a gate to output. Drag it to 0.5 to show that a closed gate forgets on purpose.</aside>
+</section>
+
+<!-- 13 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Demo · measured</p>
+    <h2>How much blame really reaches far back?</h2>
+    <p class="small">Our Shakespeare demo, trained both ways. We put a mistake at the last letter and measured how much blame reaches each earlier step.</p>
+    <table class="plain" style="margin-top:6px">
+      <tr><th>steps back</th><th>plain RNN</th><th>LSTM</th><th>LSTM gets</th></tr>
+      <tr><td>10</td><td class="n">0.00083</td><td class="n">0.0017</td><td class="n h">2× more</td></tr>
+      <tr><td>40</td><td class="n">0.000011</td><td class="n">0.00028</td><td class="n h">25× more</td></tr>
+      <tr><td>99</td><td class="n">0.0000000023</td><td class="n">0.0000027</td><td class="n h">1,000× more</td></tr>
+    </table>
+    <p class="callout">One surprise: <strong>before training</strong>, the LSTM was no better. Its gates start out half open. It has to <em>learn</em> to hold the keep gate open.</p>
+  </div>
+  <aside class="notes">Real numbers from "train --details" (hidden size 256, 2000 rounds). The further back, the bigger the LSTM's advantage. The untrained point is worth stressing: the belt is a possibility, not a guarantee. That's why practitioners often start the forget gate's bias at about 1 so it begins by remembering (Jozefowicz et al., 2015).</aside>
+</section>
+
+<!-- 13b -->
+<section>
+  <div class="frame center">
+    <p class="kicker">A little history</p>
+    <h2>The GRU: Cho and colleagues, 2014</h2>
+    <table class="plain" style="font-size:26px">
+      <tr><td class="n">2014</td><td>Kyunghyun Cho and colleagues in Yoshua Bengio's lab (Montréal) propose it while building a machine translation system.</td></tr>
+      <tr><td class="n">Goal</td><td>Keep the LSTM's trick of a memory that is changed by adding, with <strong>fewer gates</strong> and fewer weights.</td></tr>
+    </table>
+  </div>
+  <aside class="notes">Seventeen years after the LSTM. Same idea, simplified: the next slide shows what was dropped.</aside>
+</section>
+
+<!-- 14 -->
+<section>
+  <div class="frame">
+    <p class="kicker">A lighter design</p>
+    <h2>The GRU: one memory, two gates</h2>
+    <div class="cols grow" style="grid-template-columns: 1.35fr 1fr; align-items:center; gap:40px">
+      <svg viewBox="0 0 700 290" role="img" aria-label="GRU cell: one memory line along the top. The update gate multiplies it by z; the candidate, built from the letter and the reset-gated old memory, is multiplied by 1 minus z and added.">
+        <rect x="50" y="22" width="590" height="236" rx="14" fill="none" class="s-m" stroke-width="1.5" opacity=".5"/>
+        <!-- memory line -->
+        <line x1="10" y1="50" x2="186" y2="50" class="s-h" stroke-width="5"/>
+        <line x1="214" y1="50" x2="546" y2="50" class="s-h" stroke-width="5"/>
+        <line x1="574" y1="50" x2="690" y2="50" class="s-h" stroke-width="5" marker-end="url(#ah)"/>
+        <text x="14" y="16" class="f-h" font-size="18" font-style="italic">memory h<tspan font-size="13" dy="4">t−1</tspan></text>
+        <text x="690" y="16" text-anchor="end" class="f-h" font-size="18" font-style="italic">memory h<tspan font-size="13" dy="4">t</tspan></text>
+        <text x="690" y="80" text-anchor="end" class="f-y" font-size="16" font-style="italic">= output</text>
+        <circle cx="200" cy="50" r="15" class="f-bg s-h" stroke-width="2.5"/><text x="200" y="57" text-anchor="middle" class="f-h" font-size="20">×</text>
+        <circle cx="560" cy="50" r="15" class="f-bg s-h" stroke-width="2.5"/><text x="560" y="58" text-anchor="middle" class="f-h" font-size="22">+</text>
+        <!-- old memory and letter feed the boxes -->
+        <polyline points="30,50 30,245 480,245 480,190" fill="none" class="s-h" stroke-width="2" marker-end="url(#ah)"/>
+        <text x="40" y="237" class="f-h" font-size="16" font-style="italic">old memory h<tspan font-size="12" dy="4">t−1</tspan></text>
+        <polyline points="10,272 560,272 560,200" fill="none" class="s-x" stroke-width="2"/>
+        <text x="14" y="266" class="f-x" font-size="16" font-style="italic">letter x<tspan font-size="12" dy="4">t</tspan></text>
+        <!-- update gate -->
+        <line x1="188" y1="245" x2="188" y2="200" class="s-h" stroke-width="1.8"/>
+        <line x1="212" y1="272" x2="212" y2="200" class="s-x" stroke-width="1.8"/>
+        <rect x="154" y="150" width="92" height="50" rx="6" class="f-panel s-h" stroke-width="2"/>
+        <text x="200" y="171" text-anchor="middle" class="f-h" font-size="16" font-weight="600">update</text>
+        <text x="200" y="190" text-anchor="middle" class="f-m mono-t" font-size="13">σ → z<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="200" y1="150" x2="200" y2="68" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <line x1="200" y1="105" x2="373" y2="105" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <circle cx="390" cy="105" r="15" class="f-bg s-h" stroke-width="2.5"/><text x="390" y="110" text-anchor="middle" class="f-h mono-t" font-size="13">1−</text>
+        <line x1="405" y1="105" x2="545" y2="105" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <!-- reset gate -->
+        <line x1="388" y1="245" x2="388" y2="200" class="s-h" stroke-width="1.8"/>
+        <line x1="412" y1="272" x2="412" y2="200" class="s-x" stroke-width="1.8"/>
+        <rect x="354" y="150" width="92" height="50" rx="6" class="f-panel s-h" stroke-width="2"/>
+        <text x="400" y="171" text-anchor="middle" class="f-h" font-size="16" font-weight="600">reset</text>
+        <text x="400" y="190" text-anchor="middle" class="f-m mono-t" font-size="13">σ → r<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="446" y1="175" x2="465" y2="175" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <circle cx="480" cy="175" r="13" class="f-bg s-h" stroke-width="2.5"/><text x="480" y="181" text-anchor="middle" class="f-h" font-size="18">×</text>
+        <line x1="493" y1="175" x2="512" y2="175" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+        <!-- candidate -->
+        <rect x="514" y="150" width="92" height="50" rx="6" class="f-panel s-x" stroke-width="2"/>
+        <text x="560" y="171" text-anchor="middle" class="f-x" font-size="16" font-weight="600">candidate</text>
+        <text x="560" y="190" text-anchor="middle" class="f-m mono-t" font-size="13">tanh → h̃<tspan font-size="10" dy="3">t</tspan></text>
+        <line x1="560" y1="150" x2="560" y2="120" class="s-x" stroke-width="1.8" marker-end="url(#ax)"/>
+        <circle cx="560" cy="105" r="13" class="f-bg s-h" stroke-width="2.5"/><text x="560" y="111" text-anchor="middle" class="f-h" font-size="18">×</text>
+        <line x1="560" y1="92" x2="560" y2="67" class="s-h" stroke-width="1.8" marker-end="url(#ah)"/>
+      </svg>
+      <div style="display:grid;gap:14px;font-size:24px">
+        <p><strong>One memory, h<sub>t</sub>.</strong> It is also the output, so there is no belt and no output gate.</p>
+        <p><strong class="h">Update gate z<sub>t</sub></strong>: how much of the old memory to keep. The rest, 1 − z<sub>t</sub>, comes from the candidate.</p>
+        <p><strong class="h">Reset gate r<sub>t</sub></strong>: how much of the old memory the candidate gets to see.</p>
+        <p><strong class="x">Candidate h̃<sub>t</sub></strong>: the fresh draft. Not a gate.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Gated Recurrent Unit, Cho et al., 2014. Walk the picture: the top line is the only memory. The update gate's × on it plays the LSTM's keep gate, and 1 − z plays the write gate, so keep 70% means write 30%. Reset only affects the candidate: it filters the old memory before the candidate looks at it. Convention warning for anyone reading further: some sources, including Olah's diagram, flip which end of the dial means "keep".</aside>
+</section>
+
+<!-- 14b -->
+<section>
+  <div class="frame">
+    <p class="kicker">Try it · update gate</p>
+    <h2>One dial for keep and write</h2>
+    <div style="max-width:820px">
+      <div class="panel" style="gap:16px">
+        <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span>old memory</span><span class="track"><span class="fill" style="width:90%;background:var(--accent)"></span></span><span class="v">0.90</span></div>
+        <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span>new draft</span><span class="track"><span class="fill" style="width:20%;background:var(--input)"></span></span><span class="v">0.20</span></div>
+        <div class="meter" style="grid-template-columns: 150px 1fr 70px"><label class="label" for="upd" style="font-size:16px">update gate</label><input id="upd" type="range" min="0" max="1" step="0.05" value="0.5"><span class="v" id="upd-v"></span></div>
+        <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span><strong>new memory</strong></span><span class="track"><span class="fill" id="mix-a" style="background:var(--accent)"></span><span class="fill" id="mix-b" style="background:var(--input)"></span></span><span class="v" id="mix-v"></span></div>
+        <p class="small" id="upd-msg"></p>
+      </div>
+    </div>
+    <p class="callout">z = 1 is the GRU's open keep gate: blame flows back along the memory unchanged.</p>
+  </div>
+  <aside class="notes">Drag the slider: at 1 the old memory passes through untouched, which gives the same blame highway as the LSTM's belt. At 0 the memory is replaced by the draft.</aside>
+</section>
+
+<!-- 15 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The GRU · one full step</p>
+    <h2>One GRU step, in three moves</h2>
+    <div class="steps">
+      <span class="n">1</span>
+      <div class="w"><strong>Reset?</strong> Decide how much of the old memory the draft is allowed to look at.</div>
+      <div class="e">r<sub>t</sub> = σ(W<sub>r</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>r</sub>)</div>
+      <span class="n">2</span>
+      <div class="w"><strong>Draft.</strong> Propose a new memory from the letter and the part of the old memory that reset lets through.</div>
+      <div class="e">h̃<sub>t</sub> = tanh(W<sub>h</sub>·[r<sub>t</sub> ⊙ <span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>h</sub>)</div>
+      <span class="n">3</span>
+      <div class="w"><strong>Update.</strong> Keep a share z of the old memory and fill the rest from the draft.</div>
+      <div class="e key">z<sub>t</sub> = σ(W<sub>z</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>z</sub>)<br><span class="h">h<sub>t</sub></span> = z<sub>t</sub> ⊙ <span class="h">h<sub>t−1</sub></span> + (1 − z<sub>t</sub>) ⊙ h̃<sub>t</sub></div>
+    </div>
+    <div class="cols" style="gap:32px">
+      <div class="panel" style="gap:8px;font-size:22px">
+        <span class="label">When does reset matter?</span>
+        <p>Reset near 0 builds the draft from the <strong>current letter alone</strong>, a clean start. That's useful when a new sentence or a new name begins and the old context would only get in the way.</p>
+      </div>
+      <div class="panel" style="gap:8px;font-size:22px">
+        <span class="label">Compared with the LSTM</span>
+        <p>z plays the keep gate and 1 − z plays the write gate. h<sub>t</sub> is both the memory and the output. Three weight matrices make it about 3× a plain RNN.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Same whiteboard drill as the LSTM: reset, draft, update. The z_t ⊙ h_{t−1} term in move 3 is the GRU's belt: a slot-by-slot multiply and an add, no weights, no squash. Its blame multiplier is z, which can sit near 1. People often confuse the two gates. Update decides how much old memory to keep. Reset only decides what the draft gets to see. Notation is D2L's (z = 1 keeps), the same as PyTorch.</aside>
+</section>
+
+<!-- 16 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Side by side</p>
+    <h2>LSTM vs GRU</h2>
+    <table class="plain" style="font-size:28px">
+      <tr><th></th><th>LSTM</th><th>GRU</th></tr>
+      <tr><td>Memories</td><td>2: the belt and the output</td><td>1: the memory is the output</td></tr>
+      <tr><td>Gates</td><td>3: keep, write, show</td><td>2: update, reset</td></tr>
+      <tr><td>Keep and write</td><td>set separately</td><td>tied: keep + write = 1</td></tr>
+      <tr><td>Can remember without outputting?</td><td>yes (output gate)</td><td>no</td></tr>
+      <tr><td>Size vs plain RNN</td><td class="n">about 4×</td><td class="n">about 3×</td></tr>
+      <tr><td>Introduced</td><td class="n">1997</td><td class="n">2014</td></tr>
+    </table>
+    <p class="callout">Same core trick in both: memory that is <strong>changed by adding</strong>, with a gate that can say “keep all of it”.</p>
+  </div>
+  <aside class="notes">Size: the LSTM has four sets of weights (three gates plus new info), the GRU has three (two gates plus the draft), the plain RNN one.</aside>
+</section>
+
+<!-- 17 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Demo · the final exam, again</p>
+    <h2>All three on unseen Shakespeare</h2>
+    <p class="small">Same settings, same 2000 rounds. How often is the top guess for the next character exactly right?</p>
+    <div style="display:grid;gap:18px;margin-top:6px">
+      <div class="result-row"><span>Last letter only<br><span class="small">no memory</span></span><span class="track"><span class="fill" style="width:48.2%;background:var(--muted)"></span></span><span class="pct">26.5%</span></div>
+      <div class="result-row"><span>Plain RNN<br><span class="small">99k weights · 24 s</span></span><span class="track"><span class="fill" style="width:85.6%;background:var(--muted)"></span></span><span class="pct">47.1%</span></div>
+      <div class="result-row"><span><strong>LSTM</strong><br><span class="small">347k weights · 80 s</span></span><span class="track"><span class="fill" style="width:90.9%;background:var(--accent)"></span></span><span class="pct" style="color:var(--accent)">50.0%</span></div>
+      <div class="result-row"><span><strong>GRU</strong><br><span class="small">265k weights · 64 s</span></span><span class="track"><span class="fill" style="width:91.5%;background:var(--accent)"></span></span><span class="pct" style="color:var(--accent)">50.3%</span></div>
+    </div>
+    <p class="callout">The gated cells win, but only by about 3 points here: most clues for the next letter in Shakespeare are just a few letters back.</p>
+  </div>
+  <aside class="notes">Bars are scaled to 55%. Gated cells cost three to four times the weights and about three times the training time. Their advantage grows on tasks with longer-range clues. The GRU edging the LSTM is one run with one seed; don't read anything into it.</aside>
+</section>
+
+<!-- 18 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The common question</p>
+    <h2>Which one should I use?</h2>
+    <p class="lede" style="font-size:40px;font-style:normal;color:var(--fg)">They're about the same.</p>
+    <ul>
+      <li>Careful comparisons found no clear winner (Chung et al., 2014; Greff et al., 2015). Both beat the plain RNN.</li>
+      <li>The <strong>GRU</strong> is smaller and faster.</li>
+      <li>The <strong>LSTM</strong> can hold information without showing it, which sometimes helps.</li>
+      <li>In practice: try both, and keep whichever does better on held-out text.</li>
+    </ul>
+  </div>
+  <aside class="notes">This is also a good interview answer: say they perform similarly, give the trade-off, and say you'd choose by validation score.</aside>
+</section>
+
+<!-- 19 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Try it yourself</p>
+    <h2>One flag swaps the cell</h2>
+    <pre class="cmd"><span class="c"># train an LSTM (~80 s) and see how far back the blame reaches</span>
+uv run demo/char_rnn.py train --cell lstm --details
+<span class="c"># grade it on the unseen TEST text</span>
+uv run demo/char_rnn.py test --cell lstm
+<span class="c"># same again with a GRU</span>
+uv run demo/char_rnn.py train --cell gru --details
+uv run demo/char_rnn.py generate "ROMEO:" --cell gru</pre>
+    <p class="small">Each cell saves to its own file, so you can train all three and compare. Without --cell you get the plain RNN from Part 1.</p>
+  </div>
+  <aside class="notes">Things to try: compare the "Gradient probe AFTER training" tables for rnn and lstm; try --hidden 128 so the LSTM has a similar number of weights to a bigger plain RNN.</aside>
+</section>
+
+<!-- 20 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">Recap</p>
+    <h2>Three sentences to remember</h2>
+    <ol style="font-size:32px;gap:22px">
+      <li>Gated cells add a memory that is <strong>changed only by erasing and adding</strong>, not rewritten at every step.</li>
+      <li><strong>Gates</strong> are learned dials from 0 to 1. The LSTM has keep, write and show; the GRU has update and reset.</li>
+      <li>When the keep gate is open, <strong>blame flows back across many steps</strong>, so the network can learn from the far past.</li>
+    </ol>
+  </div>
+  <aside class="notes">Ask a student to explain each sentence back, then ask the France question again: why can an LSTM learn it when a plain RNN can't?</aside>
+</section>
+
+<!-- 21 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">Next time</p>
+    <h2>Still one step at a time</h2>
+    <p class="lede">Next: <strong>attention</strong>, and why it replaced recurrence.</p>
+    <p style="font-size:44px;margin-top:30px">Questions?</p>
+  </div>
+  <aside class="notes">Only name attention here; don't explain it yet.</aside>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs, text, parent) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  };
+  const fmt = v => (Math.abs(v) < 0.005 ? "0" : v.toFixed(2).replace(/\.?0+$/, ""));
+
+  // ---- fading dots (slide 2)
+  (function () {
+    const d = document.getElementById("dots");
+    for (let k = 0; k < 10; k++) {
+      const s = Math.max(2, 56 * Math.pow(0.5, k / 1.3));
+      const sp = document.createElement("span");
+      sp.style.width = sp.style.height = s + "px";
+      sp.style.opacity = Math.max(.25, 1 - k * .07);
+      d.appendChild(sp);
+    }
+  })();
+
+  // ---- plain RNN rewrites its memory (slide 4)
+  (function () {
+    const g = document.getElementById("rewrite");
+    const xs = [110, 340, 570, 800, 1030];
+    xs.forEach((cx, i) => {
+      el("rect", { x: cx - 70, y: 70, width: 140, height: 70, rx: 10, class: "f-panel s-h", "stroke-width": 2.5 }, null, g);
+      el("text", { x: cx, y: 101, "text-anchor": "middle", "font-size": 19, class: "f-h" }, "mix + squash", g);
+      el("text", { x: cx, y: 126, "text-anchor": "middle", "font-size": 16, class: "f-m mono-t" }, "step " + (i + 1), g);
+      el("line", { x1: cx, y1: 200, x2: cx, y2: 144, class: "s-x", "stroke-width": 2.5, "marker-end": "url(#ax)" }, null, g);
+      el("text", { x: cx, y: 222, "text-anchor": "middle", "font-size": 18, class: "f-x mono-t" }, ["F", "r", "a", "n", "c"][i], g);
+      if (i < 4) {
+        el("line", { x1: cx + 72, y1: 105, x2: xs[i + 1] - 74, y2: 105, class: "s-h", "stroke-width": 2.5, "marker-end": "url(#ah)" }, null, g);
+        el("circle", { cx: (cx + xs[i + 1]) / 2, cy: 52, r: 20 * Math.pow(0.6, i), class: "f-h", opacity: Math.max(.3, 1 - i * .2) }, null, g);
+      }
+    });
+    el("text", { x: 20, y: 30, "font-size": 18, class: "f-m" }, "what's left of the first letter's memory →", g);
+  })();
+
+  // ---- conveyor belt (slide 5)
+  (function () {
+    const g = document.getElementById("belt");
+    const xs = [110, 340, 570, 800, 1030];
+    el("line", { x1: 10, y1: 50, x2: 1165, y2: 50, class: "s-h", "stroke-width": 8, "marker-end": "url(#ah)" }, null, g);
+    el("text", { x: 14, y: 30, "font-size": 20, class: "f-h" }, "cell state (the belt)", g);
+    xs.forEach((cx, i) => {
+      el("rect", { x: cx - 70, y: 120, width: 140, height: 60, rx: 10, class: "f-panel s-m", "stroke-width": 2 }, null, g);
+      el("text", { x: cx, y: 156, "text-anchor": "middle", "font-size": 16, class: "f-m mono-t" }, "step " + (i + 1), g);
+      el("line", { x1: cx - 26, y1: 118, x2: cx - 26, y2: 66, class: "s-h", "stroke-width": 2, "stroke-dasharray": "5 4" }, null, g);
+      el("text", { x: cx - 32, y: 100, "text-anchor": "end", "font-size": 18, class: "f-h" }, "erase", g);
+      el("line", { x1: cx + 26, y1: 118, x2: cx + 26, y2: 64, class: "s-h", "stroke-width": 2, "marker-end": "url(#ah)" }, null, g);
+      el("text", { x: cx + 32, y: 100, "font-size": 18, class: "f-h" }, "add", g);
+      el("line", { x1: cx, y1: 222, x2: cx, y2: 184, class: "s-x", "stroke-width": 2.5, "marker-end": "url(#ax)" }, null, g);
+    });
+  })();
+
+  // ---- valve (slide 6)
+  (function () {
+    const inp = document.getElementById("valve"), v = document.getElementById("valve-v");
+    const out = document.getElementById("valve-out"), o = document.getElementById("valve-o"), msg = document.getElementById("valve-msg");
+    function draw() {
+      const g = +inp.value, y = 0.8 * g;
+      v.textContent = g.toFixed(2); o.textContent = y.toFixed(2); out.style.width = y * 100 + "%";
+      msg.textContent = g === 0 ? "Closed: nothing gets through." : g === 1 ? "Fully open: everything gets through." : "Partly open: some gets through.";
+    }
+    inp.addEventListener("input", draw); draw();
+  })();
+
+  // ---- sigmoid vs tanh (slide 8)
+  (function () {
+    const g = document.getElementById("curves");
+    const X = v => 40 + (v + 5) * 46, Y = v => 125 - v * 95;
+    const path = f => { let d = ""; for (let i = 0; i <= 100; i++) { const v = -5 + i / 10; d += (i ? "L" : "M") + X(v).toFixed(1) + " " + Y(f(v)).toFixed(1); } return d; };
+    [1, -1].forEach(v => el("line", { x1: 40, y1: Y(v), x2: 500, y2: Y(v), class: "s-m", "stroke-width": 1, "stroke-dasharray": "3 5" }, null, g));
+    el("line", { x1: 40, y1: Y(0), x2: 500, y2: Y(0), class: "s-m", "stroke-width": 1 }, null, g);
+    el("line", { x1: X(0), y1: 20, x2: X(0), y2: 230, class: "s-m", "stroke-width": 1 }, null, g);
+    [[1, "1"], [0, "0"], [-1, "−1"]].forEach(([v, t]) => el("text", { x: X(0) + 8, y: Y(v) + (v === 1 ? 18 : v === 0 ? 20 : -6), "font-size": 16, class: "f-m mono-t" }, t, g));
+    el("path", { d: path(Math.tanh), fill: "none", class: "s-x", "stroke-width": 3, "stroke-dasharray": "8 5" }, null, g);
+    el("path", { d: path(v => 1 / (1 + Math.exp(-v))), fill: "none", class: "s-h", "stroke-width": 3.5 }, null, g);
+    el("text", { x: 44, y: 62, "font-size": 18, class: "f-h" }, "sigmoid → gates (0 to 1)", g);
+    el("text", { x: 496, y: 244, "text-anchor": "end", "font-size": 18, class: "f-x" }, "tanh → new info (−1 to 1)", g);
+  })();
+
+  // ---- you are the gates (slide 10)
+  (function () {
+    const root = document.getElementById("gates"), T = 8;
+    const x = [1, 0, 0, 0.5, 0, 0, 0, 0];
+    const rows = [["keep", "forget · keep?"], ["write", "input · write?"], ["show", "output · show?"]];
+    let gates;
+    const fresh = () => { gates = Object.fromEntries(rows.map(([k]) => [k, Array(T).fill(0.5)])); };
+    fresh();
+    const add = (cls, text, tag = "div") => { const d = document.createElement(tag); d.className = cls; if (text != null) d.textContent = text; root.appendChild(d); return d; };
+    add("lab", ""); for (let t = 0; t < T; t++) add("hd", "step " + (t + 1));
+    add("lab x", "input"); x.forEach(v => add("inp" + (v ? " on" : ""), v ? fmt(v) : "·"));
+    const btns = {};
+    rows.forEach(([k, label]) => {
+      add("lab", label);
+      btns[k] = Array.from({ length: T }, (_, t) => {
+        const b = add("g", null, "button"); b.type = "button"; b.setAttribute("aria-label", `${label} at step ${t + 1}`);
+        b.addEventListener("click", () => { gates[k][t] = [0, 0.5, 1][([0, 0.5, 1].indexOf(gates[k][t]) + 1) % 3]; render(); });
+        return b;
+      });
+    });
+    add("lab h", "belt"); const belt = Array.from({ length: T }, () => add("out"));
+    add("lab h", "output"); const shown = Array.from({ length: T }, () => add("out"));
+    const chal = document.getElementById("chal");
+    const all = (a, p) => a.every(p), eq = (a, b) => Math.abs(a - b) < 1e-9;
+    const checks = {
+      hold: (c) => all(c, v => eq(v, 1)),
+      forget: (c) => all(c.slice(0, 5), v => eq(v, 1)) && all(c.slice(5), v => eq(v, 0)),
+      secret: (c, h) => all(h.slice(0, 7), v => eq(v, 0)) && eq(h[7], 1),
+    };
+    function render() {
+      const c = [], h = []; let cp = 0;
+      for (let t = 0; t < T; t++) { cp = gates.keep[t] * cp + gates.write[t] * x[t]; c.push(cp); h.push(gates.show[t] * cp); }
+      rows.forEach(([k]) => btns[k].forEach((b, t) => {
+        const v = gates[k][t];
+        b.textContent = v === 0.5 ? "½" : v;
+        b.style.background = `color-mix(in srgb, var(--accent) ${Math.round(v * 75)}%, var(--bg))`;
+        b.style.color = v === 1 ? "var(--bg)" : "var(--fg)";
+      }));
+      [[belt, c], [shown, h]].forEach(([cells, vals]) => cells.forEach((d, t) => { d.textContent = fmt(vals[t]); d.style.setProperty("--fill", Math.min(100, vals[t] * 66) + "%"); }));
+      chal.querySelectorAll("[data-c]").forEach(d => {
+        if (!d.classList.contains("done") && checks[d.dataset.c](c, h)) { d.classList.add("done"); d.querySelector(".tk").textContent = "✓"; }
+      });
+    }
+    document.getElementById("gates-reset").addEventListener("click", () => { fresh(); render(); });
+    render();
+  })();
+
+  // ---- blame race (slide 12)
+  (function () {
+    const root = document.getElementById("race"), inp = document.getElementById("keep"), kv = document.getElementById("keep-v");
+    const steps = [10, 25, 50, 100], RNN = 0.6;
+    const add = (cls, html) => { const d = document.createElement("div"); d.className = cls; if (html != null) d.innerHTML = html; root.appendChild(d); return d; };
+    add("hd", "steps back"); steps.forEach(k => add("hd", k));
+    add("", `Plain RNN <span class="small">(× 0.6)</span>`); const r = steps.map(() => add("cell"));
+    add("", `<strong class="h">LSTM belt</strong>`); const l = steps.map(() => add("cell"));
+    const sup = n => String(n).replace(/\d/g, d => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d]);
+    const show = v => {
+      if (v >= 0.01) return v.toFixed(2);
+      if (v < 1e-12) return "≈ 0";
+      const n = 1 / v;
+      return n < 1e7 ? "1 in " + Number(n.toPrecision(2)).toLocaleString("en") : "1 in 10" + sup(Math.floor(Math.log10(n)));
+    };
+    function cell(d, v, color) {
+      const s = Math.max(3, 36 * Math.pow(v, 0.25));
+      d.innerHTML = `<span class="dot" style="width:${s}px;height:${s}px;background:${color};opacity:${v < 1e-6 ? .3 : 1}"></span>${show(v)}`;
+    }
+    function draw() {
+      const g = +inp.value; kv.textContent = g.toFixed(3);
+      steps.forEach((k, i) => { cell(r[i], Math.pow(RNN, k), "var(--muted)"); cell(l[i], Math.pow(g, k), "var(--accent)"); });
+    }
+    inp.addEventListener("input", draw); draw();
+  })();
+
+  // ---- GRU update gate mix (slide 14)
+  (function () {
+    const inp = document.getElementById("upd"), uv = document.getElementById("upd-v");
+    const a = document.getElementById("mix-a"), b = document.getElementById("mix-b"), mv = document.getElementById("mix-v"), msg = document.getElementById("upd-msg");
+    function draw() {
+      const z = +inp.value, pa = z * 0.9, pb = (1 - z) * 0.2;
+      uv.textContent = z.toFixed(2); mv.textContent = (pa + pb).toFixed(2);
+      a.style.width = pa * 100 + "%"; b.style.width = pb * 100 + "%";
+      msg.textContent = z === 1 ? "Keep everything: the old memory passes through untouched." : z === 0 ? "Replace everything with the new draft." : `Keep ${Math.round(z * 100)}% of the old memory, fill the other ${Math.round((1 - z) * 100)}% from the draft.`;
+    }
+    inp.addEventListener("input", draw); draw();
+  })();
+
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0.06, center: false, hash: false,
+    controls: true, progress: true, slideNumber: "c/t",
+    transition: matchMedia("(prefers-reduced-motion: reduce)").matches ? "none" : "fade",
+    plugins: window.RevealNotes ? [RevealNotes] : []
+  });
+})();
+</script>
+</body>
+</html>

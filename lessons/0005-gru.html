@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GRU: The Lighter Gate</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<main>
+
+<p class="kicker">Lesson 5 · Recurrent Neural Networks · ~20 min</p>
+<h1>GRU: The Lighter Gate</h1>
+<p class="subtitle">The LSTM's trick with fewer parts: one state, two gates.</p>
+
+<p><strong>By the end you can</strong> write the GRU's four equations, map each of its gates onto the LSTM's, explain why it also keeps gradients alive, and answer the classic follow-up: “LSTM or GRU: what's the difference, and which would you use?”</p>
+
+<h2>Warm-up: Lesson 4</h2>
+<p>Answer from memory, then reveal.</p>
+
+<details class="recall"><summary>Name the LSTM's three gates and what each one controls.</summary>
+<div class="answer">Forget gate: how much of the old cell state to keep. Input gate: how much of the new candidate to write. Output gate: how much of tanh(c<sub>t</sub>) to show as h<sub>t</sub>.</div></details>
+
+<details class="recall"><summary>Along the cell state, what is ∂c<sub>t</sub>/∂c<sub>t−1</sub>, and why does that help?</summary>
+<div class="answer">The forget gate f<sub>t</sub>. There's no weight matrix and no tanh in that path, so when the gate is near 1 the gradient passes back almost unchanged.</div></details>
+
+<details class="recall"><summary>In the gate simulator, what settings held a value unchanged?</summary>
+<div class="answer">Forget = 1, input = 0. Notice those two always moved in opposite directions when you were holding or overwriting. The GRU builds that into the design.</div></details>
+
+<h2>The idea: tie “keep” and “write” together</h2>
+<p>When you played the LSTM's gates, holding meant <em>f</em> = 1, <em>i</em> = 0 and overwriting meant <em>f</em> = 0, <em>i</em> = 1. The Gated Recurrent Unit (GRU), from Cho et al. (2014),<a class="cite" href="#n1">1</a> makes that a rule: one gate decides the mix, and whatever fraction is kept, the rest comes from the new candidate. Olah: <q>It combines the forget and input gates into a single “update gate.” It also merges the cell state and hidden state, and makes some other changes.</q><a class="cite" href="#n2">2</a></p>
+<p>So a GRU has:</p>
+<ul>
+  <li><strong>one state</strong>, <span class="h">h<sub>t</sub></span>, like a vanilla RNN (no separate c<sub>t</sub>);</li>
+  <li>an <strong>update gate</strong> z<sub>t</sub>: keep the old state or replace it with the candidate;</li>
+  <li>a <strong>reset gate</strong> r<sub>t</sub>: how much of the old state the candidate is allowed to look at;</li>
+  <li><strong>no output gate</strong>: everything in the memory is always visible.</li>
+</ul>
+
+<h2>The GRU cell</h2>
+
+<figure>
+<svg viewBox="0 0 640 270" role="img" aria-label="GRU cell: the hidden state runs along the top through a multiply by z and an add. Below, a reset gate multiplies the old state before it enters the tanh candidate; the update gate z and one minus z blend the old state with the candidate.">
+  <defs>
+    <marker id="g5a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-hf"/></marker>
+    <marker id="g5x" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 z" class="d-xf"/></marker>
+  </defs>
+  <rect x="62" y="22" width="508" height="210" rx="14" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
+  <!-- the state line -->
+  <line x1="10" y1="50" x2="427" y2="50" class="d-h" stroke-width="3"/>
+  <line x1="453" y1="50" x2="527" y2="50" class="d-h" stroke-width="3"/>
+  <line x1="553" y1="50" x2="620" y2="50" class="d-h" stroke-width="3" marker-end="url(#g5a)"/>
+  <text x="14" y="40" class="d-hf" font-size="14" font-style="italic">h<tspan font-size="10" dy="3">t−1</tspan></text>
+  <text x="596" y="40" class="d-hf" font-size="14" font-style="italic">h<tspan font-size="10" dy="3">t</tspan></text>
+  <circle cx="440" cy="50" r="13" class="d-h" stroke-width="1.8"/><text x="440" y="55" text-anchor="middle" class="d-hf" font-size="15">×</text>
+  <circle cx="540" cy="50" r="13" class="d-h" stroke-width="1.8"/><text x="540" y="56" text-anchor="middle" class="d-hf" font-size="17">+</text>
+  <!-- bus: h_{t-1} and x_t into the gates -->
+  <polyline points="40,50 40,215 400,215" class="d-h" stroke-width="1.5" fill="none"/>
+  <line x1="78" y1="262" x2="78" y2="218" class="d-x" stroke-width="1.5" marker-end="url(#g5x)"/>
+  <text x="88" y="258" class="d-xf" font-size="14" font-style="italic">x<tspan font-size="10" dy="3">t</tspan></text>
+  <g font-size="13" text-anchor="middle">
+    <!-- reset gate -->
+    <line x1="130" y1="215" x2="130" y2="192" class="d-h" stroke-width="1.2"/>
+    <rect x="112" y="168" width="36" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="130" y="185" class="d-hf">σ</text>
+    <text x="156" y="164" class="d-m" font-style="italic" text-anchor="start">r<tspan font-size="9" dy="3">t</tspan></text>
+    <line x1="130" y1="168" x2="130" y2="135" class="d-h" stroke-width="1.2" marker-end="url(#g5a)"/>
+    <line x1="130" y1="50" x2="130" y2="105" class="d-h" stroke-width="1.2" marker-end="url(#g5a)"/>
+    <circle cx="130" cy="120" r="13" class="d-h" stroke-width="1.8"/><text x="130" y="125" class="d-hf" font-size="15">×</text>
+    <line x1="143" y1="120" x2="236" y2="120" class="d-h" stroke-width="1.2" marker-end="url(#g5a)"/>
+    <!-- candidate -->
+    <rect x="238" y="108" width="46" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="261" y="125" class="d-hf">tanh</text>
+    <line x1="261" y1="215" x2="261" y2="134" class="d-h" stroke-width="1.2" marker-end="url(#g5a)"/>
+    <line x1="284" y1="120" x2="434" y2="120" class="d-h" stroke-width="1.2"/>
+    <line x1="446" y1="120" x2="525" y2="120" class="d-h" stroke-width="1.2" marker-end="url(#g5a)"/>
+    <text x="320" y="112" class="d-m" font-style="italic">h̃<tspan font-size="9" dy="3">t</tspan></text>
+    <circle cx="540" cy="120" r="13" class="d-h" stroke-width="1.8"/><text x="540" y="125" class="d-hf" font-size="15">×</text>
+    <line x1="540" y1="107" x2="540" y2="65" class="d-h" stroke-width="1.2" marker-end="url(#g5a)"/>
+    <!-- update gate -->
+    <line x1="400" y1="215" x2="400" y2="192" class="d-h" stroke-width="1.2"/>
+    <rect x="382" y="168" width="36" height="24" rx="4" class="d-h" stroke-width="1.5"/><text x="400" y="185" class="d-hf">σ</text>
+    <text x="374" y="164" class="d-m" font-style="italic" text-anchor="end">z<tspan font-size="9" dy="3">t</tspan></text>
+    <polyline points="400,168 400,150 440,150 440,65" class="d-h" stroke-width="1.2" fill="none" marker-end="url(#g5a)"/>
+    <polyline points="440,150 470,150" class="d-h" stroke-width="1.2" fill="none"/>
+    <rect x="470" y="140" width="30" height="20" rx="4" class="d-h" stroke-width="1.5"/><text x="485" y="154" class="d-hf" font-size="12">1−</text>
+    <polyline points="500,150 540,150 540,135" class="d-h" stroke-width="1.2" fill="none" marker-end="url(#g5a)"/>
+  </g>
+  <text x="160" y="40" class="d-m" font-size="11">the state: z ⊙ old + (1 − z) ⊙ candidate</text>
+</svg>
+<figcaption>One GRU step. Along the top, the old state is scaled by z<sub>t</sub> and the candidate by 1 − z<sub>t</sub>, then the two are added: a direct path through time like the LSTM's belt. The reset gate r<sub>t</sub> scales the old state <em>before</em> it goes into the candidate. There is no separate cell state and no output gate.</figcaption>
+</figure>
+
+<div class="eq" style="text-align:left;line-height:1.9">
+r<sub>t</sub> = σ( W<sub>r</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>r</sub> ) &nbsp;&nbsp;&nbsp;reset gate<br>
+z<sub>t</sub> = σ( W<sub>z</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>z</sub> ) &nbsp;&nbsp;&nbsp;update gate<br>
+h̃<sub>t</sub> = tanh( W<sub>h</sub>·[r<sub>t</sub> ⊙ <span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>h</sub> ) &nbsp;candidate<br>
+<span class="h">h<sub>t</sub></span> = z<sub>t</sub> ⊙ <span class="h">h<sub>t−1</sub></span> + (1 − z<sub>t</sub>) ⊙ h̃<sub>t</sub>
+</div>
+<p class="eq-legend">This is the convention of <em>Dive into Deep Learning</em> (D2L) §10.2 and of PyTorch: z = 1 keeps the old state.<a class="cite" href="#n3">3</a> <strong>Watch out:</strong> Olah's diagram and some other sources swap z and 1 − z, so there z = 1 means “take the candidate”. Both are the same model; in an interview, say which convention you're using.</p>
+
+<p>D2L on the two gates:<a class="cite" href="#n3">3</a></p>
+<ul>
+  <li>Update gate: <q>Whenever the update gate Z<sub>t</sub> is close to 1, we simply retain the old state.</q> When it's close to 0, <q>the new latent state H<sub>t</sub> approaches the candidate latent state</q>.</li>
+  <li>Reset gate: <q>Whenever the entries in the reset gate R<sub>t</sub> are close to 1, we recover a vanilla RNN</q> candidate. Near 0, <q>any pre-existing hidden state is thus <em>reset</em> to defaults</q>: the candidate is built from the input alone.</li>
+</ul>
+
+<h3>GRU ↔ LSTM, part by part</h3>
+<table>
+  <tr><th>LSTM</th><th>GRU</th><th>Note</th></tr>
+  <tr><td>Forget gate f<sub>t</sub></td><td>Update gate z<sub>t</sub></td><td>Fraction of old memory kept</td></tr>
+  <tr><td>Input gate i<sub>t</sub></td><td>1 − z<sub>t</sub></td><td>Tied to the update gate: no separate weights</td></tr>
+  <tr><td>Output gate o<sub>t</sub></td><td>(none)</td><td>The GRU always shows all of its memory</td></tr>
+  <tr><td>(none)</td><td>Reset gate r<sub>t</sub></td><td>Lets the candidate ignore the old state</td></tr>
+  <tr><td>Cell state c<sub>t</sub> + hidden state h<sub>t</sub></td><td>Hidden state h<sub>t</sub> only</td><td>Memory and output are the same vector</td></tr>
+</table>
+
+<h2>Play: be the GRU's gates</h2>
+<p>Same setup as Lesson 4: a one-number GRU over 8 steps, and you set the gates. Here the candidate is h̃ = tanh(x + r · h<sub>prev</sub>), so the reset gate decides whether the old memory leaks into the new proposal.</p>
+
+<div class="panel" id="gsim" data-gate-sim="gru" data-seq="2,0,0,0,-1,0,0,0"></div>
+<div class="panel" id="gchallenges">
+  <div class="challenge" data-c="hold"><span class="tick">○</span><span><strong>Store and hold.</strong> Write x<sub>1</sub> and keep h between 0.9 and 1 at every step, ignoring the −1 at step 5.</span></div>
+  <div class="challenge" data-c="overwrite"><span class="tick">○</span><span><strong>Clean overwrite.</strong> Hold h ≥ 0.9 through step 4, then make h<sub>5</sub> exactly tanh(x<sub>5</sub>) ≈ −0.76, with no trace of the old memory. (You'll need both gates.)</span></div>
+  <div class="challenge" data-c="blend"><span class="tick">○</span><span><strong>Fade slowly.</strong> Store x<sub>1</sub>, then make h shrink at steps 2, 3 and 4, each step between 40% and 60% of the one before. (A vanilla RNN fades like this whether you want it to or not; here it's a choice.)</span></div>
+</div>
+<p>Now try Lesson 4's <strong>Silent memory</strong> challenge here: store x<sub>1</sub>, keep h at 0 until step 8, then show it. You can't. With no output gate and no separate cell state, the only way to store something is to have it in h, where everything downstream sees it. That's the main thing the GRU gives up for its simplicity.</p>
+
+<h2>Gradients: the same highway</h2>
+<p>Look at the last equation: h<sub>t</sub> = z<sub>t</sub> ⊙ h<sub>t−1</sub> + …. The z<sub>t</sub> ⊙ h<sub>t−1</sub> term is a direct path from the old state to the new one, with no weight matrix and no tanh. Along it:</p>
+<div class="eq">∂h<sub>t</sub> / ∂h<sub>t−1</sub> = z<sub>t</sub> &nbsp;&nbsp;(along the direct path)</div>
+<p>That's the LSTM's argument again, with the update gate playing the forget gate's role. When z ≈ 1 (keep), the gradient passes back almost unchanged. (Gradient also flows through the candidate and the gates; those paths still vanish, as in the LSTM.)</p>
+
+<div class="panel" id="hsim" data-highway-sim data-gate-name="update gate z" data-cell-name="GRU direct path" data-g="0.9" data-t="50"></div>
+<div class="panel" id="hchallenges">
+  <div class="challenge" data-c="long"><span class="tick">○</span><span><strong>Same highway.</strong> With T = 100, keep the GRU's signal at step 1 above 0.1 while the RNN's is below 10<sup>−6</sup>.</span></div>
+</div>
+
+<h2>LSTM vs GRU</h2>
+<table>
+  <tr><th></th><th>LSTM</th><th>GRU</th></tr>
+  <tr><td>States</td><td>2 (c<sub>t</sub>, h<sub>t</sub>)</td><td>1 (h<sub>t</sub>)</td></tr>
+  <tr><td>Gates</td><td>3 (forget, input, output)</td><td>2 (update, reset)</td></tr>
+  <tr><td>Weight blocks</td><td>4 → about <strong>4×</strong> a vanilla RNN</td><td>3 → about <strong>3×</strong> a vanilla RNN</td></tr>
+  <tr><td>Hide memory from output?</td><td>Yes (output gate)</td><td>No</td></tr>
+  <tr><td>Keep and write</td><td>Independent (f, i)</td><td>Tied (z, 1 − z)</td></tr>
+  <tr><td>Gradient path</td><td>c<sub>t−1</sub> → c<sub>t</sub>, factor f<sub>t</sub></td><td>h<sub>t−1</sub> → h<sub>t</sub>, factor z<sub>t</sub></td></tr>
+  <tr><td>Year</td><td>1997 (forget gate 2000)</td><td>2014</td></tr>
+</table>
+
+<p><strong>Which is better?</strong> Neither, reliably. Chung et al. compared them directly and found the GRU <q>comparable to LSTM</q>, with both clearly beating the vanilla RNN.<a class="cite" href="#n4">4</a> Olah summarises a larger study:<a class="cite" href="#n5">5</a> <q>Greff, et al. (2015) do a nice comparison of popular variants, finding that they're all about the same.</q><a class="cite" href="#n2">2</a> D2L: <q>Compared with LSTMs, GRUs achieve similar performance but tend to be lighter computationally.</q><a class="cite" href="#n3">3</a></p>
+<p>A sensible interview answer: <strong>start with whichever your framework or team defaults to; try a GRU when you need a smaller or faster model; try an LSTM when the task may need to hold information without exposing it, or for very long dependencies; and pick by validation score, not by theory.</strong></p>
+
+<h2>Try it in the demo</h2>
+<pre class="eq" style="text-align:left">uv run demo/char_rnn.py train --cell gru --details
+uv run demo/char_rnn.py test  --cell gru</pre>
+<p>All three cells from a real run (same settings, same seed, hidden size 256, 2000 rounds):</p>
+<table>
+  <tr><th></th><th>Vanilla RNN</th><th>LSTM</th><th>GRU</th></tr>
+  <tr><td>Weights</td><td class="mono">99,393</td><td class="mono">347,457</td><td class="mono">264,769</td></tr>
+  <tr><td>Training time</td><td class="mono">24 s</td><td class="mono">80 s</td><td class="mono">64 s</td></tr>
+  <tr><td>Final val loss</td><td class="mono">1.66</td><td class="mono">1.58</td><td class="mono">1.48</td></tr>
+  <tr><td>Test: next char right</td><td class="mono">47.1%</td><td class="mono">50.0%</td><td class="mono">50.3%</td></tr>
+  <tr><td>Probe: gradient 40 steps back</td><td class="mono">1.1e−5</td><td class="mono">2.8e−4</td><td class="mono">1.4e−3</td></tr>
+  <tr><td>Probe: gradient 99 steps back</td><td class="mono">2.3e−9</td><td class="mono">2.7e−6</td><td class="mono">6.1e−7</td></tr>
+</table>
+<p>Both gated cells keep far more gradient alive than the vanilla RNN and do better on the test text. The GRU edged out the LSTM here with fewer weights, but that's <strong>one run, one seed, one setting</strong>; a different hidden size or more training could flip it. This is exactly the “they're all about the same” result, in miniature.</p>
+
+<div class="callout interview">
+<p>“A GRU is a simplified LSTM. It merges the cell and hidden state into one vector and uses two gates. The update gate z blends the old state with a new candidate: h<sub>t</sub> = z ⊙ h<sub>t−1</sub> + (1 − z) ⊙ h̃<sub>t</sub>, so it plays the role of the LSTM's forget and input gates tied together. The reset gate controls how much of the old state goes into the candidate. There's no output gate. That direct z ⊙ h<sub>t−1</sub> term gives the same gradient highway as the LSTM's cell state. It has about three quarters of the LSTM's parameters, and in practice the two perform similarly, so the choice is usually empirical.”</p>
+</div>
+
+<h2>Check yourself</h2>
+
+<div class="quiz">
+  <div class="q">1. Which pair of LSTM gates does the GRU's update gate replace?</div>
+  <button class="opt" data-correct>Forget and input</button>
+  <button class="opt">Input and output</button>
+  <button class="opt">Forget and output</button>
+  <button class="opt">All three gates</button>
+  <div class="why">z plays the forget gate (keep this much old state) and 1 − z plays the input gate (write this much candidate). The output gate has no GRU counterpart.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">2. Using h<sub>t</sub> = z ⊙ h<sub>t−1</sub> + (1 − z) ⊙ h̃<sub>t</sub>, what does z = 1 do?</div>
+  <button class="opt" data-correct>Copies the old state unchanged</button>
+  <button class="opt">Replaces it with the candidate</button>
+  <button class="opt">Resets the state to zero</button>
+  <button class="opt">Hides the state from output</button>
+  <div class="why">z = 1 gives h<sub>t</sub> = h<sub>t−1</sub>. In Olah's convention the formula is flipped, so always state which one you mean.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">3. What does the reset gate r<sub>t</sub> control?</div>
+  <button class="opt" data-correct>How much old state the candidate sees</button>
+  <button class="opt">How much old state is kept</button>
+  <button class="opt">How much of h<sub>t</sub> is output</button>
+  <button class="opt">When the sequence should end</button>
+  <div class="why">r multiplies h<sub>t−1</sub> <em>inside</em> the candidate's tanh. r ≈ 0 means the candidate is computed from x<sub>t</sub> alone. Keeping old state is the update gate's job. You needed r = 0 for the Clean overwrite challenge.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">4. Hidden size n, input size d. Which has the most parameters?</div>
+  <button class="opt" data-correct>LSTM, then GRU, then vanilla RNN</button>
+  <button class="opt">GRU, then LSTM, then vanilla RNN</button>
+  <button class="opt">They're all the same size</button>
+  <button class="opt">Vanilla RNN, then GRU, then LSTM</button>
+  <div class="why">4, 3 and 1 blocks of n·(n + d) + n. In the demo: 347k, 265k and 99k.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">5. Something a GRU <em>cannot</em> do that an LSTM can?</div>
+  <button class="opt" data-correct>Store memory without exposing it</button>
+  <button class="opt">Keep a value over many steps</button>
+  <button class="opt">Avoid vanishing gradients</button>
+  <button class="opt">Handle variable-length input</button>
+  <div class="why">With no output gate and no separate cell state, whatever the GRU remembers is in h<sub>t</sub>, which everything downstream sees. It can hold values (z = 1) and has the gradient highway, and like any RNN it handles any length.</div>
+</div>
+
+<div class="quiz">
+  <div class="q">6. An interviewer asks “LSTM or GRU?” Best short answer?</div>
+  <button class="opt" data-correct>Similar results; choose by validation score</button>
+  <button class="opt">LSTM, because it's always more accurate</button>
+  <button class="opt">GRU, because it's always more accurate</button>
+  <button class="opt">Neither, both still vanish completely</button>
+  <div class="why">Comparisons (Chung et al. 2014; Greff et al. 2015) find them about equal. Add the trade-off: GRU is smaller and faster, LSTM has the extra output gate and separate memory.</div>
+</div>
+<p class="quiz-score" data-quiz-score></p>
+
+<h2>Say it out loud</h2>
+
+<details class="recall"><summary>Write the GRU equations and say what each gate does.</summary>
+<div class="answer">r = σ(W<sub>r</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>r</sub>), z = σ(W<sub>z</sub>·[h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>z</sub>), h̃ = tanh(W<sub>h</sub>·[r ⊙ h<sub>t−1</sub>, x<sub>t</sub>] + b<sub>h</sub>), h<sub>t</sub> = z ⊙ h<sub>t−1</sub> + (1 − z) ⊙ h̃. Update gate: keep the old state vs take the candidate. Reset gate: how much old state the candidate sees.</div></details>
+
+<details class="recall"><summary>LSTM vs GRU in 30 seconds.</summary>
+<div class="answer">Both add gates and an additive path through time to fix vanishing gradients. The LSTM has a separate cell state and three gates (forget, input, output). The GRU merges the states and uses two gates (update, reset), tying forget and input together and dropping the output gate. The GRU has about 3/4 the parameters and is faster. Accuracy is usually similar, so pick empirically.</div></details>
+
+<details class="recall"><summary>Why does a GRU not suffer from vanishing gradients as badly as a vanilla RNN?</summary>
+<div class="answer">The z ⊙ h<sub>t−1</sub> term is a direct path from old state to new with no weight matrix or tanh. Along it the per-step factor is z, which the network can hold near 1, so the gradient survives many steps.</div></details>
+
+<h2>Read next (≈15 min)</h2>
+<p><strong>Primary source:</strong> <em>Dive into Deep Learning</em> <a href="https://d2l.ai/chapter_recurrent-modern/gru.html">§10.2 “Gated Recurrent Units (GRU)”</a>, §10.2.1 only (skip the code). Check its equations against the four above and note which way round its z is.</p>
+<p><strong>Then:</strong> the <em>Variants on Long Short Term Memory</em> section of <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Olah's post</a>, and the abstract of <a href="https://arxiv.org/abs/1412.3555">Chung et al. (2014)</a>, the standard LSTM-vs-GRU comparison.</p>
+
+<div class="ask">
+<strong>Stuck or curious?</strong> Ask me, your teacher, in the terminal. For example: “Why does the reset gate go <em>inside</em> the tanh?”, “Are there gated cells with even fewer gates?”, or “Quiz me on LSTM vs GRU like an interviewer would.” Tell me how Lessons 4 and 5 went, and I'll set up the last big comparison: why attention and Transformers replaced recurrence.
+</div>
+
+<h2>Notes</h2>
+<ol class="notes">
+  <li id="n1">Cho, van Merriënboer, Gulcehre, Bahdanau, Bougares, Schwenk &amp; Bengio, <a href="https://arxiv.org/abs/1406.1078">Learning Phrase Representations using RNN Encoder–Decoder for Statistical Machine Translation</a> (2014). Introduces the gated unit later named the GRU.</li>
+  <li id="n2">Olah, <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a> (2015), “Variants on Long Short Term Memory.”</li>
+  <li id="n3">Zhang, Lipton, Li &amp; Smola, <a href="https://d2l.ai/chapter_recurrent-modern/gru.html"><em>Dive into Deep Learning</em> §10.2 “Gated Recurrent Units (GRU)”</a>: equations 10.2.1–10.2.3 and the gate descriptions.</li>
+  <li id="n4">Chung, Gulcehre, Cho &amp; Bengio, <a href="https://arxiv.org/abs/1412.3555">Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling</a> (2014).</li>
+  <li id="n5">Greff, Srivastava, Koutník, Steunebrink &amp; Schmidhuber, <a href="https://arxiv.org/abs/1503.04069">LSTM: A Search Space Odyssey</a> (2015; IEEE TNNLS 2017).</li>
+</ol>
+
+<nav class="course">
+  <a href="0004-lstm.html">← Lesson 4: LSTM</a>
+  <a href="../reference/rnn-core.html">Reference: RNN core cheat sheet</a>
+  <span>Lesson 6: Why attention replaced recurrence →</span>
+</nav>
+
+</main>
+<script src="../assets/gate-sim.js"></script>
+<script src="../assets/highway-sim.js"></script>
+<script src="../assets/challenges.js"></script>
+<script src="../assets/quiz.js"></script>
+<script>
+const all = (a, p) => a.every(p);
+Challenges.attach(document.getElementById("gsim"), "gate:update", document.getElementById("gchallenges"), {
+  hold: ({ h }) => all(h, (v) => v >= 0.9 && v <= 1),
+  overwrite: ({ h, x }) => all(h.slice(0, 4), (v) => v >= 0.9) && Math.abs(h[4] - Math.tanh(x[4])) < 0.005 && x[4] <= -0.5,
+  blend: ({ h }) => h[0] > 0.5 && all(h.slice(1, 4), (v, k) => { const r = v / h[k]; return r >= 0.4 && r <= 0.6; }),
+});
+Challenges.attach(document.getElementById("hsim"), "highway:update", document.getElementById("hchallenges"), {
+  long: ({ T, rnn, gated }) => T === 100 && gated > 0.1 && rnn < 1e-6,
+});
+</script>
+</body>
+</html>
