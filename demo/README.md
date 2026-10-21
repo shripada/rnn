@@ -1,4 +1,4 @@
-# Demo: a character-level RNN on S
+# Demo: a character-level RNN on Shakespeare
 
 ## The problem
 
