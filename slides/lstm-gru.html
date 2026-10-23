@@ -428,13 +428,13 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     <div class="cols grow" style="grid-template-columns: 1.15fr 1fr; align-items:center; gap:40px">
       <ul style="font-size:23px">
         <li>All four boxes in the cell read the <strong>same two things</strong>: the cell's last output and the current letter.</li>
-        <li>Each box has its <strong>own weights</strong>, so each learns to react to different things. The write gate might learn to open on a capital letter; the keep gate might learn to close at a full stop.</li>
+        <li>Each box has its <strong>own weights</strong>, so each learns to react to different things. The input gate might learn to open on a capital letter; the forget gate might learn to close at a full stop.</li>
         <li>The memory is a list of numbers (256 in our demo), and a gate sets <strong>one dial per number</strong>. It can keep one slot and wipe the slot next to it.</li>
-        <li>Gates squash with the <strong class="h">sigmoid</strong>, which outputs 0 to 1, like a dial. The new-info box uses <strong class="x">tanh</strong>, which outputs −1 to 1, because new info has to be able to push a slot down as well as up.</li>
+        <li>Gates squash with the <strong class="h">sigmoid</strong>, which outputs 0 to 1, like a dial. The candidate uses <strong class="x">tanh</strong>, which outputs −1 to 1, because new information has to be able to push a slot down as well as up.</li>
       </ul>
       <div class="panel">
         <span class="label">The two squashes</span>
-        <svg viewBox="0 0 520 250" role="img" aria-label="Sigmoid curve from 0 to 1, used by gates; tanh curve from minus 1 to 1, used by new info" style="width:100%">
+        <svg viewBox="0 0 520 250" role="img" aria-label="Sigmoid curve from 0 to 1, used by gates; tanh curve from minus 1 to 1, used by the candidate" style="width:100%">
           <g id="curves"></g>
         </svg>
       </div>
@@ -453,7 +453,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <div class="w"><strong>Keep?</strong> The forget gate decides how much of each belt slot to keep.</div>
       <div class="e">f<sub>t</sub> = σ(W<sub>f</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>f</sub>)</div>
       <span class="n">2</span>
-      <div class="w"><strong>Write?</strong> Draft some new info, and let the input gate decide how much of it to write.</div>
+      <div class="w"><strong>Write?</strong> Make a candidate (the new information), and let the input gate decide how much of it to write.</div>
       <div class="e">i<sub>t</sub> = σ(W<sub>i</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>i</sub>)<br>c̃<sub>t</sub> = tanh(W<sub>c</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>c</sub>)</div>
       <span class="n">3</span>
       <div class="w"><strong>Update the belt.</strong> Erase, then add.</div>
@@ -462,7 +462,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <div class="w"><strong>Show?</strong> The output gate picks how much of the belt to show as this step's output.</div>
       <div class="e">o<sub>t</sub> = σ(W<sub>o</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>o</sub>)<br><span class="y">h<sub>t</sub></span> = o<sub>t</sub> ⊙ tanh(<span class="h">c<sub>t</sub></span>)</div>
     </div>
-    <p class="small rule-top">[h, x] means the two lists joined into one. ⊙ means multiply slot by slot. There are four weight matrices instead of one, which is why the LSTM is about 4× the size of a plain RNN.</p>
+    <p class="small rule-top">[h, x] means the two lists joined into one. σ is the sigmoid (0 to 1). ⊙ means multiply slot by slot. There are four weight matrices instead of one, which is why the LSTM is about 4× the size of a plain RNN.</p>
   </div>
   <aside class="notes">This is the slide to be able to write on a whiteboard. Read it as a story: keep, write, update, show. Point at move 3: the belt only meets a slot-by-slot multiply and an add. No weight matrix and no squash, which is why blame survives along it (right after the worked example). The output h_t goes two places: to the prediction, and back into all four boxes at the next step. Notation follows Dive into Deep Learning (D2L) §10.1 and Olah.</aside>
 </section>
@@ -493,7 +493,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     <h2>Following “France” through the gates</h2>
     <p class="small">One memory slot, in an ideal trained LSTM. Here is what its three dials should do as it reads the sentence from slide 3.</p>
     <table class="plain trace">
-      <tr><th>reading…</th><th>keep</th><th>write</th><th>show</th><th>what happens</th></tr>
+      <tr><th>reading…</th><th>forget gate<br>(keep)</th><th>input gate<br>(write)</th><th>output gate<br>(show)</th><th>what happens</th></tr>
       <tr><td class="ph">“I grew up in <span class="x">France</span>.”</td><td><span class="dial on">1</span></td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><strong>Store it.</strong> The slot now holds “France”.</td></tr>
       <tr><td class="ph">“My parents moved … a café for years,”</td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><span class="dial off">0</span></td><td><strong>Hold it</strong> for about 35 words, saying nothing.</td></tr>
       <tr><td class="ph">“most comfortable in <span class="x">English</span>,”</td><td><span class="dial on">1</span></td><td><span class="dial off">0</span></td><td><span class="dial off">0</span></td><td><strong>Ignore the bait.</strong> Another language, but this slot doesn't take it.</td></tr>
@@ -508,10 +508,10 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
 <section>
   <div class="frame">
     <p class="kicker">Why it works</p>
-    <h2>On the belt, blame is only multiplied by the keep gate</h2>
-    <p>Going back one step along the belt, the blame is multiplied by the <strong>forget gate</strong>. No weights, no squashing.</p>
+    <h2>On the belt, blame is only multiplied by the forget gate</h2>
+    <p>Going back one step along the belt, the blame is multiplied by the <strong>forget gate</strong>. No weights, no squashing. At 1 (keep everything), the blame passes back untouched.</p>
     <div class="panel" style="gap:16px">
-      <div class="meter" style="grid-template-columns: 260px 1fr 90px"><label class="label" for="keep" style="font-size:18px">LSTM keep gate</label><input id="keep" type="range" min="0.5" max="1" step="0.005" value="0.98"><span class="v" id="keep-v">0.980</span></div>
+      <div class="meter" style="grid-template-columns: 260px 1fr 90px"><label class="label" for="keep" style="font-size:18px">LSTM forget gate</label><input id="keep" type="range" min="0.5" max="1" step="0.005" value="0.98"><span class="v" id="keep-v">0.980</span></div>
       <div class="race" id="race"></div>
     </div>
     <p class="callout">A plain RNN can't hold its multiplier at 1: the same weights and squashing apply every step. A gate can sit at 1 whenever the network wants to remember.</p>
@@ -531,7 +531,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <tr><td>40</td><td class="n">0.000011</td><td class="n">0.00028</td><td class="n h">25× more</td></tr>
       <tr><td>99</td><td class="n">0.0000000023</td><td class="n">0.0000027</td><td class="n h">1,000× more</td></tr>
     </table>
-    <p class="callout">One surprise: <strong>before training</strong>, the LSTM was no better. Its gates start out half open. It has to <em>learn</em> to hold the keep gate open.</p>
+    <p class="callout">One surprise: <strong>before training</strong>, the LSTM was no better. Its gates start out half open. It has to <em>learn</em> to hold the forget gate near 1 (keep everything).</p>
   </div>
   <aside class="notes">Real numbers from "train --details" (hidden size 256, 2000 rounds). The further back, the bigger the LSTM's advantage. The untrained point is worth stressing: the belt is a possibility, not a guarantee. That's why practitioners often start the forget gate's bias at about 1 so it begins by remembering (Jozefowicz et al., 2015).</aside>
 </section>
@@ -613,17 +613,17 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
 <section>
   <div class="frame">
     <p class="kicker">Try it · update gate</p>
-    <h2>One dial for keep and write</h2>
+    <h2>The update gate: one dial for keep and write</h2>
     <div style="max-width:820px">
       <div class="panel" style="gap:16px">
         <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span>old memory</span><span class="track"><span class="fill" style="width:90%;background:var(--accent)"></span></span><span class="v">0.90</span></div>
-        <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span>new draft</span><span class="track"><span class="fill" style="width:20%;background:var(--input)"></span></span><span class="v">0.20</span></div>
+        <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span>candidate</span><span class="track"><span class="fill" style="width:20%;background:var(--input)"></span></span><span class="v">0.20</span></div>
         <div class="meter" style="grid-template-columns: 150px 1fr 70px"><label class="label" for="upd" style="font-size:16px">update gate</label><input id="upd" type="range" min="0" max="1" step="0.05" value="0.5"><span class="v" id="upd-v"></span></div>
         <div class="meter" style="grid-template-columns: 150px 1fr 70px"><span><strong>new memory</strong></span><span class="track"><span class="fill" id="mix-a" style="background:var(--accent)"></span><span class="fill" id="mix-b" style="background:var(--input)"></span></span><span class="v" id="mix-v"></span></div>
         <p class="small" id="upd-msg"></p>
       </div>
     </div>
-    <p class="callout">z = 1 is the GRU's open keep gate: blame flows back along the memory unchanged.</p>
+    <p class="callout">z = 1 means keep everything, like an LSTM forget gate at 1: blame flows back along the memory unchanged.</p>
   </div>
   <aside class="notes">Drag the slider: at 1 the old memory passes through untouched, which gives the same blame highway as the LSTM's belt. At 0 the memory is replaced by the draft.</aside>
 </section>
@@ -635,23 +635,23 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     <h2>One GRU step, in three moves</h2>
     <div class="steps">
       <span class="n">1</span>
-      <div class="w"><strong>Reset?</strong> Decide how much of the old memory the draft is allowed to look at.</div>
+      <div class="w"><strong>Reset?</strong> Decide how much of the old memory the candidate is allowed to look at.</div>
       <div class="e">r<sub>t</sub> = σ(W<sub>r</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>r</sub>)</div>
       <span class="n">2</span>
-      <div class="w"><strong>Draft.</strong> Propose a new memory from the letter and the part of the old memory that reset lets through.</div>
+      <div class="w"><strong>Candidate.</strong> Draft a new memory from the letter and the part of the old memory that reset lets through.</div>
       <div class="e">h̃<sub>t</sub> = tanh(W<sub>h</sub>·[r<sub>t</sub> ⊙ <span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>h</sub>)</div>
       <span class="n">3</span>
-      <div class="w"><strong>Update.</strong> Keep a share z of the old memory and fill the rest from the draft.</div>
+      <div class="w"><strong>Update.</strong> Keep a share z of the old memory and fill the rest from the candidate.</div>
       <div class="e key">z<sub>t</sub> = σ(W<sub>z</sub>·[<span class="h">h<sub>t−1</sub></span>, <span class="x">x<sub>t</sub></span>] + b<sub>z</sub>)<br><span class="h">h<sub>t</sub></span> = z<sub>t</sub> ⊙ <span class="h">h<sub>t−1</sub></span> + (1 − z<sub>t</sub>) ⊙ h̃<sub>t</sub></div>
     </div>
     <div class="cols" style="gap:32px">
       <div class="panel" style="gap:8px;font-size:22px">
         <span class="label">When does reset matter?</span>
-        <p>Reset near 0 builds the draft from the <strong>current letter alone</strong>, a clean start. That's useful when a new sentence or a new name begins and the old context would only get in the way.</p>
+        <p>Reset near 0 builds the candidate from the <strong>current letter alone</strong>, a clean start. That's useful when a new sentence or a new name begins and the old context would only get in the way.</p>
       </div>
       <div class="panel" style="gap:8px;font-size:22px">
         <span class="label">Compared with the LSTM</span>
-        <p>z plays the keep gate and 1 − z plays the write gate. h<sub>t</sub> is both the memory and the output. Three weight matrices make it about 3× a plain RNN.</p>
+        <p>z does the job of the LSTM's forget gate (keep) and 1 − z the job of its input gate (write). h<sub>t</sub> is both the memory and the output. Three weight matrices make it about 3× a plain RNN.</p>
       </div>
     </div>
   </div>
@@ -666,8 +666,8 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     <table class="plain" style="font-size:28px">
       <tr><th></th><th>LSTM</th><th>GRU</th></tr>
       <tr><td>Memories</td><td>2: the belt and the output</td><td>1: the memory is the output</td></tr>
-      <tr><td>Gates</td><td>3: keep, write, show</td><td>2: update, reset</td></tr>
-      <tr><td>Keep and write</td><td>set separately</td><td>tied: keep + write = 1</td></tr>
+      <tr><td>Gates</td><td>3: forget, input, output<br><span class="small">(keep, write, show)</span></td><td>2: update, reset</td></tr>
+      <tr><td>How much to keep vs. write</td><td>two separate gates</td><td>one dial: z keeps, 1 − z writes</td></tr>
       <tr><td>Can remember without outputting?</td><td>yes (output gate)</td><td>no</td></tr>
       <tr><td>Size vs plain RNN</td><td class="n">about 4×</td><td class="n">about 3×</td></tr>
       <tr><td>Introduced</td><td class="n">1997</td><td class="n">2014</td></tr>
@@ -734,8 +734,8 @@ uv run demo/char_rnn.py generate "ROMEO:" --cell gru</pre>
     <h2>Three sentences to remember</h2>
     <ol style="font-size:32px;gap:22px">
       <li>Gated cells add a memory that is <strong>changed only by erasing and adding</strong>, not rewritten at every step.</li>
-      <li><strong>Gates</strong> are learned dials from 0 to 1. The LSTM has keep, write and show; the GRU has update and reset.</li>
-      <li>When the keep gate is open, <strong>blame flows back across many steps</strong>, so the network can learn from the far past.</li>
+      <li><strong>Gates</strong> are learned dials from 0 to 1. The LSTM has forget, input and output gates (keep, write, show); the GRU has update and reset.</li>
+      <li>When the forget gate sits near 1, <strong>blame flows back across many steps</strong>, so the network can learn from the far past.</li>
     </ol>
   </div>
   <aside class="notes">Ask a student to explain each sentence back, then ask the France question again: why can an LSTM learn it when a plain RNN can't?</aside>
@@ -840,7 +840,7 @@ uv run demo/char_rnn.py generate "ROMEO:" --cell gru</pre>
     el("path", { d: path(Math.tanh), fill: "none", class: "s-x", "stroke-width": 3, "stroke-dasharray": "8 5" }, null, g);
     el("path", { d: path(v => 1 / (1 + Math.exp(-v))), fill: "none", class: "s-h", "stroke-width": 3.5 }, null, g);
     el("text", { x: 44, y: 62, "font-size": 18, class: "f-h" }, "sigmoid → gates (0 to 1)", g);
-    el("text", { x: 496, y: 244, "text-anchor": "end", "font-size": 18, class: "f-x" }, "tanh → new info (−1 to 1)", g);
+    el("text", { x: 496, y: 244, "text-anchor": "end", "font-size": 18, class: "f-x" }, "tanh → candidate (−1 to 1)", g);
   })();
 
   // ---- you are the gates (slide 10)
@@ -924,13 +924,13 @@ uv run demo/char_rnn.py generate "ROMEO:" --cell gru</pre>
       const z = +inp.value, pa = z * 0.9, pb = (1 - z) * 0.2;
       uv.textContent = z.toFixed(2); mv.textContent = (pa + pb).toFixed(2);
       a.style.width = pa * 100 + "%"; b.style.width = pb * 100 + "%";
-      msg.textContent = z === 1 ? "Keep everything: the old memory passes through untouched." : z === 0 ? "Replace everything with the new draft." : `Keep ${Math.round(z * 100)}% of the old memory, fill the other ${Math.round((1 - z) * 100)}% from the draft.`;
+      msg.textContent = z === 1 ? "Keep everything: the old memory passes through untouched." : z === 0 ? "Replace everything with the candidate." : `Keep ${Math.round(z * 100)}% of the old memory, fill the other ${Math.round((1 - z) * 100)}% from the candidate.`;
     }
     inp.addEventListener("input", draw); draw();
   })();
 
   Reveal.initialize({
-    width: 1280, height: 720, margin: 0.06, center: false, hash: false,
+    width: 1280, height: 720, margin: 0.06, center: false, hash: true, hashOneBasedIndex: true,
     controls: true, progress: true, slideNumber: "c/t",
     transition: matchMedia("(prefers-reduced-motion: reduce)").matches ? "none" : "fade",
     plugins: window.RevealNotes ? [RevealNotes] : []

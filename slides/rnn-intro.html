@@ -87,6 +87,13 @@ svg text { font-family: var(--serif); }
 .strip { display: flex; align-items: center; gap: 10px; font-family: var(--mono); }
 .strip .c { width: 64px; height: 64px; border: 2px solid var(--input); color: var(--input); border-radius: 8px; display: grid; place-items: center; font-size: 34px; font-weight: 600; }
 .strip .arr { color: var(--accent); font-size: 26px; }
+
+/* Input / target shift (slide 16) */
+.shift { display: grid; grid-template-columns: 230px repeat(6, 64px); gap: 8px 10px; align-items: center; font-family: var(--mono); }
+.shift .rl { font-family: var(--serif); font-size: 24px; }
+.shift .c { width: 64px; height: 64px; border: 2px solid var(--input); color: var(--input); border-radius: 8px; display: grid; place-items: center; font-size: 34px; font-weight: 600; box-sizing: border-box; }
+.shift .c.t { border-color: var(--output); color: var(--output); border-style: dashed; }
+.shift .dn { text-align: center; color: var(--muted); font-size: 22px; }
 .strip .c.out { border-color: var(--output); color: var(--output); border-style: dashed; }
 
 /* Word chips & vector strips */
@@ -146,6 +153,7 @@ table.plain { border-collapse: collapse; font-variant-numeric: tabular-nums; fon
 table.plain th, table.plain td { padding: 8px 22px 8px 0; text-align: left; border-bottom: 1px solid var(--rule); }
 table.plain th { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
 table.plain td.n { font-family: var(--mono); }
+table.plain.tight td { padding-top: 4px; padding-bottom: 4px; }
 
 pre.cmd { font-family: var(--mono); font-size: 22px; line-height: 1.6; background: var(--panel); border-radius: 8px; padding: 18px 22px; margin: 0; white-space: pre; overflow-x: auto; box-shadow: none; width: auto; }
 pre.cmd .c { color: var(--muted); }
@@ -297,15 +305,41 @@ pre.cmd .c { color: var(--muted); }
         <line x1="320" y1="128" x2="320" y2="52" class="s-y" stroke-width="3" marker-end="url(#ay)"/>
         <text x="320" y="36" text-anchor="middle" font-size="22" class="f-y" font-weight="600">a guess  y(t)</text>
       </svg>
-      <div style="display:grid;gap:18px">
+      <div style="display:grid;gap:14px">
         <p>In words:</p>
         <p class="callout" style="font-size:28px"><span class="h">new memory</span> = squash( <span class="h">old memory</span> mixed with <span class="x">this word</span> )</p>
-        <p class="small">"Mixed" means multiplied by weight matrices the network learns. "Squash" (tanh) keeps every number between −1 and 1.</p>
-        <p class="eq">h<sub>t</sub> = tanh(W<sub>hh</sub>·h<sub>t−1</sub> + W<sub>xh</sub>·x<sub>t</sub> + b)</p>
+        <p class="callout" style="font-size:28px"><span class="y">guess</span> = probabilities( <span class="h">new memory</span> mixed once more )</p>
+        <p class="small">"Mixed" means multiplied by weight matrices the network learns. "Squash" (tanh) keeps every number between −1 and 1. "Probabilities" (softmax) turns one score per possible next word into chances that add up to 1.</p>
+        <p class="eq">h<sub>t</sub> = tanh(W<sub>hh</sub>·h<sub>t−1</sub> + W<sub>xh</sub>·x<sub>t</sub> + b<sub>h</sub>)<br>y<sub>t</sub> = softmax(W<sub>hy</sub>·h<sub>t</sub> + b<sub>y</sub>)</p>
       </div>
     </div>
   </div>
-  <aside class="notes">Only show the formula as a label; the words version is what matters. It's a normal dense layer with one extra input: its own previous output. x could be a word2vec vector or a one-hot letter. The output y is computed from the new memory with one more weight matrix.</aside>
+  <aside class="notes">Only show the formula as a label; the words version is what matters. It's a normal dense layer with one extra input: its own previous output. x could be a word2vec vector or a one-hot letter. The guess y is read off the new memory: one more weight matrix W_hy gives a score for every word in the vocabulary, and softmax turns those scores into probabilities. The guess depends only on h(t), so everything the network wants to use for predicting has to be stored in the memory.</aside>
+</section>
+
+<!-- 7b -->
+<section>
+  <div class="frame">
+    <p class="kicker">Inside one step · the shapes</p>
+    <h2>Everything is a vector or a grid of numbers</h2>
+    <table class="plain tight" style="font-size:23px">
+      <tr><th></th><th>what it is</th><th>shape</th><th>in the demo</th></tr>
+      <tr><td colspan="4" class="small" style="padding-top:4px">Change at every step</td></tr>
+      <tr><td class="x mono" style="font-size:26px">x<sub>t</sub></td><td>this letter, one-hot: a 1 in its slot, 0 elsewhere</td><td class="n">V</td><td class="n">65</td></tr>
+      <tr><td class="h mono" style="font-size:26px">h<sub>t</sub></td><td>the memory</td><td class="n">H</td><td class="n">256</td></tr>
+      <tr><td class="y mono" style="font-size:26px">y<sub>t</sub></td><td>the guess: a probability for every possible next letter</td><td class="n">V</td><td class="n">65</td></tr>
+      <tr><td colspan="4" class="small" style="padding-top:14px">Learned in training, then the same at every step</td></tr>
+      <tr><td class="mono" style="font-size:26px">W<sub>xh</sub></td><td>mixes <span class="x">input</span> into memory</td><td class="n">H × V</td><td class="n">16,640</td></tr>
+      <tr><td class="mono" style="font-size:26px">W<sub>hh</sub></td><td>mixes <span class="h">old memory</span> into new memory</td><td class="n">H × H</td><td class="n">65,536</td></tr>
+      <tr><td class="mono" style="font-size:26px">W<sub>hy</sub></td><td>turns <span class="h">memory</span> into a score per letter</td><td class="n">V × H</td><td class="n">16,640</td></tr>
+      <tr><td class="mono" style="font-size:26px">b<sub>h</sub>, b<sub>y</sub></td><td>biases: a starting offset for each number</td><td class="n">H, V</td><td class="n">512* + 65</td></tr>
+    </table>
+    <div class="rule-top" style="display:flex;gap:36px;align-items:baseline">
+      <p class="mono" style="font-size:20px;max-width:none;white-space:nowrap"><span class="small" style="font-family:var(--serif)">shapes line up:</span> (256×65)·65 → 256 &nbsp;&nbsp; (256×256)·256 → 256 &nbsp;&nbsp; (65×256)·256 → 65</p>
+      <p class="small" style="margin-left:auto">total <strong>99,393</strong></p>
+    </div>
+  </div>
+  <aside class="notes">Two kinds of thing. x, h and y are vectors that change at every step: the input, the memory, the guess. The W's and b's are the network itself: learned once in training, then frozen while reading. Every multiplication lines up: a matrix with H rows always produces a vector of H numbers. V is the vocabulary size (65 characters here). With word2vec inputs, x would be a 300-number word vector, so W_xh would be H × 300. *PyTorch stores the memory bias as two 256-number vectors that are just added together, so it counts 512. The total matches the 99,393 on the next-but-one slide.</aside>
 </section>
 
 <!-- 8 -->
@@ -438,7 +472,7 @@ pre.cmd .c { color: var(--muted); }
     </table>
     <div class="cols" style="gap:32px">
       <p><strong>Vanishing:</strong> the network barely learns from things far back, like <em>France</em> five words earlier.</p>
-      <p><strong>Exploding:</strong> huge, wild updates. Fix: <em>gradient clipping</em>, which caps the size.</p>
+      <p><strong>Exploding:</strong> huge, wild updates. Fix: <em>gradient clipping</em>, which caps the size of the blame (the gradient).</p>
     </div>
   </div>
   <aside class="notes">This is the same fading you saw on the slider, now happening to the learning signal. Clipping fixes exploding. Vanishing is harder and is why newer cells were invented. We'll name that at the end, not today.</aside>
@@ -466,6 +500,29 @@ pre.cmd .c { color: var(--muted); }
     </div>
   </div>
   <aside class="notes">Characters, not words, so no word2vec here: each character is a one-hot vector. Same idea though. The split is by position, so TEST is literally different scenes.</aside>
+</section>
+
+<!-- 15b -->
+<section>
+  <div class="frame">
+    <p class="kicker">Demo · the right answers</p>
+    <h2>The text is its own answer key</h2>
+    <p>To learn, every guess needs a right answer to check against. Here the right answer is simply <strong>the next character in the text</strong>.</p>
+    <div class="shift" aria-label="Input R O M E O colon; target O M E O colon newline: the same text shifted one character left">
+      <span class="rl x">reads</span>
+      <span class="c">R</span><span class="c">O</span><span class="c">M</span><span class="c">E</span><span class="c">O</span><span class="c">:</span>
+      <span></span>
+      <span class="dn">↓</span><span class="dn">↓</span><span class="dn">↓</span><span class="dn">↓</span><span class="dn">↓</span><span class="dn">↓</span>
+      <span class="rl y">should guess</span>
+      <span class="c t">O</span><span class="c t">M</span><span class="c t">E</span><span class="c t">O</span><span class="c t">:</span><span class="c t">↵</span>
+    </div>
+    <ul>
+      <li>The answers are the same text <strong>shifted one character left</strong>. Nobody has to label anything.</li>
+      <li>One 100-character snippet gives <strong>100 guesses</strong> to check, one at every step.</li>
+      <li>The loss scores how much probability the model gave the right character.</li>
+    </ul>
+  </div>
+  <aside class="notes">Answer to "do we have to tell it the expected output?": yes, but the text provides it for free. This is called self-supervised learning, and it's the same trick large language models use. Contrast: deciding whether a review is positive needs a person to label each review, with one answer at the end (many-to-one). Here there's an answer at every step (synced many-to-many). When the model writes later, there are no answers at all: it feeds its own guess back in. In the code: get_batch in demo/char_rnn.py builds y as x shifted by one.</aside>
 </section>
 
 <!-- 16 -->
@@ -535,6 +592,7 @@ pre.cmd .c { color: var(--muted); }
 </textarea>
         <label class="label" for="gen-temp">Boldness (temperature) <span id="gen-tv" class="mono">0.8</span></label>
         <input id="gen-temp" type="range" min="0.2" max="1.5" step="0.1" value="0.8">
+        <p class="small" style="font-size:18px;margin-top:-8px">Low: plays safe, picks the likeliest letters. High: takes more chances on unlikely ones.</p>
         <button type="button" class="primary" id="gen-run">Write 250 characters</button>
         <p class="warn" id="gen-warn"></p>
         <p class="small" style="font-size:19px">Same start, same random choices. The only difference is the weights.</p>
@@ -612,6 +670,7 @@ uv run demo/char_rnn.py generate "ROMEO:" --n 300</pre>
     <p class="kicker">Next time</p>
     <h2>Plain RNNs forget the far past</h2>
     <p class="lede">Next: the <strong>LSTM</strong>, a cell built to hold on to memories for longer.</p>
+    <p style="margin-top:24px"><a href="lstm-gru.html" style="color:var(--accent);font-weight:600">Continue: Memory with a door (LSTM &amp; GRU) →</a></p>
     <p style="font-size:44px;margin-top:30px">Questions?</p>
   </div>
   <aside class="notes">Only name LSTM here; don't explain it yet.</aside>
@@ -851,7 +910,7 @@ uv run demo/char_rnn.py generate "ROMEO:" --n 300</pre>
   })();
 
   Reveal.initialize({
-    width: 1280, height: 720, margin: 0.06, center: false, hash: false,
+    width: 1280, height: 720, margin: 0.06, center: false, hash: true, hashOneBasedIndex: true,
     controls: true, progress: true, slideNumber: "c/t",
     transition: matchMedia("(prefers-reduced-motion: reduce)").matches ? "none" : "fade",
     plugins: window.RevealNotes ? [RevealNotes] : []

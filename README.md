@@ -1,9 +1,9 @@
 # Recurrent Neural Networks, from the hidden state to LSTMs and GRUs
 
-Course material for learning RNNs with intuition first: two slide decks, a set of interactive lessons, and a small PyTorch demo that trains RNNs, LSTMs and GRUs on Shakespeare.
+Course material for learning RNNs with intuition first: three slide decks, a set of interactive lessons, and a small PyTorch demo that trains RNNs, LSTMs and GRUs on Shakespeare.
 
 ```
-slides/      two talks (reveal.js, one HTML file each)
+slides/      three talks (reveal.js, one HTML file each)
 demo/        char_rnn.py and word_rnn.py: train, test and play with real models
 lessons/     five interactive lessons, one HTML page each
 reference/   a one-page cheat sheet
@@ -16,12 +16,14 @@ Each deck is one self-contained HTML file. Open it in a browser; it needs an int
 ```sh
 open slides/rnn-intro.html      # Part 1
 open slides/lstm-gru.html       # Part 2
+open slides/seq2seq.html        # Part 3
 ```
 
 | Deck | Slides | Covers |
 |---|---|---|
-| **Part 1 · [Networks that remember](slides/rnn-intro.html)** | 23 | Why order and length need a new kind of network, the hidden state, shared weights, the three task shapes, training through time, and why blame fades. Ends with the Shakespeare demo: its results, and a slide where you type text and the model guesses the next letter. |
+| **Part 1 · [Networks that remember](slides/rnn-intro.html)** | 24 | Why order and length need a new kind of network, the hidden state, shared weights, the three task shapes, training through time, and why blame fades. Ends with the Shakespeare demo: its results, and a slide where you type text and the model guesses the next letter. |
 | **Part 2 · [Memory with a door](slides/lstm-gru.html)** | 24 | Why plain RNNs forget, where the LSTM and GRU came from, how their gates work (cell diagrams, step-by-step equations), why blame survives along the LSTM's belt, measured results from the demo, and which cell to choose. |
+| **Part 3 · [Read first, then write](slides/seq2seq.html)** | 20 | Sequence to sequence: why translation needs an encoder and a decoder, the context vector, start and end tokens, training end to end, teacher forcing, greedy vs beam search, the fixed-size bottleneck, and attention as the fix. Ends with how Transformers kept the encoder–decoder shape and dropped the recurrence. |
 
 Several slides are interactive: sliders for gates, a "you are the gates" puzzle, and a blame race between a plain RNN and an LSTM.
 

@@ -4,3 +4,6 @@ __pycache__/
 *.pyc
 # trained checkpoints: regenerate with `uv run demo/char_rnn.py train`
 *.pt
+
+# Office lock files
+~$*
