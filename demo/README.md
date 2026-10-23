@@ -142,3 +142,107 @@ king: prince 0.56, favour'd 0.55, brother 0.52, moved 0.49, duke 0.48, lord 0.47
 lord: sir 0.60, master 0.58, lady 0.55, softly 0.53, ...
 ```
 Nobody told it what words mean. Words end up close only because they're used in similar places. Common words get clean neighbours; rare ones stay noisy, since they're seen too rarely to move far.
+
+## Sequence to sequence: `seq2seq.py` (Part 3)
+
+### The problem
+
+**Read a date written the way people write it, and write it as `YYYY-MM-DD`.**
+
+```
+23 Oct 2026                                       -> 2026-10-23
+Friday, 23 October 2026                           -> 2026-10-23
+the twenty-third of October, twenty twenty-six    -> 2026-10-23
+```
+
+A tiny translation task. Input and output have different lengths, different alphabets and a different order (the day is read first and written last), so a synced many-to-many RNN can't do it. It needs Part 3's shape: an **encoder** that reads the whole input, and a **decoder** that writes from what the encoder left behind.
+
+### The model
+
+- **Encoder:** a GRU reads the input one character at a time (one-hot, like `char_rnn.py`). Its last hidden state is the **context c**: 128 numbers.
+- **Decoder:** a second GRU, with its own weights, starts from `c`. It's fed the start token `⟨s⟩`, writes a character, is fed that character, and so on until it writes the end token `⟨/s⟩`.
+- 133,134 weights in all. Both halves are trained together: one loss at the decoder, and blame flows back through `c` into the encoder.
+
+### The data
+
+Generated in code: random dates in six formats (`23 Oct 2026`, `23 October 2026`, `October 23, 2026`, `Oct 23 2026`, `Friday, 23 October 2026`, and spelled out), 15% all lower case and 15% all upper case.
+
+| part | dates | used by |
+|---|---|---|
+| **TRAIN** | 1900–2079, except every 10th day | `train` |
+| **TEST (days)** | every 10th day of 1900–2079 | `test` |
+| **TEST (years)** | every day of 2080–2099 | `test` |
+
+`23/10/2026` is never in training. The encoder can read `/` and `.`, but their weights were never trained.
+
+### The commands
+
+```sh
+uv run demo/seq2seq.py train                                # ~70 s
+uv run demo/seq2seq.py test
+uv run demo/seq2seq.py translate "23 Oct 2026" --details    # top 3 guesses at every decoder step
+uv run demo/seq2seq.py translate "SEP 13 2088" --beam 3     # greedy vs beam search
+uv run demo/seq2seq.py export                               # write the weights into slides/seq2seq.html
+```
+
+Every command takes `--cell rnn | lstm | gru` (default `gru`), `--hidden N` (the size of `c`, default 128) and `--max-dates N` (default 1). Each combination saves to its own file, e.g. `seq2seq-gru-128.pt` or `seq2seq-gru-128-x4.pt`.
+
+`train` runs 4,000 rounds of 128 random dates. The learning rate falls in a straight line to a tenth of its start; without it, some seeds kept bouncing around near the answer (one stopped at 74% after 2,500 rounds). With it, seeds 0–3 all reached 100% on the validation dates.
+
+### `test`: what it learned, and what it didn't
+
+From a real run (seed 0):
+```
+Whole date exactly right: 100.0%          (39,444 inputs from 6,574 days it never saw)
+
+Years it never saw (2080-2099), all formats: 12.1%
+  Tuesday, 13 March 2091    -> 2001-03-13   should be 2091-03-13
+  August 8, 2082            -> 2032-08-08   should be 2082-08-08
+```
+Perfect on new days, poor on new years. The decoder has never once written `208` or `209`, so it writes a year it knows. It learned patterns, not the rule "copy the year".
+
+### `translate`: greedy vs beam search
+
+```
+Input: 'the twenty-third of May, twenty ninety-two'
+  greedy:  2022-05-23                    (whole answer 20%)
+  beam search, width 3:
+    1. 2092-05-23     31.1%              <- right
+    2. 2022-05-23     20.0%
+    3. 2020-08-23     12.2%
+```
+Greedy commits to the likeliest character after `20` (a `2`) and is stuck with it. Beam search keeps `209…` alive and finds that the whole answer is more likely. On easy inputs (`23 Oct 2026`, 95%) the two agree. Inputs it has never seen give confident nonsense: `23/10/2026` → `2040-04-22`, and `2026-10-23` → an empty answer.
+
+### The bottleneck: `--max-dates 4`
+
+A second model reads 1 to 4 dates at once (`23 Oct 2026; May 5, 1990`) and writes them all (`2026-10-23;1990-05-05`), through the same `c`.
+
+```sh
+uv run demo/seq2seq.py train --max-dates 4     # ~5 min
+uv run demo/seq2seq.py test  --max-dates 4
+```
+
+Whole answer right, on dates it never saw:
+
+| model | 1 date | 2 dates | 3 dates | 4 dates |
+|---|---|---|---|---|
+| c = 128 | 99.3% | 0.6% | 0.0% | 0.0% |
+| c = 128, trained 3× longer (`--steps 12000`) | 100% | 3.7% | 0.0% | 0.0% |
+| c = 512 (`--hidden 512`) | 100% | 20.2% | 0.1% | 0.0% |
+
+It always gets the **first** date right, then garbles the rest (`1990-05-05` → `1904-05-06`). Training longer barely helps, and a bigger `c` does, so `c` really is a limit. Even 512 numbers only get two dates right a fifth of the time, though: part of the difficulty is the decoder learning to pull a second date back out of one summary. Attention (next lesson) removes the single summary altogether.
+
+### Teacher forcing: `--no-teacher-forcing`
+
+Feeds the decoder its own guesses during training instead of the right previous character. On this task it makes no consistent difference: over three seeds, either version was sometimes faster to learn, and the seed mattered more than the setting. Teacher forcing earns its keep on long outputs with big vocabularies, which this task doesn't have.
+
+### Which slide each part matches (Part 3)
+
+| Part | Slide |
+|---|---|
+| `Seq2Seq.encode`: read everything, keep only the last `h` | The encoder is a many-to-one RNN |
+| `decode_step`, starting from `c`, fed `⟨s⟩` | The decoder is our Shakespeare model, with a head start |
+| One loss, `loss.backward()` through decoder, `c` and encoder | Encoder and decoder learn together |
+| `forward(..., teacher_forcing=True)` | If the decoder guesses wrong, what do we feed it next? |
+| `greedy` and `beam_search` | Don't lock in the first word too early |
+| `--max-dates 4` | Squeeze the whole sentence into c |

@@ -291,7 +291,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <tr><td>many-to-one</td><td>a sequence</td><td>one answer</td><td>is this review positive?</td><td><code>predict</code></td></tr>
       <tr><td>one-to-many</td><td>one thing</td><td>a sequence</td><td>caption an image</td><td><code>generate</code></td></tr>
       <tr><td>synced many-to-many</td><td>a sequence</td><td>one output per input</td><td>tag each word as noun / verb</td><td>training</td></tr>
-      <tr><td><strong class="h">encoder–decoder</strong></td><td>a sequence</td><td><strong>a different sequence</strong></td><td>translate a sentence</td><td></td></tr>
+      <tr><td><strong class="h">encoder–decoder</strong></td><td>a sequence</td><td><strong>a different sequence</strong></td><td>translate a sentence</td><td><code>seq2seq.py</code></td></tr>
     </table>
     <p class="callout">The first three need one RNN. The fourth needs two.</p>
   </div>
@@ -408,7 +408,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     </div>
     <p class="callout">Stop when it writes <code>&lt;eos&gt;</code> (end of sentence). The decoder decides the length itself.</p>
   </div>
-  <aside class="notes">Compare with the demo's generate command: it's exactly a decoder, except its memory starts at zero (or from a priming string). Here the memory starts from c, so everything it writes is conditioned on the English sentence. g has its own weights, separate from the encoder's f. Cho et al.'s version also feeds c into every decoder step, not only the first; both work. The start and end tokens are ordinary vocabulary entries the model learns to use.</aside>
+  <aside class="notes">Compare with the demo's generate command: it's exactly a decoder, except its memory starts at zero (or from a priming string). Here the memory starts from c, so everything it writes is conditioned on the English sentence. g has its own weights, separate from the encoder's f. Cho et al.'s version also feeds c into every decoder step, not only the first; both work. The start and end tokens are ordinary vocabulary entries the model learns to use. Today's demo, demo/seq2seq.py, is exactly this: its decoder starts from the encoder's c and is fed ⟨s⟩.</aside>
 </section>
 
 <!-- 9 -->
@@ -479,7 +479,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     </div>
     <p class="callout">Feeding the correct previous word during training is called <strong>teacher forcing</strong>: like a teacher prompting the right word whenever a student stumbles while reciting.</p>
   </div>
-  <aside class="notes">Walk the left table first: "the model said 'un', but what do we hand it at step 2?" Let the class answer: we know the answer is 'le', so we give it 'le'. Then the right table: at translation time there's no answer key, so it must use its own 'un'. Benefit: training is faster and more stable, because every step learns from a correct context. Downside: the model never practises recovering from its own mistakes, yet that's exactly what happens in real use. Our Shakespeare demo did the same thing without naming it: each training input was the true next character, not the model's guess. Optional for stronger classes: this train/use mismatch is called "exposure bias", and one fix ("scheduled sampling") occasionally feeds the model's own guess during training.</aside>
+  <aside class="notes">Walk the left table first: "the model said 'un', but what do we hand it at step 2?" Let the class answer: we know the answer is 'le', so we give it 'le'. Then the right table: at translation time there's no answer key, so it must use its own 'un'. Benefit: training is faster and more stable, because every step learns from a correct context. Downside: the model never practises recovering from its own mistakes, yet that's exactly what happens in real use. Our Shakespeare demo did the same thing without naming it: each training input was the true next character, not the model's guess. Optional for stronger classes: this train/use mismatch is called "exposure bias", and one fix ("scheduled sampling") occasionally feeds the model's own guess during training. If asked whether it matters in our date demo: we measured it (train --no-teacher-forcing), and on that easy task it makes no consistent difference; the random seed mattered more. It earns its keep on long outputs with big vocabularies.</aside>
 </section>
 
 <!-- 12a -->
@@ -541,7 +541,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <p><strong>Beam search</strong>: keep the best few options open (here, 2) and choose once you can see where each leads.<br><span class="small">un, then chat: 40% × 90% = <strong>36%</strong> ← wins</span></p>
     </div>
   </div>
-  <aside class="notes">Analogy: a satnav. The road that starts out fastest isn't always the fastest route. Greedy commits to the best-looking first word; beam search keeps a handful of half-written sentences alive and picks the best whole sentence at the end. Why multiply? The chance of two things both happening is one chance times the other, like two coin flips both landing heads (50% × 50% = 25%). So a whole sentence's chance is the word chances multiplied along the path, and un→chat (36%) beats le→chat (20%) even though le looked better at step 1. Real systems use beams of about 4 to 10, and adjust for length, otherwise short sentences win just because they multiply fewer numbers.</aside>
+  <aside class="notes">Analogy: a satnav. The road that starts out fastest isn't always the fastest route. Greedy commits to the best-looking first word; beam search keeps a handful of half-written sentences alive and picks the best whole sentence at the end. Why multiply? The chance of two things both happening is one chance times the other, like two coin flips both landing heads (50% × 50% = 25%). So a whole sentence's chance is the word chances multiplied along the path, and un→chat (36%) beats le→chat (20%) even though le looked better at step 1. Real systems use beams of about 4 to 10, and adjust for length, otherwise short sentences win just because they multiply fewer numbers. The demo slides later show a real case from our date model, where beam search fixes greedy's mistake.</aside>
 </section>
 
 <!-- 13 -->
@@ -668,10 +668,17 @@ uv run demo/seq2seq.py translate \
     <p class="kicker">Demo · the bottleneck</p>
     <h2>More dates, same c</h2>
     <p>A second model reads <strong>1 to 4 dates</strong> at once and writes them all: <span class="x mono" style="font-weight:400">23 Oct 2026; May 5, 1990</span> → <span class="y mono" style="font-weight:400">2026-10-23;1990-05-05</span>. Same 128 numbers in <span class="h">c</span>, however many dates.</p>
-    <div style="display:grid;gap:16px" id="bn-rows"></div>
-    <p class="callout">One date fits in c. Four don't. Longer input, same c: the bottleneck, measured.</p>
+    <div style="display:grid;gap:14px">
+      <span class="label">Whole answer right, on dates it never saw · c = 128</span>
+      <div class="result-row"><span>1 date <span class="small">· ~19 characters</span></span><span class="track"><span class="fill" style="width:99.3%;background:var(--output)"></span></span><span class="pct">99%</span></div>
+      <div class="result-row"><span>2 dates <span class="small">· ~41 characters</span></span><span class="track"><span class="fill" style="width:0.6%;background:var(--bad)"></span></span><span class="pct">1%</span></div>
+      <div class="result-row"><span>3 dates <span class="small">· ~62 characters</span></span><span class="track"><span class="fill" style="width:0%"></span></span><span class="pct">0%</span></div>
+      <div class="result-row"><span>4 dates <span class="small">· ~83 characters</span></span><span class="track"><span class="fill" style="width:0%"></span></span><span class="pct">0%</span></div>
+    </div>
+    <p class="small">Is it just undertrained? Training 3× longer: two dates reach only 4%. A 4× bigger c (512 numbers): two dates reach 20%.</p>
+    <p class="callout">One date fits through c. More don't. Longer input, same c: the bottleneck, measured.</p>
   </div>
-  <aside class="notes" id="bn-notes"></aside>
+  <aside class="notes">Numbers from demo/seq2seq.py: train --max-dates 4, then test --max-dates 4 (about 5 minutes to train). Ask before revealing: "it's perfect on one date; what happens with two?" It always gets the FIRST date right (99%), then the rest are mostly wrong: it writes the right number of dates, but the later ones are garbled, e.g. 1990-05-05 comes out as 1904-05-06. The two checks on the small line matter: training longer barely helps, but a bigger c does, so c really is a limit. Honest caveat if asked: even with 512 numbers it only gets two dates right 20% of the time, and 3–4 dates still fail. Part of the difficulty is the decoder learning to pull a second date back out of one summary, not only the size of c. With 3–4 dates and the big c, the last date does slightly better than the middle ones (9% vs 0%), a hint that recent input survives best. Full table (whole answer, 1/2/3/4 dates): c=128 99.3/0.6/0/0; c=128 trained 3× longer 100/3.7/0/0; c=512 100/20.2/0.1/0. This is the cue for attention: instead of one c, let the decoder look back at every encoder memory.</aside>
 </section>
 
 <!-- 15 -->

@@ -1,10 +1,10 @@
 # Recurrent Neural Networks, from the hidden state to LSTMs and GRUs
 
-Course material for learning RNNs with intuition first: three slide decks, a set of interactive lessons, and a small PyTorch demo that trains RNNs, LSTMs and GRUs on Shakespeare.
+Course material for learning RNNs with intuition first: three slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare and a GRU encoder–decoder that translates dates.
 
 ```
 slides/      three talks (reveal.js, one HTML file each)
-demo/        char_rnn.py and word_rnn.py: train, test and play with real models
+demo/        char_rnn.py, word_rnn.py and seq2seq.py: train, test and play with real models
 lessons/     five interactive lessons, one HTML page each
 reference/   a one-page cheat sheet
 ```
@@ -23,15 +23,15 @@ open slides/seq2seq.html        # Part 3
 |---|---|---|
 | **Part 1 · [Networks that remember](slides/rnn-intro.html)** | 24 | Why order and length need a new kind of network, the hidden state, shared weights, the three task shapes, training through time, and why blame fades. Ends with the Shakespeare demo: its results, and a slide where you type text and the model guesses the next letter. |
 | **Part 2 · [Memory with a door](slides/lstm-gru.html)** | 24 | Why plain RNNs forget, where the LSTM and GRU came from, how their gates work (cell diagrams, step-by-step equations), why blame survives along the LSTM's belt, measured results from the demo, and which cell to choose. |
-| **Part 3 · [Read first, then write](slides/seq2seq.html)** | 20 | Sequence to sequence: why translation needs an encoder and a decoder, the context vector, start and end tokens, training end to end, teacher forcing, greedy vs beam search, the fixed-size bottleneck, and attention as the fix. Ends with how Transformers kept the encoder–decoder shape and dropped the recurrence. |
+| **Part 3 · [Read first, then write](slides/seq2seq.html)** | 23 | Sequence to sequence: why translation needs an encoder and a decoder, the context vector, start and end tokens, training end to end, teacher forcing, greedy vs beam search, and the fixed-size bottleneck. Then the date-translation demo, live: step through the encoder, c and the decoder; greedy vs beam on inputs where they disagree; and the bottleneck, measured. Ends with attention as the fix. |
 
-Several slides are interactive: sliders for gates, a "you are the gates" puzzle, and a blame race between a plain RNN and an LSTM.
+Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, and in Part 3 the trained date translator running in the browser.
 
 Keys: **→ / ←** to move, **S** for speaker notes (each slide has notes for the presenter), **Esc** for an overview of all slides, **F** for full screen.
 
 ## Demo
 
-Two scripts that train a real model on about 1.1M characters of Shakespeare and let you test it, ask it for guesses and let it write. They run on a laptop CPU in about 25–80 seconds.
+Two scripts train a real model on about 1.1M characters of Shakespeare and let you test it, ask it for guesses and let it write. A third trains a sequence-to-sequence model that rewrites dates. Each runs on a laptop CPU in about 25–80 seconds.
 
 You need [uv](https://docs.astral.sh/uv/). It installs Python, PyTorch and NumPy on the first run.
 
@@ -64,6 +64,19 @@ uv run demo/word_rnn.py train                          # ~70 s
 uv run demo/word_rnn.py predict "good morrow, my"      # lord 44%, gracious 5%, ...
 uv run demo/word_rnn.py neighbours lord king she       # words the model learned to treat alike
 ```
+
+### `seq2seq.py`: translate dates (Part 3)
+
+An encoder–decoder: a GRU reads a date written any of six ways, its last memory becomes the context c, and a second GRU writes it as `YYYY-MM-DD`.
+
+```sh
+uv run demo/seq2seq.py train                           # ~70 s
+uv run demo/seq2seq.py translate "23 Oct 2026" --details   # 2026-10-23, with the decoder's top guesses at each step
+uv run demo/seq2seq.py translate "SEP 13 2088" --beam 3    # greedy says 2038, beam search finds 2088
+uv run demo/seq2seq.py export                          # put the weights into the Part 3 slides
+```
+
+From one run: 100% right on 6,574 days it never saw (in all six formats), but only 12% on years it never saw (2080–2099). It learned the patterns it saw, not the rule. `--max-dates 4` measures the bottleneck: one date through c is 99% right, two or more are about 0%.
 
 [demo/README.md](demo/README.md) has the full walkthrough: the train / validation / test split, what one training round does, sample output from every command, and which lesson each part of the code matches.
 
