@@ -1,10 +1,10 @@
 # Recurrent Neural Networks, from the hidden state to LSTMs and GRUs
 
-Course material for learning RNNs with intuition first: three slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare and a GRU encoder–decoder that translates dates.
+Course material for learning RNNs with intuition first: four slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare, and GRU encoder–decoders, with and without attention, that translate dates.
 
 ```
-slides/      three talks (reveal.js, one HTML file each)
-demo/        char_rnn.py, word_rnn.py and seq2seq.py: train, test and play with real models
+slides/      four talks (reveal.js, one HTML file each)
+demo/        char_rnn.py, word_rnn.py, seq2seq.py and attention.py: train, test and play with real models
 lessons/     five interactive lessons, one HTML page each
 reference/   a one-page cheat sheet
 ```
@@ -17,6 +17,7 @@ Each deck is one self-contained HTML file. Open it in a browser; it needs an int
 open slides/rnn-intro.html      # Part 1
 open slides/lstm-gru.html       # Part 2
 open slides/seq2seq.html        # Part 3
+open slides/attention.html      # Part 4
 ```
 
 | Deck | Slides | Covers |
@@ -24,14 +25,15 @@ open slides/seq2seq.html        # Part 3
 | **Part 1 · [Networks that remember](slides/rnn-intro.html)** | 24 | Why order and length need a new kind of network, the hidden state, shared weights, the three task shapes, training through time, and why blame fades. Ends with the Shakespeare demo: its results, and a slide where you type text and the model guesses the next letter. |
 | **Part 2 · [Memory with a door](slides/lstm-gru.html)** | 24 | Why plain RNNs forget, where the LSTM and GRU came from, how their gates work (cell diagrams, step-by-step equations), why blame survives along the LSTM's belt, measured results from the demo, and which cell to choose. |
 | **Part 3 · [Read first, then write](slides/seq2seq.html)** | 23 | Sequence to sequence: why translation needs an encoder and a decoder, the context vector, start and end tokens, training end to end, teacher forcing, greedy vs beam search, and the fixed-size bottleneck. Then the date-translation demo, live: step through the encoder, c and the decoder; greedy vs beam on inputs where they disagree; and the bottleneck, measured. Ends with attention as the fix. |
+| **Part 4 · [Look back while you write](slides/attention.html)** | 20 | Attention: keep every encoder memory, then at each decoder step score them, soften the scores with softmax and mix them into a fresh context. A softmax playground, a step-through of “the black cat”, why attention gives blame a short path back, and alignment maps. Then the date translator with attention, live: watch where it looks for each character, and four dates at once with no bottleneck. Ends with what attention doesn't fix and why the Transformer dropped the RNN. |
 
-Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, and in Part 3 the trained date translator running in the browser.
+Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, and in Parts 3 and 4 the trained date translators running in the browser, including a live attention map.
 
 Keys: **→ / ←** to move, **S** for speaker notes (each slide has notes for the presenter), **Esc** for an overview of all slides, **F** for full screen.
 
 ## Demo
 
-Two scripts train a real model on about 1.1M characters of Shakespeare and let you test it, ask it for guesses and let it write. A third trains a sequence-to-sequence model that rewrites dates. Each runs on a laptop CPU in about 25–80 seconds.
+Two scripts train a real model on about 1.1M characters of Shakespeare and let you test it, ask it for guesses and let it write. A third trains a sequence-to-sequence model that rewrites dates, and a fourth adds attention to it. Each trains on a laptop CPU in about 25 seconds to 2 minutes (the multi-date experiments take longer).
 
 You need [uv](https://docs.astral.sh/uv/). It installs Python, PyTorch and NumPy on the first run.
 
@@ -77,6 +79,19 @@ uv run demo/seq2seq.py export                          # put the weights into th
 ```
 
 From one run: 100% right on 6,574 days it never saw (in all six formats), but only 12% on years it never saw (2080–2099). It learned the patterns it saw, not the rule. `--max-dates 4` measures the bottleneck: one date through c is 99% right, two or more are about 0%.
+
+### `attention.py`: the date translator, with attention (Part 4)
+
+The same task, data and exam as `seq2seq.py`. The decoder now looks back at every encoder memory at each step, instead of relying on one `c`.
+
+```sh
+uv run demo/attention.py train                              # ~2 min
+uv run demo/attention.py test
+uv run demo/attention.py translate "23 Oct 2026" --details  # a map of where it looked for each character
+uv run demo/attention.py export                             # put the weights into the Part 4 slides
+```
+
+From one run: 100% on unseen days, as before, but also **99.8% on unseen years** (Part 3: 12%), because it can look at the `9` in `2091` and copy it. With `--max-dates 4` it gets 1, 2, 3 and 4 dates all 100% right, where Part 3's single `c` managed 99%, 1%, 0%, 0%.
 
 [demo/README.md](demo/README.md) has the full walkthrough: the train / validation / test split, what one training round does, sample output from every command, and which lesson each part of the code matches.
 

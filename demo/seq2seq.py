@@ -535,10 +535,12 @@ def cmd_test(args):
         print("  none")
 
 
-def test_many(model, test_days, rng, per_k: int = 3000):
-    """The bottleneck test: the same c has to carry 1, 2, 3, ... dates."""
+def test_many(model, test_days, rng, per_k: int = 3000,
+              why: str = "Every date has to fit through the same c."):
+    """The bottleneck test: the same c has to carry 1, 2, 3, ... dates.
+    (attention.py runs the same test on its model, with its own `why`.)"""
     print(f"TEST: {per_k:,} inputs for each number of dates, all built from dates it never saw.")
-    print("Every date has to fit through the same c. How often is the WHOLE answer right,")
+    print(f"{why} How often is the WHOLE answer right,")
     print("how often is each date in it right, and which dates does it get right?\n")
     print(f"  {'dates':>5} {'avg input':>10} {'whole answer':>13} {'each date':>10}   by position (1st, 2nd, ...)")
     for k in range(1, model.max_dates + 1):

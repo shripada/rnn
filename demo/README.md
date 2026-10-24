@@ -246,3 +246,92 @@ Feeds the decoder its own guesses during training instead of the right previous 
 | `forward(..., teacher_forcing=True)` | If the decoder guesses wrong, what do we feed it next? |
 | `greedy` and `beam_search` | Don't lock in the first word too early |
 | `--max-dates 4` | Squeeze the whole sentence into c |
+
+## Attention: `attention.py` (Part 4)
+
+### The problem
+
+The same as `seq2seq.py`: read a date written any of six ways, write it as `YYYY-MM-DD`. Same data, same train / test split, same exam. The only change is the model.
+
+### The model
+
+- **Encoder:** the same GRU, but we keep its memory after **every** character, `h_1 … h_T`, not just the last one.
+- **Decoder:** the same GRU, started from `h_T` as before. At every step, before writing, it looks back:
+  1. **score** every `h_j`: `e_j = v · tanh(W_s s + W_h h_j)`, how useful is position `j` for what I'm about to write?
+  2. **soften** the scores with softmax into weights `a_j` that add up to 1;
+  3. **mix**: `c_t = Σ a_j h_j`, a fresh context for this step. It's fed into the decoder with the previous character, and into the output layer.
+- 200,590 weights; attention (`W_s`, `W_h`, `v`) adds 16,512 of them. Data, greedy decoding and beam search are imported from `seq2seq.py` unchanged.
+
+### The commands
+
+```sh
+uv run demo/attention.py train                                # ~2 min
+uv run demo/attention.py test
+uv run demo/attention.py translate "23 Oct 2026" --details    # where it looked for each character
+uv run demo/attention.py export                               # write the weights into slides/attention.html
+uv run demo/attention.py export --max-dates 4                 # and the 4-date model, for the bottleneck slide
+```
+
+Every command takes `--hidden N` (default 128) and `--max-dates N` (default 1), and saves to its own file: `attention-gru-128.pt`, `attention-gru-128-x4.pt`.
+
+### `test`: the unseen years, fixed
+
+From a real run (seed 0):
+```
+Whole date exactly right: 100.0%          (39,444 inputs from 6,574 days it never saw)
+
+Years it never saw (2080-2099), all formats: 99.8%
+  year written in digits ('2091'):             99.9%
+  year spelled out ('twenty ninety-one'):      99.3%
+```
+Part 3 got 12% on the unseen years: it had never written `208x` or `209x`, so it wrote a year it knew. With attention, writing the third digit, the decoder looks at the input position that holds the `9` and passes it on. We didn't add attention for this; it's a side effect of being able to look. It isn't a perfect rule either: the few mistakes look like `2094` → `2994`.
+
+### `translate --details`: the attention map
+
+```
+          23 Oct 2026
+          ‾‾‾‾‾‾‾‾‾‾‾
+     2 ←         ▓·     looked at '2' (#8) 74%
+     0 ←         ░▒·    looked at '0' (#9) 53%
+     2 ←           █    looked at '2' (#10) 90%
+     6 ←            █   looked at '6' (#11) 99%
+     - ←   ·       ··   looked at '6' (#11) 23%
+     1 ←      ▒░·       looked at 'c' (#5) 55%
+     0 ←      ▓··       looked at 'c' (#5) 70%
+     - ←  ░░·   ·       looked at '3' (#2) 37%
+     2 ←  █             looked at '2' (#1) 96%
+     3 ←   █            looked at '3' (#2) 99%
+  ⟨/s⟩ ←  ····  ·       looked at '2' (#1) 21%
+```
+One row per character written, one column per character read. It writes the year looking at the year, then jumps back to `Oct` for the month and to `23` for the day: the order flip, done by looking. Because the encoder reads left to right, it looks at the first letter that settles a word: the `c` of `Oct`, the `r` of `March` (not `May`), the `w` of `two` (not `three`).
+
+`23/10/2026`, a format it never saw, comes out as `2026-12-23`: day and year copied right, but no training format writes the month as a number. Attention lets it copy; it doesn't teach it what a month number means.
+
+### The bottleneck, gone: `--max-dates 4`
+
+```sh
+uv run demo/attention.py train --max-dates 4     # ~14 min (--steps 1000: ~3.5 min)
+uv run demo/attention.py test  --max-dates 4
+uv run demo/attention.py translate "23 Oct 2026; May 5, 1990" --max-dates 4 --details
+```
+
+Whole answer right, on dates neither model saw:
+
+| model | 1 date | 2 dates | 3 dates | 4 dates |
+|---|---|---|---|---|
+| `seq2seq.py`, one c of 128 | 99.3% | 0.6% | 0.0% | 0.0% |
+| `attention.py`, h of 128 | 100% | 100% | 100% | 100% |
+| `attention.py`, `--steps 1000` | 99.5% | 99.4% | 98.5% | 97.9% |
+
+The map for several dates shows one block per date, marching down the input: to write date 3, it looks at date 3. The price is time: every decoder step scores every input character, so the 4-date model trains about 3× slower than Part 3's.
+
+### Which slide each part matches (Part 4)
+
+| Part | Slide |
+|---|---|
+| `AttnSeq2Seq.encode` returns every `h_j` | Keep every memory, and look up the one you need |
+| `AttnSeq2Seq.attend`: score, softmax, weighted sum | Score, soften, mix |
+| `W_s`, `W_h`, `v` | A tiny network asks: "is this what I need?" |
+| `decode_step`: `c_t` into the decoder and the head | What changed from Part 3 |
+| `translate --details` | Watch where it looks |
+| `--max-dates 4` | Four dates, no single c · More dates, no bottleneck |
