@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard/style.css">
 <style>/*!
 * reveal.js 5.1.0
 * https://revealjs.com
@@ -757,6 +759,7 @@ uv run demo/char_rnn.py generate "ROMEO:" --cell gru</pre>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard/plugin.js"></script>
 <script>
 (function () {
   const NS = "http://www.w3.org/2000/svg";
@@ -929,11 +932,23 @@ uv run demo/char_rnn.py generate "ROMEO:" --cell gru</pre>
     inp.addEventListener("input", draw); draw();
   })();
 
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const CHALKBOARD = "https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard";
   Reveal.initialize({
     width: 1280, height: 720, margin: 0.06, center: false, hash: true, hashOneBasedIndex: true,
     controls: true, progress: true, slideNumber: "c/t",
     transition: matchMedia("(prefers-reduced-motion: reduce)").matches ? "none" : "fade",
-    plugins: window.RevealNotes ? [RevealNotes] : []
+    chalkboard: {
+      theme: dark ? "chalkboard" : "whiteboard",
+      storage: "chalkboard-lstm-gru",
+      // Plugin's default first pen is dark grey; swap it for off-white on the dark background
+      boardmarkers: [
+        [dark ? "rgba(235,235,225,1)" : "rgba(100,100,100,1)", "black"],
+        ["rgba(30,144,255,1)", "blue"], ["rgba(220,20,60,1)", "red"], ["rgba(50,205,50,1)", "green"],
+        ["rgba(255,140,0,1)", "orange"], ["rgba(150,0,150,1)", "purple"], ["rgba(255,220,0,1)", "yellow"]
+      ].map(([color, pen]) => ({ color, cursor: `url(${CHALKBOARD}/img/boardmarker-${pen}.png), auto` }))
+    },
+    plugins: [window.RevealNotes, window.RevealChalkboard].filter(Boolean)
   });
 })();
 </script>
