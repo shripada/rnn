@@ -65,6 +65,7 @@ body, .reveal-viewport { background: var(--bg); color: var(--fg); }
 .small { font-size: 22px; color: var(--muted); }
 .h { color: var(--accent); font-weight: 600; }
 .x { color: var(--input); font-weight: 600; }
+a.x { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .y { color: var(--output); font-weight: 600; }
 .grow { flex: 1; min-height: 0; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
@@ -355,12 +356,12 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     <p class="kicker">A little history</p>
     <h2>From one paper to every modern model</h2>
     <table class="plain" style="font-size:23px">
-      <tr><td class="n">2014</td><td><span class="h">Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio</span>, <span class="x">Neural Machine Translation by Jointly Learning to Align and Translate</span>. The encoder–decoder from Part 3, plus attention. Its quality holds up on long sentences where the basic model's falls off.</td></tr>
-      <tr><td class="n">2015</td><td><span class="h">Minh-Thang Luong, Hieu Pham and Christopher Manning</span>, <span class="x">Effective Approaches to Attention-based Neural Machine Translation</span>: simpler ways to score (a dot product). <span class="h">Kelvin Xu and colleagues</span>, <span class="x">Show, Attend and Tell</span>: attention over the parts of an image, for captions.</td></tr>
-      <tr><td class="n">2016</td><td><span class="h">Yonghui Wu and colleagues</span> (Google), <span class="x">Google's Neural Machine Translation System</span>: Google Translate switches to an LSTM encoder–decoder with attention.</td></tr>
-      <tr><td class="n">2017</td><td><span class="h">Ashish Vaswani and colleagues</span>, <span class="x">Attention Is All You Need</span>: keep the attention, drop the RNN. The Transformer.</td></tr>
+      <tr><td class="n">2014</td><td><span class="h">Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio</span>, <a class="x" href="https://arxiv.org/abs/1409.0473" target="_blank" rel="noopener">Neural Machine Translation by Jointly Learning to Align and Translate</a>. The encoder–decoder from Part 3, plus attention. Its quality holds up on long sentences where the basic model's falls off.</td></tr>
+      <tr><td class="n">2015</td><td><span class="h">Minh-Thang Luong, Hieu Pham and Christopher Manning</span>, <a class="x" href="https://arxiv.org/abs/1508.04025" target="_blank" rel="noopener">Effective Approaches to Attention-based Neural Machine Translation</a>: simpler ways to score (a dot product). <span class="h">Kelvin Xu and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1502.03044" target="_blank" rel="noopener">Show, Attend and Tell</a>: attention over the parts of an image, for captions.</td></tr>
+      <tr><td class="n">2016</td><td><span class="h">Yonghui Wu and colleagues</span> (Google), <a class="x" href="https://arxiv.org/abs/1609.08144" target="_blank" rel="noopener">Google's Neural Machine Translation System</a>: Google Translate switches to an LSTM encoder–decoder with attention.</td></tr>
+      <tr><td class="n">2017</td><td><span class="h">Ashish Vaswani and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>: keep the attention, drop the RNN. The Transformer.</td></tr>
     </table>
-    <p class="small"><span class="h">Orange</span>: authors · <span class="x">blue</span>: paper titles</p>
+    <p class="small"><span class="h">Orange</span>: authors · <span class="x">blue</span>: paper titles (click to open on arXiv)</p>
   </div>
   <aside class="notes">Bahdanau et al. called it "align and translate": the weights line up each output word with input words. The paper's title in full is worth knowing for an interview. Luong et al. (2015, "Effective Approaches to Attention-based Neural Machine Translation") compared scoring functions; the dot product is the one Transformers use. Xu et al. (2015, "Show, Attend and Tell") showed the idea isn't about text. The 2016 system is Google's Neural Machine Translation (GNMT, Wu et al.). We'll come back to 2017 at the end.</aside>
 </section>
@@ -406,18 +407,27 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
 
 <!-- 7 -->
 <section>
-  <div class="frame">
+  <div class="frame" style="gap:18px">
     <p class="kicker">How it scores</p>
-    <h2>A tiny network asks: “is this what I need?”</h2>
-    <div class="eq" style="font-size:30px;align-self:start">e<sub>j</sub> = v · tanh( W<sub>s</sub> <span class="h">s<sub>t−1</sub></span> + W<sub>h</sub> <span class="h">h<sub>j</sub></span> )</div>
-    <div class="cols3" style="font-size:23px">
-      <div class="panel"><span class="label">W<sub>s</sub> s<sub>t−1</sub></span><p>What the decoder <strong>needs</strong> now. “I've written <span class="mono">2026-10-</span>; I need the day.”</p></div>
-      <div class="panel"><span class="label">W<sub>h</sub> h<sub>j</sub></span><p>What's <strong>at</strong> input position j. “I'm the memory just after reading <span class="mono">23</span>.”</p></div>
-      <div class="panel"><span class="label">v · tanh(…)</span><p>How well they <strong>match</strong>, as one number. All three are learned weights.</p></div>
+    <h2>The score is a tiny network: “is this what I need?”</h2>
+    <p style="font-size:24px;margin:0;max-width:none">In: decoder memory <span class="h">s<sub>t−1</sub></span> and input memory <span class="h">h<sub>j</sub></span>. Out: one number <span class="h">e<sub>j</sub></span>; big means “look here”.</p>
+    <div class="steps" style="grid-template-columns: 44px 1.2fr 1fr; gap:12px 22px">
+      <span class="n">1</span>
+      <div class="w"><strong>Describe the need.</strong> A learned matrix turns the decoder's memory into 64 numbers. <em>“I've written <span class="mono">2026-10-</span>; I need the day.”</em></div>
+      <div class="e">W<sub>s</sub> <span class="h">s<sub>t−1</sub></span></div>
+      <span class="n">2</span>
+      <div class="w"><strong>Describe what's here.</strong> A second matrix does the same for input position j. <em>“I'm the memory just after reading <span class="mono">23</span>.”</em></div>
+      <div class="e">W<sub>h</sub> <span class="h">h<sub>j</sub></span></div>
+      <span class="n">3</span>
+      <div class="w"><strong>Combine.</strong> Add the two descriptions, then squash each of the 64 numbers into −1…1 with tanh, the same squash as the RNN update in Part 1.</div>
+      <div class="e">tanh( W<sub>s</sub> <span class="h">s<sub>t−1</sub></span> + W<sub>h</sub> <span class="h">h<sub>j</sub></span> )</div>
+      <span class="n">4</span>
+      <div class="w"><strong>Boil down to one number.</strong> A learned vector v weighs the 64 numbers and adds them up: some count for a match, some against.</div>
+      <div class="e key"><span class="h">e<sub>j</sub></span> = v · tanh( … )</div>
     </div>
-    <p class="small">This is Bahdanau's “additive” score. Luong's simpler version is a dot product, e<sub>j</sub> = <span class="h">s</span> · <span class="h">h<sub>j</sub></span>: big when the two point the same way. Transformers use a dot product too.</p>
+    <p class="small" style="max-width:none">W<sub>s</sub>, W<sub>h</sub> and v are learned with the rest of the model. This is Bahdanau's “additive” score. Luong's simpler one is a dot product, <span style="white-space:nowrap">e<sub>j</sub> = <span class="h">s</span> · <span class="h">h<sub>j</sub></span></span>: big when the two point the same way. Transformers use it too.</p>
   </div>
-  <aside class="notes">The score is itself a little one-hidden-layer network, trained with everything else. It's the same tanh you know from the RNN update in Part 1. A useful mental model for later: the decoder side is a "query", the encoder side is a "key", and what gets mixed are "values" (here the h_j themselves). That's exactly the vocabulary Transformers use, so it's worth naming now. In the demo, W_s and W_h each turn a 128-number memory into 64 numbers.</aside>
+  <aside class="notes">Read it from the inside out: describe what the decoder needs, describe what each input position holds, combine, reduce to one number. That's a one-hidden-layer network with 64 hidden units, run once per input position at every decoder step, and trained with everything else. In the demo, W_s and W_h each turn a 128-number memory into 64 numbers. The example lines are an interpretation, not something written in the weights: the model learns whatever descriptions make the translation come out right. A useful mental model for later: the decoder side is a "query", the encoder side is a "key", and what gets mixed are "values" (here the h_j themselves). That's exactly the vocabulary Transformers use, so it's worth naming now.</aside>
 </section>
 
 <!-- 8 -->
