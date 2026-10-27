@@ -123,6 +123,13 @@ svg text { font-family: var(--serif); }
 }
 .reveal button:hover { border-color: var(--accent); }
 .reveal button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* fallback when reveal.js fails to load: slides stacked as one long page */
+.no-reveal .reveal { height: auto; overflow: visible; }
+.no-reveal .reveal .slides { position: static; pointer-events: auto; }
+.no-reveal .reveal .slides > section { display: block; position: relative; width: 1280px; max-width: 100%; height: auto; min-height: 720px; margin: 0 auto 48px; padding: 36px 48px; border-bottom: 1px solid var(--rule); }
+.no-reveal-msg { font-family: var(--serif); font-size: 18px; margin: 0; padding: 12px 16px; background: var(--panel); border-bottom: 2px solid var(--accent); color: var(--fg); }
+.reveal button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.reveal button[aria-pressed=true] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
 .reveal button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
 .reveal button[aria-pressed=true] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
 .ctl-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
@@ -621,7 +628,7 @@ uv run demo/attention.py translate \
     </table>
     <p class="callout">Attention started as a fix for one c. It turned out to be the useful part.</p>
   </div>
-  <aside class="notes">This is as deep as the course goes into Transformers: the "why attention replaced recurrence" comparison from the mission. Self-attention is the same score–soften–mix, but every position of a sentence looks at every other position of the same sentence, so the encoder no longer needs a hidden state passed along. Order has to be put back in explicitly, as position information. Recurrence isn't dead: RNN-like models are still used where you must process a stream one step at a time with fixed memory, such as on-device speech, and newer "state space" models revive the idea. But almost every large language model today is a Transformer.</aside>
+  <aside class="notes">Part 5 opens this table up. Self-attention is the same score–soften–mix, but every position of a sentence looks at every other position of the same sentence, so the encoder no longer needs a hidden state passed along. Order has to be put back in explicitly, as position information. Recurrence isn't dead: RNN-like models are still used where you must process a stream one step at a time with fixed memory, such as on-device speech, and newer "state space" models revive the idea. But almost every large language model today is a Transformer.</aside>
 </section>
 
 <!-- 14 -->
@@ -658,9 +665,9 @@ uv run demo/attention.py translate \
 <!-- 16 -->
 <section>
   <div class="frame center">
-    <p class="kicker">End of the course</p>
+    <p class="kicker">Next</p>
     <h2>From one memory to looking back at all of them</h2>
-    <p class="lede">Part 1: a hidden state. Part 2: gates to protect it. Part 3: two RNNs and a context. Part 4: attention.</p>
+    <p class="lede">Part 1: a hidden state. Part 2: gates to protect it. Part 3: two RNNs and a context. Part 4: attention. Next, Part 5: drop the RNN and let every word look at every other word.</p>
     <p style="font-size:44px;margin-top:30px">Questions?</p>
   </div>
   <aside class="notes">One sentence per part, as a closing recap of the whole course. If there's time, ask: "which of the four ideas survives in a Transformer?" Attention directly; gating in a different form (residual connections play a similar role to the LSTM's belt); the encoder–decoder shape in the original Transformer.</aside>
@@ -1055,6 +1062,14 @@ uv run demo/attention.py translate \
 
   const dark = matchMedia("(prefers-color-scheme: dark)").matches;
   const CHALKBOARD = "https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard";
+  // Offline, reveal.js never loads and its CSS keeps every slide hidden: show them as a scrolling page instead
+  if (!window.Reveal) {
+    document.documentElement.classList.add("no-reveal");
+    const msg = document.createElement("p"); msg.className = "no-reveal-msg";
+    msg.textContent = "The slide library (reveal.js) couldn't load, probably no internet. Showing every slide on one page; the demos still work.";
+    document.body.prepend(msg);
+    return;
+  }
   Reveal.initialize({
     width: 1280, height: 720, margin: 0.06, center: false, hash: true, hashOneBasedIndex: true,
     controls: true, progress: true, slideNumber: "c/t",

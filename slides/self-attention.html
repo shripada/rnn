@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Every Word Looks at Every Word</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard/style.css">
+<style>/*!
+* reveal.js 5.1.0
+* https://revealjs.com
+* MIT licensed
+*
+* Copyright (C) 2011-2024 Hakim El Hattab, https://hakim.se
+*/.reveal .r-stretch,.reveal .stretch{max-width:none;max-height:none}.reveal pre.r-stretch code,.reveal pre.stretch code{height:100%;max-height:100%;box-sizing:border-box}.reveal .r-fit-text{display:inline-block;white-space:nowrap}.reveal .r-stack{display:grid;grid-template-rows:100%}.reveal .r-stack>*{grid-area:1/1;margin:auto}.reveal .r-hstack,.reveal .r-vstack{display:flex}.reveal .r-hstack img,.reveal .r-hstack video,.reveal .r-vstack img,.reveal .r-vstack video{min-width:0;min-height:0;object-fit:contain}.reveal .r-vstack{flex-direction:column;align-items:center;justify-content:center}.reveal .r-hstack{flex-direction:row;align-items:center;justify-content:center}.reveal .items-stretch{align-items:stretch}.reveal .items-start{align-items:flex-start}.reveal .items-center{align-items:center}.reveal .items-end{align-items:flex-end}.reveal .justify-between{justify-content:space-between}.reveal .justify-around{justify-content:space-around}.reveal .justify-start{justify-content:flex-start}.reveal .justify-center{justify-content:center}.reveal .justify-end{justify-content:flex-end}html.reveal-full-page{width:100%;height:100%;height:100vh;height:calc(var(--vh,1vh) * 100);height:100svh;overflow:hidden}.reveal-viewport{height:100%;overflow:hidden;position:relative;line-height:1;margin:0;background-color:#fff;color:#000;--r-controls-spacing:12px}.reveal-viewport:fullscreen{top:0!important;left:0!important;width:100%!important;height:100%!important;transform:none!important}.reveal .fragment{transition:all .2s ease}.reveal .fragment:not(.custom){opacity:0;visibility:hidden;will-change:opacity}.reveal .fragment.visible{opacity:1;visibility:inherit}.reveal .fragment.disabled{transition:none}.reveal .fragment.grow{opacity:1;visibility:inherit}.reveal .fragment.grow.visible{transform:scale(1.3)}.reveal .fragment.shrink{opacity:1;visibility:inherit}.reveal .fragment.shrink.visible{transform:scale(.7)}.reveal .fragment.zoom-in{transform:scale(.1)}.reveal .fragment.zoom-in.visible{transform:none}.reveal .fragment.fade-out{opacity:1;visibility:inherit}.reveal .fragment.fade-out.visible{opacity:0;visibility:hidden}.reveal .fragment.semi-fade-out{opacity:1;visibility:inherit}.reveal .fragment.semi-fade-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.strike{opacity:1;visibility:inherit}.reveal .fragment.strike.visible{text-decoration:line-through}.reveal .fragment.fade-up{transform:translate(0,40px)}.reveal .fragment.fade-up.visible{transform:translate(0,0)}.reveal .fragment.fade-down{transform:translate(0,-40px)}.reveal .fragment.fade-down.visible{transform:translate(0,0)}.reveal .fragment.fade-right{transform:translate(-40px,0)}.reveal .fragment.fade-right.visible{transform:translate(0,0)}.reveal .fragment.fade-left{transform:translate(40px,0)}.reveal .fragment.fade-left.visible{transform:translate(0,0)}.reveal .fragment.current-visible,.reveal .fragment.fade-in-then-out{opacity:0;visibility:hidden}.reveal .fragment.current-visible.current-fragment,.reveal .fragment.fade-in-then-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.fade-in-then-semi-out{opacity:0;visibility:hidden}.reveal .fragment.fade-in-then-semi-out.visible{opacity:.5;visibility:inherit}.reveal .fragment.fade-in-then-semi-out.current-fragment{opacity:1;visibility:inherit}.reveal .fragment.highlight-blue,.reveal .fragment.highlight-current-blue,.reveal .fragment.highlight-current-green,.reveal .fragment.highlight-current-red,.reveal .fragment.highlight-green,.reveal .fragment.highlight-red{opacity:1;visibility:inherit}.reveal .fragment.highlight-red.visible{color:#ff2c2d}.reveal .fragment.highlight-green.visible{color:#17ff2e}.reveal .fragment.highlight-blue.visible{color:#1b91ff}.reveal .fragment.highlight-current-red.current-fragment{color:#ff2c2d}.reveal .fragment.highlight-current-green.current-fragment{color:#17ff2e}.reveal .fragment.highlight-current-blue.current-fragment{color:#1b91ff}.reveal:after{content:"";font-style:italic}.reveal iframe{z-index:1}.reveal a{position:relative}@keyframes bounce-right{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(10px)}30%{transform:translateX(-5px)}}@keyframes bounce-left{0%,10%,25%,40%,50%{transform:translateX(0)}20%{transform:translateX(-10px)}30%{transform:translateX(5px)}}@keyframes bounce-down{0%,10%,25%,40%,50%{transform:translateY(0)}20%{transform:translateY(10px)}30%{transform:translateY(-5px)}}.reveal .controls{display:none;position:absolute;top:auto;bottom:var(--r-controls-spacing);right:var(--r-controls-spacing);left:auto;z-index:11;color:#000;pointer-events:none;font-size:10px}.reveal .controls button{position:absolute;padding:0;background-color:transparent;border:0;outline:0;cursor:pointer;color:currentColor;transform:scale(.9999);transition:color .2s ease,opacity .2s ease,transform .2s ease;z-index:2;pointer-events:auto;font-size:inherit;visibility:hidden;opacity:0;-webkit-appearance:none;-webkit-tap-highlight-color:transparent}.reveal .controls .controls-arrow:after,.reveal .controls .controls-arrow:before{content:"";position:absolute;top:0;left:0;width:2.6em;height:.5em;border-radius:.25em;background-color:currentColor;transition:all .15s ease,background-color .8s ease;transform-origin:.2em 50%;will-change:transform}.reveal .controls .controls-arrow{position:relative;width:3.6em;height:3.6em}.reveal .controls .controls-arrow:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal .controls .controls-arrow:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}.reveal .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(40deg)}.reveal .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-40deg)}.reveal .controls .controls-arrow:active:before{transform:translateX(.5em) translateY(1.55em) rotate(36deg)}.reveal .controls .controls-arrow:active:after{transform:translateX(.5em) translateY(1.55em) rotate(-36deg)}.reveal .controls .navigate-left{right:6.4em;bottom:3.2em;transform:translateX(-10px)}.reveal .controls .navigate-left.highlight{animation:bounce-left 2s 50 both ease-out}.reveal .controls .navigate-right{right:0;bottom:3.2em;transform:translateX(10px)}.reveal .controls .navigate-right .controls-arrow{transform:rotate(180deg)}.reveal .controls .navigate-right.highlight{animation:bounce-right 2s 50 both ease-out}.reveal .controls .navigate-up{right:3.2em;bottom:6.4em;transform:translateY(-10px)}.reveal .controls .navigate-up .controls-arrow{transform:rotate(90deg)}.reveal .controls .navigate-down{right:3.2em;bottom:-1.4em;padding-bottom:1.4em;transform:translateY(10px)}.reveal .controls .navigate-down .controls-arrow{transform:rotate(-90deg)}.reveal .controls .navigate-down.highlight{animation:bounce-down 2s 50 both ease-out}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled{opacity:.3}.reveal .controls[data-controls-back-arrows=faded] .navigate-up.enabled:hover{opacity:1}.reveal .controls[data-controls-back-arrows=hidden] .navigate-up.enabled{opacity:0;visibility:hidden}.reveal .controls .enabled{visibility:visible;opacity:.9;cursor:pointer;transform:none}.reveal .controls .enabled.fragmented{opacity:.5}.reveal .controls .enabled.fragmented:hover,.reveal .controls .enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled{opacity:.3}.reveal:not(.rtl) .controls[data-controls-back-arrows=faded] .navigate-left.enabled:hover{opacity:1}.reveal:not(.rtl) .controls[data-controls-back-arrows=hidden] .navigate-left.enabled{opacity:0;visibility:hidden}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled{opacity:.3}.reveal.rtl .controls[data-controls-back-arrows=faded] .navigate-right.enabled:hover{opacity:1}.reveal.rtl .controls[data-controls-back-arrows=hidden] .navigate-right.enabled{opacity:0;visibility:hidden}.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-down,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-up{display:none}.reveal:not(.has-vertical-slides) .controls .navigate-left,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-left{bottom:1.4em;right:5.5em}.reveal:not(.has-vertical-slides) .controls .navigate-right,.reveal[data-navigation-mode=linear].has-horizontal-slides .navigate-right{bottom:1.4em;right:.5em}.reveal:not(.has-horizontal-slides) .controls .navigate-up{right:1.4em;bottom:5em}.reveal:not(.has-horizontal-slides) .controls .navigate-down{right:1.4em;bottom:.5em}.reveal.has-dark-background .controls{color:#fff}.reveal.has-light-background .controls{color:#000}.reveal.no-hover .controls .controls-arrow:active:before,.reveal.no-hover .controls .controls-arrow:hover:before{transform:translateX(.5em) translateY(1.55em) rotate(45deg)}.reveal.no-hover .controls .controls-arrow:active:after,.reveal.no-hover .controls .controls-arrow:hover:after{transform:translateX(.5em) translateY(1.55em) rotate(-45deg)}@media screen and (min-width:500px){.reveal-viewport{--r-controls-spacing:0.8em}.reveal .controls[data-controls-layout=edges]{top:0;right:0;bottom:0;left:0}.reveal .controls[data-controls-layout=edges] .navigate-down,.reveal .controls[data-controls-layout=edges] .navigate-left,.reveal .controls[data-controls-layout=edges] .navigate-right,.reveal .controls[data-controls-layout=edges] .navigate-up{bottom:auto;right:auto}.reveal .controls[data-controls-layout=edges] .navigate-left{top:50%;left:var(--r-controls-spacing);margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-right{top:50%;right:var(--r-controls-spacing);margin-top:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-up{top:var(--r-controls-spacing);left:50%;margin-left:-1.8em}.reveal .controls[data-controls-layout=edges] .navigate-down{bottom:calc(var(--r-controls-spacing) - 1.4em + .3em);left:50%;margin-left:-1.8em}}.reveal .progress{position:absolute;display:none;height:3px;width:100%;bottom:0;left:0;z-index:10;background-color:rgba(0,0,0,.2);color:#fff}.reveal .progress:after{content:"";display:block;position:absolute;height:10px;width:100%;top:-10px}.reveal .progress span{display:block;height:100%;width:100%;background-color:currentColor;transition:transform .8s cubic-bezier(.26,.86,.44,.985);transform-origin:0 0;transform:scaleX(0)}.reveal .slide-number{position:absolute;display:block;right:8px;bottom:8px;z-index:31;font-family:Helvetica,sans-serif;font-size:12px;line-height:1;color:#fff;background-color:rgba(0,0,0,.4);padding:5px}.reveal .slide-number a{color:currentColor}.reveal .slide-number-delimiter{margin:0 3px}.reveal{position:relative;width:100%;height:100%;overflow:hidden;touch-action:pinch-zoom}.reveal.embedded{touch-action:pan-y}.reveal.embedded.is-vertical-slide{touch-action:none}.reveal .slides{position:absolute;width:100%;height:100%;top:0;right:0;bottom:0;left:0;margin:auto;pointer-events:none;overflow:visible;z-index:1;text-align:center;perspective:600px;perspective-origin:50% 40%}.reveal .slides>section{perspective:600px}.reveal .slides>section,.reveal .slides>section>section{display:none;position:absolute;width:100%;pointer-events:auto;z-index:10;transform-style:flat;transition:transform-origin .8s cubic-bezier(.26,.86,.44,.985),transform .8s cubic-bezier(.26,.86,.44,.985),visibility .8s cubic-bezier(.26,.86,.44,.985),opacity .8s cubic-bezier(.26,.86,.44,.985)}.reveal[data-transition-speed=fast] .slides section{transition-duration:.4s}.reveal[data-transition-speed=slow] .slides section{transition-duration:1.2s}.reveal .slides section[data-transition-speed=fast]{transition-duration:.4s}.reveal .slides section[data-transition-speed=slow]{transition-duration:1.2s}.reveal .slides>section.stack{padding-top:0;padding-bottom:0;pointer-events:none;height:100%}.reveal .slides>section.present,.reveal .slides>section>section.present{display:block;z-index:11;opacity:1}.reveal .slides>section:empty,.reveal .slides>section>section:empty,.reveal .slides>section>section[data-background-interactive],.reveal .slides>section[data-background-interactive]{pointer-events:none}.reveal.center,.reveal.center .slides,.reveal.center .slides section{min-height:0!important}.reveal .slides>section:not(.present),.reveal .slides>section>section:not(.present){pointer-events:none}.reveal.overview .slides>section,.reveal.overview .slides>section>section{pointer-events:auto}.reveal .slides>section.future,.reveal .slides>section.future>section,.reveal .slides>section.past,.reveal .slides>section.past>section,.reveal .slides>section>section.future,.reveal .slides>section>section.past{opacity:0}.reveal .slides>section[data-transition=slide].past,.reveal .slides>section[data-transition~=slide-out].past,.reveal.slide .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=slide].future,.reveal .slides>section[data-transition~=slide-in].future,.reveal.slide .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=slide].past,.reveal .slides>section>section[data-transition~=slide-out].past,.reveal.slide .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=slide].future,.reveal .slides>section>section[data-transition~=slide-in].future,.reveal.slide .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides>section[data-transition=linear].past,.reveal .slides>section[data-transition~=linear-out].past,.reveal.linear .slides>section:not([data-transition]).past{transform:translate(-150%,0)}.reveal .slides>section[data-transition=linear].future,.reveal .slides>section[data-transition~=linear-in].future,.reveal.linear .slides>section:not([data-transition]).future{transform:translate(150%,0)}.reveal .slides>section>section[data-transition=linear].past,.reveal .slides>section>section[data-transition~=linear-out].past,.reveal.linear .slides>section>section:not([data-transition]).past{transform:translate(0,-150%)}.reveal .slides>section>section[data-transition=linear].future,.reveal .slides>section>section[data-transition~=linear-in].future,.reveal.linear .slides>section>section:not([data-transition]).future{transform:translate(0,150%)}.reveal .slides section[data-transition=default].stack,.reveal.default .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=default].past,.reveal .slides>section[data-transition~=default-out].past,.reveal.default .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=default].future,.reveal .slides>section[data-transition~=default-in].future,.reveal.default .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=default].past,.reveal .slides>section>section[data-transition~=default-out].past,.reveal.default .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=default].future,.reveal .slides>section>section[data-transition~=default-in].future,.reveal.default .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=convex].stack,.reveal.convex .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=convex].past,.reveal .slides>section[data-transition~=convex-out].past,.reveal.convex .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=convex].future,.reveal .slides>section[data-transition~=convex-in].future,.reveal.convex .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=convex].past,.reveal .slides>section>section[data-transition~=convex-out].past,.reveal.convex .slides>section>section:not([data-transition]).past{transform:translate3d(0,-300px,0) rotateX(70deg) translate3d(0,-300px,0)}.reveal .slides>section>section[data-transition=convex].future,.reveal .slides>section>section[data-transition~=convex-in].future,.reveal.convex .slides>section>section:not([data-transition]).future{transform:translate3d(0,300px,0) rotateX(-70deg) translate3d(0,300px,0)}.reveal .slides section[data-transition=concave].stack,.reveal.concave .slides section.stack{transform-style:preserve-3d}.reveal .slides>section[data-transition=concave].past,.reveal .slides>section[data-transition~=concave-out].past,.reveal.concave .slides>section:not([data-transition]).past{transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal .slides>section[data-transition=concave].future,.reveal .slides>section[data-transition~=concave-in].future,.reveal.concave .slides>section:not([data-transition]).future{transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal .slides>section>section[data-transition=concave].past,.reveal .slides>section>section[data-transition~=concave-out].past,.reveal.concave .slides>section>section:not([data-transition]).past{transform:translate3d(0,-80%,0) rotateX(-70deg) translate3d(0,-80%,0)}.reveal .slides>section>section[data-transition=concave].future,.reveal .slides>section>section[data-transition~=concave-in].future,.reveal.concave .slides>section>section:not([data-transition]).future{transform:translate3d(0,80%,0) rotateX(70deg) translate3d(0,80%,0)}.reveal .slides section[data-transition=zoom],.reveal.zoom .slides section:not([data-transition]){transition-timing-function:ease}.reveal .slides>section[data-transition=zoom].past,.reveal .slides>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section:not([data-transition]).past{visibility:hidden;transform:scale(16)}.reveal .slides>section[data-transition=zoom].future,.reveal .slides>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section:not([data-transition]).future{visibility:hidden;transform:scale(.2)}.reveal .slides>section>section[data-transition=zoom].past,.reveal .slides>section>section[data-transition~=zoom-out].past,.reveal.zoom .slides>section>section:not([data-transition]).past{transform:scale(16)}.reveal .slides>section>section[data-transition=zoom].future,.reveal .slides>section>section[data-transition~=zoom-in].future,.reveal.zoom .slides>section>section:not([data-transition]).future{transform:scale(.2)}.reveal.cube .slides{perspective:1300px}.reveal.cube .slides section{padding:30px;min-height:700px;backface-visibility:hidden;box-sizing:border-box;transform-style:preserve-3d}.reveal.center.cube .slides section{min-height:0}.reveal.cube .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);border-radius:4px;transform:translateZ(-20px)}.reveal.cube .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);transform:translateZ(-90px) rotateX(65deg)}.reveal.cube .slides>section.stack{padding:0;background:0 0}.reveal.cube .slides>section.past{transform-origin:100% 0;transform:translate3d(-100%,0,0) rotateY(-90deg)}.reveal.cube .slides>section.future{transform-origin:0 0;transform:translate3d(100%,0,0) rotateY(90deg)}.reveal.cube .slides>section>section.past{transform-origin:0 100%;transform:translate3d(0,-100%,0) rotateX(90deg)}.reveal.cube .slides>section>section.future{transform-origin:0 0;transform:translate3d(0,100%,0) rotateX(-90deg)}.reveal.page .slides{perspective-origin:0 50%;perspective:3000px}.reveal.page .slides section{padding:30px;min-height:700px;box-sizing:border-box;transform-style:preserve-3d}.reveal.page .slides section.past{z-index:12}.reveal.page .slides section:not(.stack):before{content:"";position:absolute;display:block;width:100%;height:100%;left:0;top:0;background:rgba(0,0,0,.1);transform:translateZ(-20px)}.reveal.page .slides section:not(.stack):after{content:"";position:absolute;display:block;width:90%;height:30px;left:5%;bottom:0;background:0 0;z-index:1;border-radius:4px;box-shadow:0 95px 25px rgba(0,0,0,.2);-webkit-transform:translateZ(-90px) rotateX(65deg)}.reveal.page .slides>section.stack{padding:0;background:0 0}.reveal.page .slides>section.past{transform-origin:0 0;transform:translate3d(-40%,0,0) rotateY(-80deg)}.reveal.page .slides>section.future{transform-origin:100% 0;transform:translate3d(0,0,0)}.reveal.page .slides>section>section.past{transform-origin:0 0;transform:translate3d(0,-40%,0) rotateX(80deg)}.reveal.page .slides>section>section.future{transform-origin:0 100%;transform:translate3d(0,0,0)}.reveal .slides section[data-transition=fade],.reveal.fade .slides section:not([data-transition]),.reveal.fade .slides>section>section:not([data-transition]){transform:none;transition:opacity .5s}.reveal.fade.overview .slides section,.reveal.fade.overview .slides>section>section{transition:none}.reveal .slides section[data-transition=none],.reveal.none .slides section:not([data-transition]){transform:none;transition:none}.reveal .pause-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;visibility:hidden;opacity:0;z-index:100;transition:all 1s ease}.reveal .pause-overlay .resume-button{position:absolute;bottom:20px;right:20px;color:#ccc;border-radius:2px;padding:6px 14px;border:2px solid #ccc;font-size:16px;background:0 0;cursor:pointer}.reveal .pause-overlay .resume-button:hover{color:#fff;border-color:#fff}.reveal.paused .pause-overlay{visibility:visible;opacity:1}.reveal .no-transition,.reveal .no-transition *,.reveal .slides.disable-slide-transitions section{transition:none!important}.reveal .slides.disable-slide-transitions section{transform:none!important}.reveal .backgrounds{position:absolute;width:100%;height:100%;top:0;left:0;perspective:600px}.reveal .slide-background{display:none;position:absolute;width:100%;height:100%;opacity:0;visibility:hidden;overflow:hidden;background-color:rgba(0,0,0,0);transition:all .8s cubic-bezier(.26,.86,.44,.985)}.reveal .slide-background-content{position:absolute;width:100%;height:100%;background-position:50% 50%;background-repeat:no-repeat;background-size:cover}.reveal .slide-background.stack{display:block}.reveal .slide-background.present{opacity:1;visibility:visible;z-index:2}.print-pdf .reveal .slide-background{opacity:1!important;visibility:visible!important}.reveal .slide-background video{position:absolute;width:100%;height:100%;max-width:none;max-height:none;top:0;left:0;object-fit:cover}.reveal .slide-background[data-background-size=contain] video{object-fit:contain}.reveal>.backgrounds .slide-background[data-background-transition=none],.reveal[data-background-transition=none]>.backgrounds .slide-background:not([data-background-transition]){transition:none}.reveal>.backgrounds .slide-background[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background:not([data-background-transition]){opacity:1}.reveal>.backgrounds .slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.past:not([data-background-transition]){transform:translate(-100%,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background.future:not([data-background-transition]){transform:translate(100%,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){transform:translate(0,-100%)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=slide],.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){transform:translate(0,100%)}.reveal>.backgrounds .slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(-90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=convex],.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(-90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(-100%,0,0) rotateY(90deg) translate3d(-100%,0,0)}.reveal>.backgrounds .slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(100%,0,0) rotateY(-90deg) translate3d(100%,0,0)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;transform:translate3d(0,-100%,0) rotateX(-90deg) translate3d(0,-100%,0)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=concave],.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;transform:translate3d(0,100%,0) rotateX(90deg) translate3d(0,100%,0)}.reveal>.backgrounds .slide-background[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background:not([data-background-transition]){transition-timing-function:ease}.reveal>.backgrounds .slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.past:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(16)}.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=zoom],.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.future:not([data-background-transition]){opacity:0;visibility:hidden;transform:scale(.2)}.reveal[data-transition-speed=fast]>.backgrounds .slide-background{transition-duration:.4s}.reveal[data-transition-speed=slow]>.backgrounds .slide-background{transition-duration:1.2s}.reveal [data-auto-animate-target^=unmatched]{will-change:opacity}.reveal section[data-auto-animate]:not(.stack):not([data-auto-animate=running]) [data-auto-animate-target^=unmatched]{opacity:0}.reveal.overview{perspective-origin:50% 50%;perspective:700px}.reveal.overview .slides{-moz-transform-style:preserve-3d}.reveal.overview .slides section{height:100%;top:0!important;opacity:1!important;overflow:hidden;visibility:visible!important;cursor:pointer;box-sizing:border-box}.reveal.overview .slides section.present,.reveal.overview .slides section:hover{outline:10px solid rgba(150,150,150,.4);outline-offset:10px}.reveal.overview .slides section .fragment{opacity:1;transition:none}.reveal.overview .slides section:after,.reveal.overview .slides section:before{display:none!important}.reveal.overview .slides>section.stack{padding:0;top:0!important;background:0 0;outline:0;overflow:visible}.reveal.overview .backgrounds{perspective:inherit;-moz-transform-style:preserve-3d}.reveal.overview .backgrounds .slide-background{opacity:1;visibility:visible;outline:10px solid rgba(150,150,150,.1);outline-offset:10px}.reveal.overview .backgrounds .slide-background.stack{overflow:visible}.reveal.overview .slides section,.reveal.overview-deactivating .slides section{transition:none}.reveal.overview .backgrounds .slide-background,.reveal.overview-deactivating .backgrounds .slide-background{transition:none}.reveal.rtl .slides,.reveal.rtl .slides h1,.reveal.rtl .slides h2,.reveal.rtl .slides h3,.reveal.rtl .slides h4,.reveal.rtl .slides h5,.reveal.rtl .slides h6{direction:rtl;font-family:sans-serif}.reveal.rtl code,.reveal.rtl pre{direction:ltr}.reveal.rtl ol,.reveal.rtl ul{text-align:right}.reveal.rtl .progress span{transform-origin:100% 0}.reveal.has-parallax-background .backgrounds{transition:all .8s ease}.reveal.has-parallax-background[data-transition-speed=fast] .backgrounds{transition-duration:.4s}.reveal.has-parallax-background[data-transition-speed=slow] .backgrounds{transition-duration:1.2s}.reveal>.overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1000;background:rgba(0,0,0,.95);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:all .3s ease}.reveal>.overlay .spinner{position:absolute;display:block;top:50%;left:50%;width:32px;height:32px;margin:-16px 0 0 -16px;z-index:10;background-image:url(data:image/gif;base64,R0lGODlhIAAgAPMAAJmZmf%2F%2F%2F6%2Bvr8nJybW1tcDAwOjo6Nvb26ioqKOjo7Ozs%2FLy8vz8%2FAAAAAAAAAAAACH%2FC05FVFNDQVBFMi4wAwEAAAAh%2FhpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh%2BQQJCgAAACwAAAAAIAAgAAAE5xDISWlhperN52JLhSSdRgwVo1ICQZRUsiwHpTJT4iowNS8vyW2icCF6k8HMMBkCEDskxTBDAZwuAkkqIfxIQyhBQBFvAQSDITM5VDW6XNE4KagNh6Bgwe60smQUB3d4Rz1ZBApnFASDd0hihh12BkE9kjAJVlycXIg7CQIFA6SlnJ87paqbSKiKoqusnbMdmDC2tXQlkUhziYtyWTxIfy6BE8WJt5YJvpJivxNaGmLHT0VnOgSYf0dZXS7APdpB309RnHOG5gDqXGLDaC457D1zZ%2FV%2FnmOM82XiHRLYKhKP1oZmADdEAAAh%2BQQJCgAAACwAAAAAIAAgAAAE6hDISWlZpOrNp1lGNRSdRpDUolIGw5RUYhhHukqFu8DsrEyqnWThGvAmhVlteBvojpTDDBUEIFwMFBRAmBkSgOrBFZogCASwBDEY%2FCZSg7GSE0gSCjQBMVG023xWBhklAnoEdhQEfyNqMIcKjhRsjEdnezB%2BA4k8gTwJhFuiW4dokXiloUepBAp5qaKpp6%2BHo7aWW54wl7obvEe0kRuoplCGepwSx2jJvqHEmGt6whJpGpfJCHmOoNHKaHx61WiSR92E4lbFoq%2BB6QDtuetcaBPnW6%2BO7wDHpIiK9SaVK5GgV543tzjgGcghAgAh%2BQQJCgAAACwAAAAAIAAgAAAE7hDISSkxpOrN5zFHNWRdhSiVoVLHspRUMoyUakyEe8PTPCATW9A14E0UvuAKMNAZKYUZCiBMuBakSQKG8G2FzUWox2AUtAQFcBKlVQoLgQReZhQlCIJesQXI5B0CBnUMOxMCenoCfTCEWBsJColTMANldx15BGs8B5wlCZ9Po6OJkwmRpnqkqnuSrayqfKmqpLajoiW5HJq7FL1Gr2mMMcKUMIiJgIemy7xZtJsTmsM4xHiKv5KMCXqfyUCJEonXPN2rAOIAmsfB3uPoAK%2B%2BG%2Bw48edZPK%2BM6hLJpQg484enXIdQFSS1u6UhksENEQAAIfkECQoAAAAsAAAAACAAIAAABOcQyEmpGKLqzWcZRVUQnZYg1aBSh2GUVEIQ2aQOE%2BG%2BcD4ntpWkZQj1JIiZIogDFFyHI0UxQwFugMSOFIPJftfVAEoZLBbcLEFhlQiqGp1Vd140AUklUN3eCA51C1EWMzMCezCBBmkxVIVHBWd3HHl9JQOIJSdSnJ0TDKChCwUJjoWMPaGqDKannasMo6WnM562R5YluZRwur0wpgqZE7NKUm%2BFNRPIhjBJxKZteWuIBMN4zRMIVIhffcgojwCF117i4nlLnY5ztRLsnOk%2BaV%2BoJY7V7m76PdkS4trKcdg0Zc0tTcKkRAAAIfkECQoAAAAsAAAAACAAIAAABO4QyEkpKqjqzScpRaVkXZWQEximw1BSCUEIlDohrft6cpKCk5xid5MNJTaAIkekKGQkWyKHkvhKsR7ARmitkAYDYRIbUQRQjWBwJRzChi9CRlBcY1UN4g0%2FVNB0AlcvcAYHRyZPdEQFYV8ccwR5HWxEJ02YmRMLnJ1xCYp0Y5idpQuhopmmC2KgojKasUQDk5BNAwwMOh2RtRq5uQuPZKGIJQIGwAwGf6I0JXMpC8C7kXWDBINFMxS4DKMAWVWAGYsAdNqW5uaRxkSKJOZKaU3tPOBZ4DuK2LATgJhkPJMgTwKCdFjyPHEnKxFCDhEAACH5BAkKAAAALAAAAAAgACAAAATzEMhJaVKp6s2nIkolIJ2WkBShpkVRWqqQrhLSEu9MZJKK9y1ZrqYK9WiClmvoUaF8gIQSNeF1Er4MNFn4SRSDARWroAIETg1iVwuHjYB1kYc1mwruwXKC9gmsJXliGxc%2BXiUCby9ydh1sOSdMkpMTBpaXBzsfhoc5l58Gm5yToAaZhaOUqjkDgCWNHAULCwOLaTmzswadEqggQwgHuQsHIoZCHQMMQgQGubVEcxOPFAcMDAYUA85eWARmfSRQCdcMe0zeP1AAygwLlJtPNAAL19DARdPzBOWSm1brJBi45soRAWQAAkrQIykShQ9wVhHCwCQCACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiRMDjI0Fd30%2FiI2UA5GSS5UDj2l6NoqgOgN4gksEBgYFf0FDqKgHnyZ9OX8HrgYHdHpcHQULXAS2qKpENRg7eAMLC7kTBaixUYFkKAzWAAnLC7FLVxLWDBLKCwaKTULgEwbLA4hJtOkSBNqITT3xEgfLpBtzE%2FjiuL04RGEBgwWhShRgQExHBAAh%2BQQJCgAAACwAAAAAIAAgAAAE7xDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfZiCqGk5dTESJeaOAlClzsJsqwiJwiqnFrb2nS9kmIcgEsjQydLiIlHehhpejaIjzh9eomSjZR%2BipslWIRLAgMDOR2DOqKogTB9pCUJBagDBXR6XB0EBkIIsaRsGGMMAxoDBgYHTKJiUYEGDAzHC9EACcUGkIgFzgwZ0QsSBcXHiQvOwgDdEwfFs0sDzt4S6BK4xYjkDOzn0unFeBzOBijIm1Dgmg5YFQwsCMjp1oJ8LyIAACH5BAkKAAAALAAAAAAgACAAAATwEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GGl6NoiPOH16iZKNlH6KmyWFOggHhEEvAwwMA0N9GBsEC6amhnVcEwavDAazGwIDaH1ipaYLBUTCGgQDA8NdHz0FpqgTBwsLqAbWAAnIA4FWKdMLGdYGEgraigbT0OITBcg5QwPT4xLrROZL6AuQAPUS7bxLpoWidY0JtxLHKhwwMJBTHgPKdEQAACH5BAkKAAAALAAAAAAgACAAAATrEMhJaVKp6s2nIkqFZF2VIBWhUsJaTokqUCoBq%2BE71SRQeyqUToLA7VxF0JDyIQh%2FMVVPMt1ECZlfcjZJ9mIKoaTl1MRIl5o4CUKXOwmyrCInCKqcWtvadL2SYhyASyNDJ0uIiUd6GAULDJCRiXo1CpGXDJOUjY%2BYip9DhToJA4RBLwMLCwVDfRgbBAaqqoZ1XBMHswsHtxtFaH1iqaoGNgAIxRpbFAgfPQSqpbgGBqUD1wBXeCYp1AYZ19JJOYgH1KwA4UBvQwXUBxPqVD9L3sbp2BNk2xvvFPJd%2BMFCN6HAAIKgNggY0KtEBAAh%2BQQJCgAAACwAAAAAIAAgAAAE6BDISWlSqerNpyJKhWRdlSAVoVLCWk6JKlAqAavhO9UkUHsqlE6CwO1cRdCQ8iEIfzFVTzLdRAmZX3I2SfYIDMaAFdTESJeaEDAIMxYFqrOUaNW4E4ObYcCXaiBVEgULe0NJaxxtYksjh2NLkZISgDgJhHthkpU4mW6blRiYmZOlh4JWkDqILwUGBnE6TYEbCgevr0N1gH4At7gHiRpFaLNrrq8HNgAJA70AWxQIH1%2BvsYMDAzZQPC9VCNkDWUhGkuE5PxJNwiUK4UfLzOlD4WvzAHaoG9nxPi5d%2BjYUqfAhhykOFwJWiAAAIfkECQoAAAAsAAAAACAAIAAABPAQyElpUqnqzaciSoVkXVUMFaFSwlpOCcMYlErAavhOMnNLNo8KsZsMZItJEIDIFSkLGQoQTNhIsFehRww2CQLKF0tYGKYSg%2BygsZIuNqJksKgbfgIGepNo2cIUB3V1B3IvNiBYNQaDSTtfhhx0CwVPI0UJe0%2Bbm4g5VgcGoqOcnjmjqDSdnhgEoamcsZuXO1aWQy8KAwOAuTYYGwi7w5h%2BKr0SJ8MFihpNbx%2B4Erq7BYBuzsdiH1jCAzoSfl0rVirNbRXlBBlLX%2BBP0XJLAPGzTkAuAOqb0WT5AH7OcdCm5B8TgRwSRKIHQtaLCwg1RAAAOwAAAAAAAAAAAA%3D%3D);visibility:visible;opacity:.6;transition:all .3s ease}.reveal>.overlay header{position:absolute;left:0;top:0;width:100%;padding:5px;z-index:2;box-sizing:border-box}.reveal>.overlay header a{display:inline-block;width:40px;height:40px;line-height:36px;padding:0 10px;float:right;opacity:.6;box-sizing:border-box}.reveal>.overlay header a:hover{opacity:1}.reveal>.overlay header a .icon{display:inline-block;width:20px;height:20px;background-position:50% 50%;background-size:100%;background-repeat:no-repeat}.reveal>.overlay header a.close .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABkklEQVRYR8WX4VHDMAxG6wnoJrABZQPYBCaBTWAD2g1gE5gg6OOsXuxIlr40d81dfrSJ9V4c2VLK7spHuTJ/5wpM07QXuXc5X0opX2tEJcadjHuV80li/FgxTIEK/5QBCICBD6xEhSMGHgQPgBgLiYVAB1dpSqKDawxTohFw4JSEA3clzgIBPCURwE2JucBR7rhPJJv5OpJwDX+SfDjgx1wACQeJG1aChP9K/IMmdZ8DtESV1WyP3Bt4MwM6sj4NMxMYiqUWHQu4KYA/SYkIjOsm3BXYWMKFDwU2khjCQ4ELJUJ4SmClRArOCmSXGuKma0fYD5CbzHxFpCSGAhfAVSSUGDUk2BWZaff2g6GE15BsBQ9nwmpIGDiyHQddwNTMKkbZaf9fajXQca1EX44puJZUsnY0ObGmITE3GVLCbEhQUjGVt146j6oasWN+49Vph2w1pZ5EansNZqKBm1txbU57iRRcZ86RWMDdWtBJUHBHwoQPi1GV+JCbntmvok7iTX4/Up9mgyTc/FJYDTcndgH/AA5A/CHsyEkVAAAAAElFTkSuQmCC)}.reveal>.overlay header a.external .icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAcElEQVRYR+2WSQoAIQwEzf8f7XiOMkUQxUPlGkM3hVmiQfQR9GYnH1SsAQlI4DiBqkCMoNb9y2e90IAEJPAcgdznU9+engMaeJ7Azh5Y1U67gAho4DqBqmB1buAf0MB1AlVBek83ZPkmJMGc1wAR+AAqod/B97TRpQAAAABJRU5ErkJggg==)}.reveal>.overlay .viewport{position:absolute;display:flex;top:50px;right:0;bottom:0;left:0}.reveal>.overlay.overlay-preview .viewport iframe{width:100%;height:100%;max-width:100%;max-height:100%;border:0;opacity:0;visibility:hidden;transition:all .3s ease}.reveal>.overlay.overlay-preview.loaded .viewport iframe{opacity:1;visibility:visible}.reveal>.overlay.overlay-preview.loaded .viewport-inner{position:absolute;z-index:-1;left:0;top:45%;width:100%;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-preview .x-frame-error{opacity:0;transition:opacity .3s ease .3s}.reveal>.overlay.overlay-preview.loaded .x-frame-error{opacity:1}.reveal>.overlay.overlay-preview.loaded .spinner{opacity:0;visibility:hidden;transform:scale(.2)}.reveal>.overlay.overlay-help .viewport{overflow:auto;color:#fff}.reveal>.overlay.overlay-help .viewport .viewport-inner{width:600px;margin:auto;padding:20px 20px 80px 20px;text-align:center;letter-spacing:normal}.reveal>.overlay.overlay-help .viewport .viewport-inner .title{font-size:20px}.reveal>.overlay.overlay-help .viewport .viewport-inner table{border:1px solid #fff;border-collapse:collapse;font-size:16px}.reveal>.overlay.overlay-help .viewport .viewport-inner table td,.reveal>.overlay.overlay-help .viewport .viewport-inner table th{width:200px;padding:14px;border:1px solid #fff;vertical-align:middle}.reveal>.overlay.overlay-help .viewport .viewport-inner table th{padding-top:20px;padding-bottom:20px}.reveal .playback{position:absolute;left:15px;bottom:20px;z-index:30;cursor:pointer;transition:all .4s ease;-webkit-tap-highlight-color:transparent}.reveal.overview .playback{opacity:0;visibility:hidden}.reveal .hljs{min-height:100%}.reveal .hljs table{margin:initial}.reveal .hljs-ln-code,.reveal .hljs-ln-numbers{padding:0;border:0}.reveal .hljs-ln-numbers{opacity:.6;padding-right:.75em;text-align:right;vertical-align:top}.reveal .hljs.has-highlights tr:not(.highlight-line){opacity:.4}.reveal .hljs.has-highlights.fragment{transition:all .2s ease}.reveal .hljs:not(:first-child).fragment{position:absolute;top:0;left:0;width:100%;box-sizing:border-box}.reveal pre[data-auto-animate-target]{overflow:hidden}.reveal pre[data-auto-animate-target] code{height:100%}.reveal .roll{display:inline-block;line-height:1.2;overflow:hidden;vertical-align:top;perspective:400px;perspective-origin:50% 50%}.reveal .roll:hover{background:0 0;text-shadow:none}.reveal .roll span{display:block;position:relative;padding:0 2px;pointer-events:none;transition:all .4s ease;transform-origin:50% 0;transform-style:preserve-3d;backface-visibility:hidden}.reveal .roll:hover span{background:rgba(0,0,0,.5);transform:translate3d(0,0,-45px) rotateX(90deg)}.reveal .roll span:after{content:attr(data-title);display:block;position:absolute;left:0;top:0;padding:0 2px;backface-visibility:hidden;transform-origin:50% 0;transform:translate3d(0,110%,0) rotateX(-90deg)}.reveal aside.notes{display:none}.reveal .speaker-notes{display:none;position:absolute;width:33.3333333333%;height:100%;top:0;left:100%;padding:14px 18px 14px 18px;z-index:1;font-size:18px;line-height:1.4;border:1px solid rgba(0,0,0,.05);color:#222;background-color:#f5f5f5;overflow:auto;box-sizing:border-box;text-align:left;font-family:Helvetica,sans-serif;-webkit-overflow-scrolling:touch}.reveal .speaker-notes .notes-placeholder{color:#ccc;font-style:italic}.reveal .speaker-notes:focus{outline:0}.reveal .speaker-notes:before{content:"Speaker notes";display:block;margin-bottom:10px;opacity:.5}.reveal.show-notes{max-width:75%;overflow:visible}.reveal.show-notes .speaker-notes{display:block}@media screen and (min-width:1600px){.reveal .speaker-notes{font-size:20px}}@media screen and (max-width:1024px){.reveal.show-notes{border-left:0;max-width:none;max-height:70%;max-height:70vh;overflow:visible}.reveal.show-notes .speaker-notes{top:100%;left:0;width:100%;height:30vh;border:0}}@media screen and (max-width:600px){.reveal.show-notes{max-height:60%;max-height:60vh}.reveal.show-notes .speaker-notes{top:100%;height:40vh}.reveal .speaker-notes{font-size:14px}}.reveal .jump-to-slide{position:absolute;top:15px;left:15px;z-index:30;font-size:32px;-webkit-tap-highlight-color:transparent}.reveal .jump-to-slide-input{background:0 0;padding:8px;font-size:inherit;color:currentColor;border:0}.reveal .jump-to-slide-input::placeholder{color:currentColor;opacity:.5}.reveal.has-dark-background .jump-to-slide-input{color:#fff}.reveal.has-light-background .jump-to-slide-input{color:#222}.reveal .jump-to-slide-input:focus{outline:0}.zoomed .reveal *,.zoomed .reveal :after,.zoomed .reveal :before{backface-visibility:visible!important}.zoomed .reveal .controls,.zoomed .reveal .progress{opacity:0}.zoomed .reveal .roll span{background:0 0}.zoomed .reveal .roll span:after{visibility:hidden}.reveal-viewport.loading-scroll-mode{visibility:hidden}.reveal-viewport.reveal-scroll{margin:0 auto;overflow:auto;overflow-x:hidden;overflow-y:auto;z-index:1;--r-scrollbar-width:7px;--r-scrollbar-trigger-size:5px;--r-controls-spacing:8px}@media screen and (max-width:500px){.reveal-viewport.reveal-scroll{--r-scrollbar-width:3px;--r-scrollbar-trigger-size:3px}}.reveal-viewport.reveal-scroll .backgrounds,.reveal-viewport.reveal-scroll .controls,.reveal-viewport.reveal-scroll .playback,.reveal-viewport.reveal-scroll .progress,.reveal-viewport.reveal-scroll .slide-number,.reveal-viewport.reveal-scroll .speaker-notes{display:none!important}.reveal-viewport.reveal-scroll .overlay,.reveal-viewport.reveal-scroll .pause-overlay{position:fixed}.reveal-viewport.reveal-scroll .reveal{overflow:visible;touch-action:manipulation}.reveal-viewport.reveal-scroll .slides{position:static;pointer-events:initial;left:auto;top:auto;width:100%!important;margin:0;padding:0;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}.reveal-viewport.reveal-scroll .scroll-page{position:relative;width:100%;height:calc(var(--page-height) + var(--page-scroll-padding));z-index:1;overflow:visible}.reveal-viewport.reveal-scroll .scroll-page-sticky{position:sticky;height:var(--page-height);top:0}.reveal-viewport.reveal-scroll .scroll-page-content{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden}.reveal-viewport.reveal-scroll .scroll-page section{visibility:visible!important;display:block!important;position:absolute!important;width:var(--slide-width)!important;height:var(--slide-height)!important;top:50%!important;left:50%!important;opacity:1!important;transform:scale(var(--slide-scale)) translate(-50%,-50%)!important;transform-style:flat!important;transform-origin:0 0!important}.reveal-viewport.reveal-scroll .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important;visibility:visible;opacity:1;touch-action:manipulation}.reveal-viewport.reveal-scroll[data-scrollbar=auto]::-webkit-scrollbar,.reveal-viewport.reveal-scroll[data-scrollbar=true]::-webkit-scrollbar{display:none}.reveal-viewport.reveal-scroll[data-scrollbar=auto],.reveal-viewport.reveal-scroll[data-scrollbar=true]{scrollbar-width:none}.reveal-viewport.has-dark-background,.reveal.has-dark-background{--r-overlay-element-bg-color:240,240,240;--r-overlay-element-fg-color:0,0,0}.reveal-viewport.has-light-background,.reveal.has-light-background{--r-overlay-element-bg-color:0,0,0;--r-overlay-element-fg-color:240,240,240}.reveal-viewport.reveal-scroll .scrollbar{position:sticky;top:50%;z-index:20;opacity:0;transition:all .3s ease}.reveal-viewport.reveal-scroll .scrollbar.visible,.reveal-viewport.reveal-scroll .scrollbar:hover{opacity:1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-inner{position:absolute;width:var(--r-scrollbar-width);height:calc(var(--viewport-height) - var(--r-controls-spacing) * 2);right:var(--r-controls-spacing);top:0;transform:translateY(-50%);border-radius:var(--r-scrollbar-width);z-index:10}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-playhead{position:absolute;width:var(--r-scrollbar-width);height:var(--r-scrollbar-width);top:0;left:0;border-radius:var(--r-scrollbar-width);background-color:rgba(var(--r-overlay-element-bg-color),1);z-index:11;transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide{position:absolute;width:100%;background-color:rgba(var(--r-overlay-element-bg-color),.2);box-shadow:0 0 0 1px rgba(var(--r-overlay-element-fg-color),.1);border-radius:var(--r-scrollbar-width);transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide:after{content:"";position:absolute;width:200%;height:100%;top:0;left:-50%;background:rgba(0,0,0,0);z-index:-1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active,.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide:hover{background-color:rgba(var(--r-overlay-element-bg-color),.4)}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-trigger{position:absolute;width:100%;transition:background-color .2s ease}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active.has-triggers{background-color:rgba(var(--r-overlay-element-bg-color),.4);z-index:10}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger:after{content:"";position:absolute;width:var(--r-scrollbar-trigger-size);height:var(--r-scrollbar-trigger-size);border-radius:20px;top:50%;left:50%;transform:translate(-50%,-50%);background-color:rgba(var(--r-overlay-element-bg-color),1);transition:transform .2s ease,opacity .2s ease;opacity:.4}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger.active:after,.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger.active~.scrollbar-trigger:after{opacity:1}.reveal-viewport.reveal-scroll .scrollbar .scrollbar-slide.active .scrollbar-trigger~.scrollbar-trigger.active:after{transform:translate(calc(var(--r-scrollbar-width) * -2),0);background-color:rgba(var(--r-overlay-element-bg-color),1)}html.reveal-print *{-webkit-print-color-adjust:exact}html.reveal-print{width:100%;height:100%;overflow:visible}html.reveal-print body{margin:0 auto!important;border:0;padding:0;float:none!important;overflow:visible}html.reveal-print .nestedarrow,html.reveal-print .reveal .controls,html.reveal-print .reveal .playback,html.reveal-print .reveal .progress,html.reveal-print .reveal.overview,html.reveal-print .state-background{display:none!important}html.reveal-print .reveal pre code{overflow:hidden!important}html.reveal-print .reveal{width:auto!important;height:auto!important;overflow:hidden!important}html.reveal-print .reveal .slides{position:static;width:100%!important;height:auto!important;zoom:1!important;pointer-events:initial;left:auto;top:auto;margin:0!important;padding:0!important;overflow:visible;display:block;perspective:none;perspective-origin:50% 50%}html.reveal-print .reveal .slides .pdf-page{position:relative;overflow:hidden;z-index:1;page-break-after:always}html.reveal-print .reveal .slides .pdf-page:last-of-type{page-break-after:avoid}html.reveal-print .reveal .slides section{visibility:visible!important;display:block!important;position:absolute!important;margin:0!important;padding:0!important;box-sizing:border-box!important;min-height:1px;opacity:1!important;transform-style:flat!important;transform:none!important}html.reveal-print .reveal section.stack{position:relative!important;margin:0!important;padding:0!important;page-break-after:avoid!important;height:auto!important;min-height:auto!important}html.reveal-print .reveal img{box-shadow:none}html.reveal-print .reveal .backgrounds{display:none}html.reveal-print .reveal .slide-background{display:block!important;position:absolute;top:0;left:0;width:100%;height:100%;z-index:auto!important}html.reveal-print .reveal.show-notes{max-width:none;max-height:none}html.reveal-print .reveal .speaker-notes-pdf{display:block;width:100%;height:auto;max-height:none;top:auto;right:auto;bottom:auto;left:auto;z-index:100}html.reveal-print .reveal .speaker-notes-pdf[data-layout=separate-page]{position:relative;color:inherit;background-color:transparent;padding:20px;page-break-after:always;border:0}html.reveal-print .reveal .slide-number-pdf{display:block;position:absolute;font-size:14px;visibility:visible}html.reveal-print .aria-status{display:none}@media print{html:not(.print-pdf){overflow:visible;width:auto;height:auto}html:not(.print-pdf) body{margin:0;padding:0;overflow:visible}html:not(.print-pdf) .reveal{background:#fff;font-size:20pt}html:not(.print-pdf) .reveal .backgrounds,html:not(.print-pdf) .reveal .controls,html:not(.print-pdf) .reveal .progress,html:not(.print-pdf) .reveal .slide-number,html:not(.print-pdf) .reveal .state-background{display:none!important}html:not(.print-pdf) .reveal li,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal td{font-size:20pt!important;color:#000}html:not(.print-pdf) .reveal h1,html:not(.print-pdf) .reveal h2,html:not(.print-pdf) .reveal h3,html:not(.print-pdf) .reveal h4,html:not(.print-pdf) .reveal h5,html:not(.print-pdf) .reveal h6{color:#000!important;height:auto;line-height:normal;text-align:left;letter-spacing:normal}html:not(.print-pdf) .reveal h1{font-size:28pt!important}html:not(.print-pdf) .reveal h2{font-size:24pt!important}html:not(.print-pdf) .reveal h3{font-size:22pt!important}html:not(.print-pdf) .reveal h4{font-size:22pt!important;font-variant:small-caps}html:not(.print-pdf) .reveal h5{font-size:21pt!important}html:not(.print-pdf) .reveal h6{font-size:20pt!important;font-style:italic}html:not(.print-pdf) .reveal a:link,html:not(.print-pdf) .reveal a:visited{color:#000!important;font-weight:700;text-decoration:underline}html:not(.print-pdf) .reveal div,html:not(.print-pdf) .reveal ol,html:not(.print-pdf) .reveal p,html:not(.print-pdf) .reveal ul{visibility:visible;position:static;width:auto;height:auto;display:block;overflow:visible;margin:0;text-align:left!important}html:not(.print-pdf) .reveal pre,html:not(.print-pdf) .reveal table{margin-left:0;margin-right:0}html:not(.print-pdf) .reveal pre code{padding:20px}html:not(.print-pdf) .reveal blockquote{margin:20px 0}html:not(.print-pdf) .reveal .slides{position:static!important;width:auto!important;height:auto!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:0!important;zoom:1!important;transform:none!important;overflow:visible!important;display:block!important;text-align:left!important;perspective:none;perspective-origin:50% 50%}html:not(.print-pdf) .reveal .slides section{visibility:visible!important;position:static!important;width:auto!important;height:auto!important;display:block!important;overflow:visible!important;left:0!important;top:0!important;margin-left:0!important;margin-top:0!important;padding:60px 20px!important;z-index:auto!important;opacity:1!important;page-break-after:always!important;transform-style:flat!important;transform:none!important;transition:none!important}html:not(.print-pdf) .reveal .slides section.stack{padding:0!important}html:not(.print-pdf) .reveal .slides section:last-of-type{page-break-after:avoid!important}html:not(.print-pdf) .reveal .slides section .fragment{opacity:1!important;visibility:visible!important;transform:none!important}html:not(.print-pdf) .reveal .r-fit-text{white-space:normal!important}html:not(.print-pdf) .reveal section img{display:block;margin:15px 0;background:#fff;border:1px solid #666;box-shadow:none}html:not(.print-pdf) .reveal section small{font-size:.8em}html:not(.print-pdf) .reveal .hljs{max-height:100%;white-space:pre-wrap;word-wrap:break-word;word-break:break-word;font-size:15pt}html:not(.print-pdf) .reveal .hljs .hljs-ln-numbers{white-space:nowrap}html:not(.print-pdf) .reveal .hljs td{font-size:inherit!important;color:inherit!important}}</style>
+<style>
+/* Layout: 1280×720 reveal canvas, left-aligned slides; a kicker names the part of the talk,
+   colour carries meaning (rust = memory/hidden state, blue = input, green = output), same as the course lessons. */
+:root {
+  --bg: #fffff8;
+  --fg: #1d1d1b;
+  --muted: #6b6a63;
+  --rule: #d9d6c8;
+  --panel: #f5f3e7;
+  --accent: #a3320b;   /* hidden state / memory */
+  --input: #2b5f8a;    /* inputs x_t */
+  --output: #4d7a2a;   /* outputs y_t */
+  --bad: #b3261e;
+  --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161614; --fg: #e9e6da; --muted: #a29f93; --rule: #3a3933; --panel: #22211d;
+    --accent: #ef8a5f; --input: #7fb2dd; --output: #9ccc72; --bad: #f2766c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161614; --fg: #e9e6da; --muted: #a29f93; --rule: #3a3933; --panel: #22211d;
+  --accent: #ef8a5f; --input: #7fb2dd; --output: #9ccc72; --bad: #f2766c; color-scheme: dark;
+}
+html, body { height: 100%; }
+body, .reveal-viewport { background: var(--bg); color: var(--fg); }
+
+.reveal { font-family: var(--serif); font-size: 28px; line-height: 1.45; color: var(--fg); }
+.reveal .slides { text-align: left; }
+.reveal .slides > section { height: 100%; box-sizing: border-box; padding: 0; }
+.frame { height: 100%; display: flex; flex-direction: column; gap: 22px; }
+.frame.center { justify-content: center; }
+.reveal .kicker { font-family: var(--mono); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.reveal h1, .reveal h2, .reveal h3 { font-family: var(--serif); color: var(--fg); margin: 0; text-wrap: balance; }
+.reveal h1 { font-size: 84px; font-weight: 400; line-height: 1.05; letter-spacing: -.01em; }
+.reveal h2 { font-size: 50px; font-weight: 400; line-height: 1.12; }
+.reveal h3 { font-size: 26px; font-weight: 600; }
+.reveal p { margin: 0; max-width: 34em; }
+.reveal ul, .reveal ol { margin: 0; padding-left: 1.1em; display: grid; gap: 10px; }
+.reveal li { max-width: 34em; }
+.reveal em { font-style: italic; }
+.reveal strong { font-weight: 600; }
+.reveal code, .mono { font-family: var(--mono); font-size: .8em; }
+.lede { font-size: 32px; color: var(--muted); font-style: italic; }
+.small { font-size: 22px; color: var(--muted); }
+.h { color: var(--accent); font-weight: 600; }
+.x { color: var(--input); font-weight: 600; }
+a.x { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.y { color: var(--output); font-weight: 600; }
+.grow { flex: 1; min-height: 0; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.cols > *, .cols3 > * { min-width: 0; }
+.panel { background: var(--panel); border-radius: 10px; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+.rule-top { border-top: 1px solid var(--rule); padding-top: 18px; }
+.callout { border-left: 4px solid var(--accent); padding: 4px 0 4px 20px; font-size: 30px; }
+.eq { font-family: var(--mono); font-size: 26px; background: var(--panel); padding: 14px 20px; border-radius: 8px; display: inline-block; }
+.big-num { font-family: var(--mono); font-size: 64px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+
+/* Shared SVG vocabulary */
+svg text { font-family: var(--serif); }
+.s-h { stroke: var(--accent); } .s-x { stroke: var(--input); } .s-y { stroke: var(--output); } .s-m { stroke: var(--muted); } .s-bad { stroke: var(--bad); }
+.f-h { fill: var(--accent); } .f-x { fill: var(--input); } .f-y { fill: var(--output); } .f-m { fill: var(--muted); } .f-fg { fill: var(--fg); } .f-bad { fill: var(--bad); }
+.f-panel { fill: var(--panel); } .f-bg { fill: var(--bg); }
+.mono-t { font-family: var(--mono) !important; }
+
+/* Title strip: R O M E -> O */
+.strip { display: flex; align-items: center; gap: 10px; font-family: var(--mono); }
+.strip .c { width: 64px; height: 64px; border: 2px solid var(--input); color: var(--input); border-radius: 8px; display: grid; place-items: center; font-size: 34px; font-weight: 600; }
+.strip .arr { color: var(--accent); font-size: 26px; }
+.strip .c.out { border-color: var(--output); color: var(--output); border-style: dashed; }
+
+/* Word chips & vector strips */
+.chips { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.chip { font-family: var(--mono); font-size: 24px; padding: 6px 14px; border: 1.5px solid var(--input); color: var(--input); border-radius: 6px; }
+.vec { display: inline-grid; grid-template-columns: repeat(8, 22px); gap: 3px; vertical-align: middle; }
+.vec i { height: 22px; border-radius: 3px; display: block; }
+.avg-row { display: grid; grid-template-columns: 420px 70px auto; align-items: center; gap: 16px; }
+
+/* Bars (predict + results) */
+.bars { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 48px 1fr 72px; align-items: center; gap: 12px; font-variant-numeric: tabular-nums; }
+.bar-row .ch { font-family: var(--mono); font-size: 26px; font-weight: 600; text-align: center; background: var(--panel); border-radius: 6px; }
+.bar-row .track { height: 22px; background: var(--panel); border-radius: 4px; overflow: hidden; }
+.bar-row .fill { display: block; height: 100%; border-radius: 4px; transition: width .25s; }
+.bar-row .pct { font-family: var(--mono); font-size: 20px; text-align: right; }
+.rnn .fill { background: var(--accent); } .base .fill { background: var(--muted); }
+.result-row { display: grid; grid-template-columns: 330px 1fr 110px; gap: 18px; align-items: center; }
+.result-row .track { height: 40px; background: var(--panel); border-radius: 6px; overflow: hidden; }
+.result-row .fill { display: block; height: 100%; }
+.result-row .pct { font-family: var(--mono); font-size: 30px; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Controls */
+.reveal input[type=text], .reveal textarea {
+  font-family: var(--mono); font-size: 28px; color: var(--fg); background: var(--panel);
+  border: 1.5px solid var(--rule); border-radius: 8px; padding: 10px 14px; width: 100%; box-sizing: border-box; resize: none;
+}
+.reveal input[type=text]:focus, .reveal textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.reveal input[type=range] { width: 100%; accent-color: var(--accent); }
+.reveal button {
+  font-family: var(--serif); font-size: 22px; color: var(--fg); background: var(--panel);
+  border: 1.5px solid var(--rule); border-radius: 999px; padding: 6px 16px; cursor: pointer;
+}
+.reveal button:hover { border-color: var(--accent); }
+.reveal button:focus-visible, .reveal svg [role=button]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* fallback when reveal.js fails to load: slides stacked as one long page */
+.no-reveal .reveal { height: auto; overflow: visible; }
+.no-reveal .reveal .slides { position: static; pointer-events: auto; }
+.no-reveal .reveal .slides > section { display: block; position: relative; width: 1280px; max-width: 100%; height: auto; min-height: 720px; margin: 0 auto 48px; padding: 36px 48px; border-bottom: 1px solid var(--rule); }
+.no-reveal-msg { font-family: var(--serif); font-size: 18px; margin: 0; padding: 12px 16px; background: var(--panel); border-bottom: 2px solid var(--accent); color: var(--fg); }
+.reveal button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+.reveal button[aria-pressed=true] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.ctl-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.label { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.gen-out { font-family: var(--mono); font-size: 20px; line-height: 1.4; white-space: pre-wrap; background: var(--panel); border-radius: 8px; padding: 16px 20px; margin: 0; overflow: auto; height: 100%; box-sizing: border-box; }
+.gen-out .p { color: var(--input); font-weight: 600; }
+.side { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-height: 0; }
+.side-col { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
+.side .gen-out { font-size: 17px; flex: 1; min-height: 0; height: auto; }
+.sample { font-size: 22px; height: auto; align-self: start; }
+.inv { text-decoration: underline wavy var(--bad); text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+.nm { color: var(--accent); font-weight: 600; }
+.pu { color: var(--output); font-weight: 600; }
+.learned { font-size: 24px; gap: 14px !important; align-content: start; }
+.warn { color: var(--bad); font-size: 22px; min-height: 1.4em; }
+
+/* Fade dots */
+.dots { display: flex; align-items: center; gap: 18px; height: 80px; }
+.dots span { display: block; border-radius: 50%; background: var(--accent); }
+
+table.plain { border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 26px; }
+table.plain th, table.plain td { padding: 8px 22px 8px 0; text-align: left; border-bottom: 1px solid var(--rule); }
+table.plain th { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+table.plain td.n { font-family: var(--mono); }
+
+pre.cmd { font-family: var(--mono); font-size: 22px; line-height: 1.6; background: var(--panel); border-radius: 8px; padding: 18px 22px; margin: 0; white-space: pre; overflow-x: auto; box-shadow: none; width: auto; }
+pre.cmd .c { color: var(--muted); }
+
+.reveal .controls { color: var(--accent); }
+.reveal .progress { color: var(--accent); }
+.reveal .slide-number { background: transparent; color: var(--muted); font-family: var(--mono); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .bar-row .fill { transition: none; } }
+
+
+/* ---- Part 2 additions (gated cells) ---- */
+.word-gap { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 30px; }
+.word-gap .chip.far { border-color: var(--accent); color: var(--accent); }
+.word-gap .chip.out { border-color: var(--output); color: var(--output); border-style: dashed; }
+.word-gap .dots-txt { color: var(--muted); font-style: italic; font-size: 24px; }
+
+/* gate grid (slide 10) */
+.gates { display: grid; grid-template-columns: 170px repeat(8, 1fr); gap: 6px; font-family: var(--mono); font-size: 20px; align-items: stretch; }
+.gates .lab { font-family: var(--serif); font-size: 22px; display: flex; align-items: center; }
+.gates .lab.h { color: var(--accent); } .gates .lab.x { color: var(--input); }
+.gates .hd { text-align: center; color: var(--muted); font-size: 16px; }
+.gates .inp { text-align: center; padding: 8px 0; border-radius: 6px; color: var(--input); border: 1.5px solid var(--rule); }
+.gates .inp.on { border-color: var(--input); font-weight: 600; }
+.reveal .gates button.g { font-family: var(--mono); font-size: 20px; padding: 8px 0; border-radius: 6px; border: 1.5px solid var(--accent); }
+.gates .out { text-align: center; padding: 8px 0; border-radius: 6px; border: 1.5px solid var(--rule);
+  background: linear-gradient(to top, color-mix(in srgb, var(--accent) 40%, transparent) var(--fill, 0%), var(--bg) var(--fill, 0%)); }
+.chal { display: grid; gap: 8px; font-size: 22px; }
+.chal div { display: flex; gap: 12px; align-items: baseline; }
+.chal .tk { font-family: var(--mono); color: var(--muted); width: 1.2em; flex: none; }
+.chal .done { color: var(--muted); } .chal .done .tk { color: var(--output); }
+
+/* valve + mix bars (slides 6, 14) */
+.meter { display: grid; grid-template-columns: 200px 1fr 90px; gap: 16px; align-items: center; font-size: 24px; }
+.meter .track { height: 36px; background: var(--panel); border-radius: 6px; overflow: hidden; display: flex; }
+.meter .fill { display: block; height: 100%; transition: width .15s; }
+.meter .v { font-family: var(--mono); font-size: 24px; text-align: right; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { .meter .fill { transition: none; } }
+
+/* blame race (slide 12) */
+.race { display: grid; grid-template-columns: 260px repeat(4, 1fr); gap: 6px 16px; align-items: center; font-size: 24px; }
+.race .hd { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.race .cell { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; }
+.race .dot { border-radius: 50%; flex: none; }
+
+/* inside a gate (slide 8) */
+.flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 22px; }
+.flow .chip { font-size: 21px; }
+.flow .chip.hh { border-color: var(--accent); color: var(--accent); }
+.flow .box { padding: 6px 14px; border-radius: 6px; background: var(--panel); }
+.flow .box.dial-out { border: 1.5px solid var(--accent); color: var(--accent); font-weight: 600; }
+.flow .arr { color: var(--muted); }
+
+/* step-by-step equations (slides 9, 15) */
+.steps { display: grid; grid-template-columns: 44px 1fr 1.3fr; gap: 14px 22px; align-items: center; }
+.steps .n { font-family: var(--mono); font-size: 20px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); display: grid; place-items: center; }
+.steps .w { font-size: 23px; }
+.steps .e { font-family: var(--mono); font-size: 19px; line-height: 1.6; background: var(--panel); padding: 8px 14px; border-radius: 8px; }
+.steps .e.key { box-shadow: inset 0 0 0 2px var(--accent); }
+.steps .e .h, .steps .e .x { font-weight: 400; }
+
+/* France trace (slide 11) */
+table.trace { font-size: 22px; }
+table.trace td { vertical-align: middle; }
+table.trace td.ph { font-size: 20px; font-style: italic; }
+.dial { display: inline-block; min-width: 2.2em; text-align: center; font-family: var(--mono); font-size: 20px; border-radius: 6px; padding: 3px 8px; }
+.dial.on { background: var(--accent); color: var(--bg); font-weight: 600; }
+.dial.off { background: var(--panel); color: var(--muted); }
+
+/* ---- Part 3 additions (encoder–decoder) ---- */
+.strip .c.src { border-color: var(--input); color: var(--input); }
+.strip .ctx { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--accent); color: var(--accent); display: grid; place-items: center; font-size: 30px; font-weight: 600; font-style: italic; font-family: var(--serif); }
+.strip .w { width: auto; padding: 0 14px; font-size: 26px; }
+.now rect { stroke-width: 4; }
+.now circle { stroke-width: 4; }
+.stepper-cap { font-size: 24px; min-height: 2.9em; }
+.memrow { display: flex; align-items: center; gap: 16px; }
+.memrow .label { width: 150px; }
+.memrow .name { font-family: var(--mono); font-size: 20px; color: var(--accent); min-width: 90px; }
+.memrow .vec { grid-template-columns: repeat(12, 26px); }
+.memrow .vec i { height: 26px; }
+
+/* bottleneck (slide 13) */
+.squeeze-txt { font-size: 22px; line-height: 1.5; min-height: 5.6em; }
+.squeeze-txt .off { color: var(--muted); opacity: .45; }
+.seg { display: flex; height: 38px; border-radius: 6px; overflow: hidden; gap: 1px; background: var(--rule); }
+.seg i { flex: 1; display: block; }
+
+/* live date translator (demo slides) */
+.toks { display: flex; flex-wrap: wrap; gap: 3px; min-height: 38px; align-content: start; }
+.toks span { font-family: var(--mono); font-size: 21px; min-width: 15px; padding: 3px 4px; border-radius: 4px; text-align: center; border: 1.5px solid var(--rule); color: var(--muted); white-space: pre; }
+#tr-in span.read { border-color: var(--input); color: var(--input); }
+#tr-in span.now { background: color-mix(in srgb, var(--input) 25%, var(--bg)); font-weight: 600; }
+#tr-out span { border-color: var(--output); color: var(--output); cursor: pointer; }
+#tr-out span.now { background: color-mix(in srgb, var(--output) 25%, var(--bg)); font-weight: 600; }
+.cgrid { display: grid; grid-template-columns: repeat(32, 1fr); gap: 2px; max-width: 640px; }
+.cgrid i { display: block; height: 24px; border-radius: 2px; background: var(--panel); }
+.cgrid.is-c { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+.ans { font-family: var(--mono); font-size: 28px; font-weight: 600; }
+.ans.ok { color: var(--output); } .ans.bad { color: var(--bad); }
+.beam-row { display: grid; grid-template-columns: 26px 210px 1fr 80px; gap: 12px; align-items: center; font-variant-numeric: tabular-nums; }
+.beam-row .track { height: 20px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.beam-row .fill { display: block; height: 100%; background: var(--accent); }
+.beam-row .pct { font-family: var(--mono); font-size: 20px; text-align: right; }
+.beam-row .rk { font-family: var(--mono); font-size: 18px; color: var(--muted); }
+/* ---- Part 4 additions (attention) ---- */
+.weights { display: grid; gap: 10px; }
+.wrow { display: grid; grid-template-columns: 120px 1fr 70px 1fr 72px; gap: 14px; align-items: center; font-variant-numeric: tabular-nums; }
+.wrow .w { font-family: var(--mono); font-size: 24px; font-weight: 600; color: var(--input); }
+.wrow .v { font-family: var(--mono); font-size: 20px; text-align: right; }
+.wrow .track { height: 26px; background: var(--panel); border-radius: 4px; overflow: hidden; }
+.wrow .fill { display: block; height: 100%; background: var(--accent); transition: width .15s; }
+.wrow input[type=range] { accent-color: var(--input) !important; }
+@media (prefers-reduced-motion: reduce) { .wrow .fill { transition: none; } }
+.att-line { fill: none; stroke: var(--accent); stroke-linecap: round; }
+/* live attention map */
+.amap { display: grid; gap: 2px; font-family: var(--mono); align-content: start; }
+.amap .hd, .amap .rl { font-size: 19px; text-align: center; color: var(--input); white-space: pre; line-height: 28px; }
+.amap .rl { color: var(--output); font-weight: 600; cursor: pointer; border-radius: 3px; }
+.amap .rl.now { background: color-mix(in srgb, var(--output) 25%, var(--bg)); }
+.amap i { display: block; height: 28px; border-radius: 2px; background: var(--panel); }
+.amap .hd.hot { background: color-mix(in srgb, var(--accent) 30%, var(--bg)); border-radius: 3px; font-weight: 600; }
+.vs-row { display: grid; grid-template-columns: 380px 1fr 1fr; gap: 18px; align-items: center; font-size: 24px; }
+.vs-row .track { height: 34px; background: var(--panel); border-radius: 6px; overflow: hidden; position: relative; }
+.vs-row .fill { display: block; height: 100%; }
+.vs-row .pct { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.legend { display: flex; gap: 22px; font-size: 20px; color: var(--muted); align-items: center; }
+.legend i { display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: -2px; }
+/* ---- Part 5 additions (self-attention) ---- */
+.qkv { display: grid; grid-template-columns: 150px 1fr 1fr; gap: 10px 22px; align-items: baseline; font-size: 23px; }
+.qkv .role { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--accent); }
+.sc-row { display: grid; grid-template-columns: 44px 1fr 64px; gap: 10px; align-items: center; font-variant-numeric: tabular-nums; }
+.sc-row .k { font-family: var(--mono); font-size: 18px; color: var(--muted); }
+.sc-row .track { height: 22px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.sc-row .fill { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+.sc-row .pct { font-family: var(--mono); font-size: 18px; text-align: right; }
+@media (prefers-reduced-motion: reduce) { .sc-row .fill { transition: none; } }
+table.hand { font-size: 21px; }
+table.hand td, table.hand th { padding: 5px 18px 5px 0; }
+table.hand td.n { font-size: 19px; white-space: nowrap; }
+table.hand tr.me td { font-weight: 600; }
+.ord { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.ord-col { display: grid; gap: 10px; align-content: start; }
+.ord-row { display: grid; grid-template-columns: 110px auto; gap: 14px; align-items: center; }
+.ord-row .w { font-family: var(--mono); font-size: 24px; font-weight: 600; color: var(--input); }
+.ord .vec, .blur .vec { grid-template-columns: repeat(8, 30px); }
+.ord .vec i, .blur .vec i { height: 30px; }
+.verdict { font-size: 24px; min-height: 1.5em; }
+.verdict .same { color: var(--bad); font-weight: 600; } .verdict .diff { color: var(--output); font-weight: 600; }
+.pe { display: grid; grid-template-columns: repeat(32, 1fr); gap: 1px; }
+.pe i { display: block; height: 13px; }
+.blur { display: grid; grid-template-columns: 230px 300px 1fr; gap: 12px 18px; align-items: center; font-size: 22px; }
+.mask-hatch { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 9px) !important; }
+</style>
+</head>
+<body style="margin:0">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-h"/></marker>
+    <marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-x"/></marker>
+    <marker id="ay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-y"/></marker>
+    <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-m"/></marker>
+  </defs>
+</svg>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- 1 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">Recurrent Neural Networks · Part 5</p>
+    <h1>Every word looks at every word</h1>
+    <p class="lede">Self-attention: drop the RNN, and let each word build its meaning by looking at the rest of the sentence.</p>
+    <svg viewBox="0 0 1180 230" role="img" aria-label="In the sentence 'the animal didn't cross the street because it was too tired', the word 'it' puts most of its attention on 'animal'" style="width:100%;margin-top:6px">
+      <g id="title-arcs"></g>
+    </svg>
+  </div>
+  <aside class="notes">Part 4 ended with the Transformer table: keep the attention, drop the recurrence. Today we open that up. The picture is the whole talk: to work out what "it" means, the word "it" looks at every other word in its own sentence and pulls most of its meaning from "animal". No RNN carried that information along; "it" went and got it directly. The weights in the picture are illustrative.</aside>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Where we left off</p>
+    <h2>The encoder still reads one step at a time</h2>
+    <svg viewBox="0 0 1180 300" role="img" aria-label="Left: an RNN passes its memory along five words in a chain, five steps one after another. Right: self-attention links every word to every other word directly, all in one step" style="width:100%">
+      <g id="chain-vs-all"></g>
+    </svg>
+    <div class="cols" style="font-size:24px">
+      <p><strong>Part 4:</strong> the decoder looks back at every <span class="h">h<sub>j</sub></span> directly. But each <span class="h">h<sub>j</sub></span> was still built by an RNN, one character after another.</p>
+      <p><strong>The question:</strong> if attention can link any two positions in one hop, why build the memories with a chain at all? Let the input words attend <em>to each other</em>.</p>
+    </div>
+  </div>
+  <aside class="notes">This is point 2 from "What attention doesn't fix" in Part 4. Two costs of the chain: it's slow, because step t waits for step t − 1, so a GPU can't work along the sentence in parallel; and information between far-apart words still travels many steps, so it fades, as in Part 2. On the right, every word is wired to every other word, and all the wires can be computed at the same time.</aside>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The idea</p>
+    <h2>Let the sentence attend to itself</h2>
+    <div class="cols" style="align-items:start">
+      <div class="panel">
+        <span class="label">Part 4 · attention</span>
+        <p>The <span class="y">decoder</span> asks; the <span class="x">encoder's memories</span> answer. Two different sequences.</p>
+      </div>
+      <div class="panel">
+        <span class="label">Part 5 · self-attention</span>
+        <p>Every <span class="x">word</span> asks, and every word of the <strong>same</strong> sentence answers. One sequence, looking at itself.</p>
+      </div>
+    </div>
+    <ul>
+      <li>Same three verbs as Part 4: <strong>score</strong> every word, <strong>soften</strong> with softmax, <strong>mix</strong>.</li>
+      <li>Each word <span class="x">x<sub>i</sub></span> gets a new vector <span class="h">z<sub>i</sub></span>: a mix of the whole sentence, weighted by what's useful <em>to that word</em>.</li>
+      <li>A first try: score with a plain dot product, <span class="mono">e<sub>ij</sub> = <span class="x">x<sub>i</sub></span> · <span class="x">x<sub>j</sub></span></span>, and mix the <span class="x">x<sub>j</sub></span> themselves.</li>
+    </ul>
+    <p class="callout">Problem with the first try: a word is usually most similar to <strong>itself</strong>. “it” would look at “it”, not at “animal”.</p>
+  </div>
+  <aside class="notes">Say the interview sentence: "self-attention is attention where the queries, keys and values all come from the same sequence; every position computes a weighted average over every position, including itself." The first try is deliberately naive, and it fails for a reason worth understanding: x_i · x_i is the squared length of x_i, usually the biggest score in its row. And it forces one vector to do two jobs: say what this word is, and say what it's looking for. A pronoun is looking for a noun, which is not what a pronoun is. The next slide splits those jobs.</aside>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Three jobs for every word</p>
+    <h2>Query, key, value</h2>
+    <p style="font-size:24px">Each word makes three vectors from its own <span class="x">x<sub>i</sub></span>, with three learned matrices shared by every word:</p>
+    <div class="qkv panel">
+      <span></span><span class="label">what it is</span><span class="label">in Part 4</span>
+      <span class="role">q<sub>i</sub> = x<sub>i</sub>W<sub>Q</sub></span><span><strong>query</strong>: what I'm looking for</span><span>the decoder's <span class="h">s<sub>t−1</sub></span> (through W<sub>s</sub>)</span>
+      <span class="role">k<sub>j</sub> = x<sub>j</sub>W<sub>K</sub></span><span><strong>key</strong>: what I offer, for matching</span><span>each <span class="h">h<sub>j</sub></span> (through W<sub>h</sub>)</span>
+      <span class="role">v<sub>j</sub> = x<sub>j</sub>W<sub>V</sub></span><span><strong>value</strong>: what I hand over if picked</span><span>each <span class="h">h<sub>j</sub></span> itself</span>
+    </div>
+    <p class="callout">A library: your <strong>query</strong> is what you type in the search box, the <strong>keys</strong> are the catalogue entries it's matched against, and the <strong>values</strong> are the books you take home.</p>
+  </div>
+  <aside class="notes">You've already met all three roles, without the names: Part 4's slide on the score said the decoder side is a "query", the encoder side a "key", and what gets mixed are the "values". Self-attention just makes all three from the same word with three different learned matrices. That fixes the first try: "it" can have a query that means "looking for a noun that could be tired" while its key says "I'm a pronoun", so it no longer matches itself best. Shapes, for the whiteboard: x_i has d numbers (512 in the original Transformer); W_Q and W_K are d × d_k, W_V is d × d_v. Row vectors times matrices is the paper's convention.</aside>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="frame">
+    <p class="kicker">How it works · one word</p>
+    <h2>Score with a dot product, then scale it</h2>
+    <div class="steps" style="grid-template-columns: 44px 1fr 1.25fr">
+      <span class="n">1</span>
+      <div class="w"><strong>Make</strong> a query for word i, and a key and value for every word j.</div>
+      <div class="e">q<sub>i</sub> = <span class="x">x<sub>i</sub></span>W<sub>Q</sub> · k<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>K</sub> · v<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>V</sub></div>
+      <span class="n">2</span>
+      <div class="w"><strong>Score</strong>: dot product of query and key, divided by √d<sub>k</sub>.</div>
+      <div class="e">e<sub>ij</sub> = q<sub>i</sub> · k<sub>j</sub> / √d<sub>k</sub></div>
+      <span class="n">3</span>
+      <div class="w"><strong>Soften</strong> each word's row of scores into weights.</div>
+      <div class="e">a<sub>ij</sub> = softmax<sub>j</sub>(e<sub>i</sub>)</div>
+      <span class="n">4</span>
+      <div class="w"><strong>Mix</strong> the values.</div>
+      <div class="e key"><span class="h">z<sub>i</sub></span> = a<sub>i1</sub>v<sub>1</sub> + a<sub>i2</sub>v<sub>2</sub> + … + a<sub>iT</sub>v<sub>T</sub></div>
+    </div>
+    <p class="small">Part 4 scored with a tiny network (Bahdanau's additive score). The dot product is Luong's: no extra weights, and it turns into one matrix multiply for the whole sentence.</p>
+  </div>
+  <aside class="notes">Same score–soften–mix. Two changes from Part 4. The score is a dot product, big when query and key point the same way. And it's divided by √d_k, where d_k is how many numbers are in each query and key (64 in the original Transformer). The paper calls this "scaled dot-product attention". The next slide shows why the division is there. Every word does this at the same time, and none of them waits for any other.</aside>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">Try it · the √d<sub>k</sub></p>
+    <h2>Why divide by √d<sub>k</sub>?</h2>
+    <p style="font-size:24px">One query, six keys, every number drawn at random. Change d<sub>k</sub>, the length of each vector:</p>
+    <div class="ctl-row" id="sc-d"><span class="label">d<sub>k</sub> =</span></div>
+    <div class="cols" style="gap:30px">
+      <div class="panel" style="gap:8px"><span class="label">softmax(q · k)</span><div id="sc-raw" style="display:grid;gap:6px"></div><span class="small" id="sc-raw-m"></span></div>
+      <div class="panel" style="gap:8px"><span class="label">softmax(q · k / √d<sub>k</sub>)</span><div id="sc-sc" style="display:grid;gap:6px"></div><span class="small" id="sc-sc-m"></span></div>
+    </div>
+    <div class="ctl-row"><button type="button" id="sc-roll">New random vectors</button></div>
+    <p class="callout" style="font-size:25px">A dot product adds up d<sub>k</sub> products, so its spread grows like √d<sub>k</sub>. Unscaled, one weight hits ~100% and the rest ~0%: softmax is <strong>saturated</strong>, and blame barely flows back.</p>
+  </div>
+  <aside class="notes">Try d_k = 4 first: both sides look alike. Then 64, the size each head uses in the original Transformer: the left side puts nearly everything on one key, while the right side still spreads. At 1024 the left side is a hard pick. Why it matters for training: when softmax is that sharp, nudging any score barely changes the weights, so the gradients are tiny. That's the vanishing blame from Part 2 again, in a new place. Dividing by √d_k brings the spread of the scores back to about 1, whatever d_k is. The vectors here are random, as at the start of training.</aside>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="frame" style="gap:14px">
+    <p class="kicker">Worked example</p>
+    <h2>One row, by hand</h2>
+    <p style="font-size:23px">Three words, d = 2, small made-up weights. Follow the word <span class="x mono">sat</span> asking the sentence:</p>
+    <div class="cols" style="grid-template-columns: 1.15fr 1fr; gap:36px; align-items:start">
+      <table class="plain hand" id="hand-tab"></table>
+      <div style="display:grid;gap:12px">
+        <div class="eq" id="hand-mats" style="font-size:19px;line-height:1.6"></div>
+        <div class="eq" id="hand-z" style="font-size:19px;line-height:1.6"></div>
+      </div>
+    </div>
+    <p class="small">The other two rows work the same way, with their own query. All three can be done at the same time.</p>
+  </div>
+  <aside class="notes">Good to do at the whiteboard: copy x and the three matrices, then ask someone to compute q for "sat", the three scores, and the weights, before revealing them. Key point to check: the query is sat's, but the keys and values are everyone's, including sat's own. The output z_sat is a weighted average of the three value vectors, so it lands between them, closest to the value with the biggest weight.</aside>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">What it's for</p>
+    <h2>What does “it” refer to?</h2>
+    <svg viewBox="0 0 1180 250" role="img" aria-label="Attention from the word 'it' to every word in the sentence; changing the last word from tired to wide moves the weight from animal to street" style="width:100%">
+      <g id="it-arcs"></g>
+    </svg>
+    <div class="ctl-row"><span class="label">last word</span><button type="button" id="it-tired" aria-pressed="true">tired</button><button type="button" id="it-wide" aria-pressed="false">wide</button></div>
+    <p class="stepper-cap" id="it-cap"></p>
+  </div>
+  <aside class="notes">A well-known example from Google's 2017 blog post introducing the Transformer. Change one word at the far end of the sentence and "it" should switch from "animal" to "street": animals get tired, streets are wide. An RNN reading left to right has already processed "it" by the time it reads "tired"; in a one-direction RNN, the memory at "it" can't use that. In self-attention the "it" position sees the whole sentence, the words after it included, in one hop. The weights shown are illustrative, not from a trained model. Trained Transformers do have heads that behave much like this.</aside>
+</section>
+
+<!-- 9 -->
+<section>
+  <div class="frame">
+    <p class="kicker">All words at once</p>
+    <h2>The whole sentence is a few matrix multiplies</h2>
+    <p style="font-size:24px">Stack the T word vectors as rows of <span class="x">X</span>. Three multiplies make every word's Q, K and V; two more (Q K<sup>⊤</sup>, then the weights times V) do every row's score and mix together:</p>
+    <div class="eq" style="font-size:30px;padding:18px 26px">Z = softmax( Q K<sup>⊤</sup> / √d<sub>k</sub> ) V   with  Q = <span class="x">X</span>W<sub>Q</sub>, K = <span class="x">X</span>W<sub>K</sub>, V = <span class="x">X</span>W<sub>V</sub></div>
+    <table class="plain" style="font-size:22px">
+      <tr><th>thing</th><th>shape</th><th>what it holds</th></tr>
+      <tr><td><span class="x">X</span></td><td class="n">T × d</td><td>one row per word</td></tr>
+      <tr><td>Q, K</td><td class="n">T × d<sub>k</sub></td><td>a query and a key per word</td></tr>
+      <tr><td>Q K<sup>⊤</sup></td><td class="n">T × T</td><td>every word's score for every word: the attention map before softmax</td></tr>
+      <tr><td>V, Z</td><td class="n">T × d<sub>v</sub></td><td>a value per word; a new vector per word</td></tr>
+    </table>
+    <p class="callout">No step waits for another. A GPU does this in one go: that's the speed-up over the RNN.</p>
+  </div>
+  <aside class="notes">This is the equation from "Attention Is All You Need", worth writing from memory. Softmax is applied row by row. The T × T matrix is why long inputs are expensive: double the length, four times the scores. That's the same cost as Part 4's T × T′ map, now inside the encoder too. Ask: "how many learned weights does one self-attention layer have, and does it depend on T?" Three matrices, d × d_k each; no, it doesn't depend on T. That's why it handles any length, like the parameter sharing in Part 1.</aside>
+</section>
+
+<!-- 10 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">A little history</p>
+    <h2>From a side idea to the whole model</h2>
+    <table class="plain" style="font-size:22px">
+      <tr><td class="n">2016</td><td><span class="h">Jianpeng Cheng, Li Dong and Mirella Lapata</span>, <a class="x" href="https://arxiv.org/abs/1601.06733" target="_blank" rel="noopener">Long Short-Term Memory-Networks for Machine Reading</a>: an LSTM that attends to its own earlier words (“intra-attention”). <span class="h">Ankur Parikh and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1606.01933" target="_blank" rel="noopener">A Decomposable Attention Model for Natural Language Inference</a>: attention with no RNN at all.</td></tr>
+      <tr><td class="n">2017</td><td><span class="h">Zhouhan Lin and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1703.03130" target="_blank" rel="noopener">A Structured Self-Attentive Sentence Embedding</a>: several attention “hops” over one sentence.</td></tr>
+      <tr><td class="n">2017</td><td><span class="h">Ashish Vaswani and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>: scaled dot-product self-attention, multiple heads, position encodings. The Transformer.</td></tr>
+      <tr><td class="n">2018</td><td><span class="h">Jacob Devlin and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1810.04805" target="_blank" rel="noopener">BERT</a>: a Transformer encoder, pre-trained on lots of text. <span class="h">Alec Radford and colleagues</span> (OpenAI), the first GPT: a Transformer decoder.</td></tr>
+    </table>
+    <p class="small"><span class="h">Orange</span>: authors · <span class="x">blue</span>: paper titles (click to open on arXiv)</p>
+  </div>
+  <aside class="notes">Self-attention existed before 2017, mostly bolted onto an RNN. The Transformer paper's claim was in the title: you don't need the RNN at all. Its full title is worth knowing for an interview. BERT's full title is "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding". The first GPT paper is "Improving Language Understanding by Generative Pre-Training" (2018), published by OpenAI, not on arXiv. BERT uses the encoder half, GPT the decoder half; we'll see the difference on the masking slide.</aside>
+</section>
+
+<!-- 11 -->
+<section>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">The catch</p>
+    <h2>Shuffle the words, get the same answers</h2>
+    <p style="font-size:24px">A tiny self-attention layer with random weights, run on two sentences. Each strip is one word's output <span class="h">z</span>:</p>
+    <div class="ord" id="ord1"></div>
+    <p class="verdict" id="ord1-v"></p>
+    <p class="callout" style="font-size:25px">Nothing in score, soften or mix knows <em>where</em> a word is. Self-attention sees a <strong>bag of words</strong>: who bit whom is lost.</p>
+  </div>
+  <aside class="notes">This is the price of dropping the RNN. An RNN knows order for free: it reads in order. Self-attention treats the input as a set: each word's score with "dog" is the same wherever "dog" sits, so the outputs are the same, just listed in a different order. The technical name is "permutation equivariant": shuffle the input, and the output is shuffled the same way, nothing more. The strips are real computations, done in the browser with random weights; the point holds for any weights.</aside>
+</section>
+
+<!-- 12 -->
+<section>
+  <div class="frame" style="gap:14px">
+    <p class="kicker">The fix</p>
+    <h2>Add a position to each word</h2>
+    <div class="cols" style="grid-template-columns: 1fr 1.1fr; gap:36px; align-items:start">
+      <div style="display:grid;gap:12px;font-size:23px">
+        <p>Before the first layer, add a <strong>position vector</strong> to each word vector: <span class="mono"><span class="x">x<sub>i</sub></span> + p<sub>i</sub></span>. Now “dog” at position 1 and “dog” at position 3 are different inputs.</p>
+        <p>The original Transformer used fixed waves: each column is a sine or cosine of the position, slower and slower to the right. Many later models (BERT, GPT) <strong>learn</strong> p<sub>i</sub> instead.</p>
+      </div>
+      <div style="display:grid;gap:6px">
+        <span class="label">p<sub>i</sub>: one row per position (0–23), 32 columns</span>
+        <div class="pe" id="pe-grid" aria-label="Sinusoidal position vectors: one row per position, columns are sine and cosine waves of decreasing frequency"></div>
+      </div>
+    </div>
+    <div class="ord" id="ord2"></div>
+    <div class="ctl-row"><button type="button" id="ord2-pos" aria-pressed="true">Positions added</button><p class="verdict" id="ord2-v" style="margin:0"></p></div>
+  </div>
+  <aside class="notes">The formula, if asked: p(pos, 2i) = sin(pos / 10000^(2i/d)), p(pos, 2i+1) = cos(pos / 10000^(2i/d)). The left columns change fast, like the seconds hand of a clock; the right columns change slowly, like the hour hand. Together they give every position a unique pattern. The paper chose waves partly because a fixed offset (k positions later) is a simple rotation of the pattern, which may make relative positions easy to learn. Toggle the button: with positions, "dog" gets a different output in each sentence, so the model can tell who bit whom. Newer models often use other schemes that encode relative distance directly; that's beyond this course.</aside>
+</section>
+
+<!-- 13 -->
+<section>
+  <div class="frame">
+    <p class="kicker">One head isn't enough</p>
+    <h2>One head gives one blended answer</h2>
+    <p style="font-size:24px">In “the cat sat on the mat”, the word <span class="x mono">sat</span> wants two things: <strong>who</strong> sat (cat) and <strong>where</strong> (mat).</p>
+    <div class="blur panel" id="blur"></div>
+    <p class="callout" style="font-size:25px">One row of weights can spread over many words, but it hands back one average. Half “cat” plus half “mat” is a blur: a bit of both and all of neither.</p>
+  </div>
+  <aside class="notes">A word often needs several kinds of context at once: its subject, its object, the word next to it, the noun a pronoun points to. One softmax mixes them all into one average, and averaging two different value vectors loses what each one said. Two separate heads, each free to look at one thing, keep "who" and "where" apart, and the next layer gets both. The vectors are random stand-ins for the value vectors of cat and mat.</aside>
+</section>
+
+<!-- 14 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Multi-head attention</p>
+    <h2>Run several small attentions side by side</h2>
+    <div class="steps" style="grid-template-columns: 44px 1fr 1.3fr">
+      <span class="n">1</span>
+      <div class="w"><strong>Split.</strong> Head h has its own small W<sub>Q</sub><sup>h</sup>, W<sub>K</sub><sup>h</sup>, W<sub>V</sub><sup>h</sup>: d → d/H numbers.</div>
+      <div class="e">Q<sub>h</sub> = <span class="x">X</span>W<sub>Q</sub><sup>h</sup> ·  K<sub>h</sub> = <span class="x">X</span>W<sub>K</sub><sup>h</sup> ·  V<sub>h</sub> = <span class="x">X</span>W<sub>V</sub><sup>h</sup></div>
+      <span class="n">2</span>
+      <div class="w"><strong>Attend.</strong> Each head does score, soften, mix on its own, in parallel.</div>
+      <div class="e">head<sub>h</sub> = softmax( Q<sub>h</sub>K<sub>h</sub><sup>⊤</sup> / √d<sub>k</sub> ) V<sub>h</sub></div>
+      <span class="n">3</span>
+      <div class="w"><strong>Join.</strong> Glue the heads end to end, and let one more matrix mix them.</div>
+      <div class="e key"><span class="h">Z</span> = [ head<sub>1</sub> ; … ; head<sub>H</sub> ] W<sub>O</sub></div>
+    </div>
+    <table class="plain" style="font-size:22px">
+      <tr><th>original Transformer</th><th>d</th><th>heads H</th><th>d<sub>k</sub> = d / H</th><th>cost</th></tr>
+      <tr><td>base model</td><td class="n">512</td><td class="n">8</td><td class="n">64</td><td>about the same as one full-size head</td></tr>
+    </table>
+  </div>
+  <aside class="notes">The heads don't share weights, so each learns its own idea of what to look for. Because each head works with d/H numbers, eight heads of 64 cost about the same as one head of 512: you get eight different ways of looking for the same price. W_O is d × d; it lets the next layer use any combination of what the heads found. [a ; b] means glue end to end, as in Part 4. Nobody assigns jobs to heads: like Part 4's attention, they're learned from the loss alone. Also, d_k = 64 is the d_k from the √d_k slide.</aside>
+</section>
+
+<!-- 15 -->
+<section>
+  <div class="frame" style="gap:14px">
+    <p class="kicker">Try it · heads</p>
+    <h2>Different heads, different jobs</h2>
+    <div class="ctl-row" id="hd-heads"><span class="label">head</span></div>
+    <svg viewBox="0 0 1180 250" role="img" aria-label="Attention arcs from the selected word to the other words, for the selected head" style="width:100%">
+      <g id="hd-arcs"></g>
+    </svg>
+    <p class="small" style="max-width:none">Click a word to see where it looks. Weights are illustrative, in the style of what probing trained models finds.</p>
+    <p class="stepper-cap" id="hd-cap"></p>
+  </div>
+  <aside class="notes">Three patterns that people have found in trained Transformers: heads that look at the previous word, heads that link a word to the one it depends on grammatically (a verb to its subject), and heads that link a pronoun to the noun it refers to. A good paper on this is Clark et al. (2019), "What Does BERT Look At?". Try "sat" in each head, then "it". Caveat: real heads are messier than this, and many don't have a clean job.</aside>
+</section>
+
+<!-- 16 -->
+<section>
+  <div class="frame" style="gap:14px">
+    <p class="kicker">Writing, not just reading</p>
+    <h2>No peeking at the next word</h2>
+    <div class="cols" style="grid-template-columns: 1fr 1fr; gap:36px; align-items:start">
+      <div class="amap" id="mask-map" aria-label="Masked attention map: each word may only look at itself and the words before it; the upper triangle is blocked"></div>
+      <div style="display:grid;gap:14px;font-size:23px">
+        <p>A model that <strong>writes</strong>, one word at a time, learns by guessing each next word, all positions at once.</p>
+        <p>If “cat” could look ahead at “sat”, guessing “sat” would be trivial. So before softmax, every score for a <strong>later</strong> word is set to −∞: its weight becomes exactly 0.</p>
+        <p>This is <strong>masked</strong> self-attention: the decoder of the original Transformer, and the whole of GPT.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">This is teacher forcing from Part 3, done in parallel. The RNN decoder never saw the future because it hadn't computed it yet. A Transformer sees the whole target sentence at once during training, so the mask is what keeps it honest. When generating, it still writes one word at a time, feeding each word back in, as in Part 3. An encoder like BERT's has no mask: every word sees both sides, which is what "bidirectional" means in its title. Weights shown are illustrative.</aside>
+</section>
+
+<!-- 17 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Putting it together</p>
+    <h2>One Transformer block</h2>
+    <svg viewBox="0 0 1180 260" role="img" aria-label="Word vector plus position goes into multi-head self-attention, then add and normalise, then a feed-forward network applied to each word, then add and normalise again. Each sublayer has a skip connection around it. The block repeats N times" style="width:100%">
+      <g id="block"></g>
+    </svg>
+    <ul style="font-size:23px">
+      <li><strong>Self-attention</strong> moves information <em>between</em> words. The <strong>feed-forward</strong> network (two layers, 512 → 2048 → 512) then works on each word on its own.</li>
+      <li>The <strong>skip connections</strong> (x + sublayer(x)) are a short path for blame, like the LSTM's cell state in Part 2. With the norm layers, they're a big part of why stacks of 6, 24, 96 blocks train at all.</li>
+      <li>A translation Transformer also has Part 4's attention: the decoder's queries against the encoder's keys and values (<strong>cross-attention</strong>).</li>
+    </ul>
+  </div>
+  <aside class="notes">This is as deep as the course goes into the Transformer, by design. The original stacks 6 of these blocks in the encoder. "Norm" is layer normalisation, which keeps each word's numbers at a steady scale; the original paper puts it after the add, and most newer models put it before the sublayer instead, which trains more stably. Ask: "which of the four earlier parts shows up here?" The skip path echoes Part 2's protected path; cross-attention is Part 4; the encoder–decoder shape is Part 3; and the idea of one set of weights used at every position is Part 1's parameter sharing.</aside>
+</section>
+
+<!-- 18 -->
+<section>
+  <div class="frame">
+    <p class="kicker">The trade</p>
+    <h2>RNN layer vs self-attention layer</h2>
+    <table class="plain" style="font-size:24px">
+      <tr><th></th><th>RNN</th><th>self-attention</th></tr>
+      <tr><td>steps that must wait for each other</td><td class="n">T</td><td class="n">1</td></tr>
+      <tr><td>hops between two far-apart words</td><td class="n">up to T</td><td class="n">1</td></tr>
+      <tr><td>work per layer</td><td class="n">T · d²</td><td class="n">T² · d</td></tr>
+      <tr><td>knows word order</td><td>for free</td><td>only if you add positions</td></tr>
+      <tr><td>memory while generating</td><td>fixed: one hidden state</td><td>grows with everything written so far</td></tr>
+    </table>
+    <p class="callout" style="font-size:26px">Counting operations, self-attention is cheaper when the sentence is shorter than the vector size (T &lt; d), which is most sentences. And in training it removes the RNN's step-by-step wait.</p>
+  </div>
+  <aside class="notes">The first three rows are Table 1 of "Attention Is All You Need". They count operations, not seconds: real speed also depends on the hardware, the batch size and how well the code uses the GPU. With d = 512, a sentence of 50 words is far cheaper with self-attention; a book of 100,000 words is not, which is why long-context Transformers are an active research area. The last row is where RNNs still win: an RNN generating text carries one fixed-size state, while a Transformer has to keep keys and values for every earlier word. That's why RNN-like and "state space" models are being revived for long streams.</aside>
+</section>
+
+<!-- 19 -->
+<section>
+  <div class="frame">
+    <p class="kicker">Be ready to answer</p>
+    <h2>Questions</h2>
+    <ol style="font-size:23px;gap:8px">
+      <li>What is self-attention? <span class="small">(every position scores every position of the same sequence, softmax, weighted sum of values)</span></li>
+      <li>What are queries, keys and values? <span class="small">(what I'm looking for, what I offer for matching, what I hand over; three learned projections of each word)</span></li>
+      <li>Why divide the scores by √d<sub>k</sub>? <span class="small">(dot products grow with d<sub>k</sub>; softmax saturates and gradients vanish)</span></li>
+      <li>Why does a Transformer need position information? <span class="small">(self-attention is order-blind: shuffle the words, the outputs just shuffle)</span></li>
+      <li>Why several heads? <span class="small">(one head returns one weighted average; several heads keep separate mixtures, each in its own learned space, at the same cost)</span></li>
+      <li>What's the shape of the attention weights for T words? <span class="small">(T × T)</span></li>
+      <li>Why mask the decoder? <span class="small">(so a word can't see the words it's being trained to predict)</span></li>
+      <li>When does an RNN still make sense? <span class="small">(long streams with fixed memory, one step at a time)</span></li>
+    </ol>
+  </div>
+  <aside class="notes">Cover the hints, ask each question cold, and have someone answer out loud in one or two sentences. Question 1 should come with the equation: softmax(QKᵀ/√d_k)V.</aside>
+</section>
+
+<!-- 20 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">Recap</p>
+    <h2>Remember:</h2>
+    <ol style="font-size:31px;gap:22px">
+      <li>Self-attention: every word makes a <strong>query</strong>, <strong>key</strong> and <strong>value</strong>; scores are <span class="mono">q · k / √d<sub>k</sub></span>; softmax; mix the values.</li>
+      <li>It's order-blind, so add a <strong>position</strong> to each word.</li>
+      <li><strong>Multi-head</strong>: several small attentions in parallel, glued and mixed. Stack blocks with skip connections: that's the Transformer.</li>
+    </ol>
+  </div>
+  <aside class="notes">Ask someone to write Z = softmax(QKᵀ/√d_k)V from memory and give the shape of every matrix for T words.</aside>
+</section>
+
+<!-- 21 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">End of the course</p>
+    <h2>From one memory to every word at once</h2>
+    <p class="lede">Part 1: a hidden state. Part 2: gates to protect it. Part 3: two RNNs and a context. Part 4: attention. Part 5: attention without the RNN.</p>
+    <p style="font-size:44px;margin-top:30px">Questions?</p>
+  </div>
+  <aside class="notes">One sentence per part, as a closing recap of the whole course. The thread through all five: how to get information from one part of a sequence to another without it fading. A hidden state carried it, gates protected it, a context vector packed it, attention looked it up, and self-attention lets every word look it up directly.</aside>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard/plugin.js"></script>
+<script>
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs, text, parent) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  };
+  const mix = (v, c = "--accent") => `color-mix(in srgb, var(${c}) ${Math.round(Math.max(0, Math.min(1, v)) * 100)}%, var(--panel))`;
+  const softmax = (e) => { const m = Math.max(...e), x = e.map((v) => Math.exp(v - m)), z = x.reduce((a, b) => a + b, 0); return x.map((v) => v / z); };
+  const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+  const matvec = (x, W) => W[0].map((_, c) => x.reduce((s, v, r) => s + v * W[r][c], 0)); // row vector · matrix
+  // seeded random numbers, so the "random" demos are the same every time
+  const rng = (seed) => () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const gauss = (r) => () => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r());
+  const randMat = (g, rows, cols, s = 1) => Array.from({ length: rows }, () => Array.from({ length: cols }, () => g() * s));
+  // a strip of coloured squares: rust for positive, blue for negative
+  const strip = (v, m) => {
+    const d = document.createElement("span"); d.className = "vec";
+    v.forEach((x) => { const i = document.createElement("i"); i.style.background = mix(Math.abs(x) / m, x >= 0 ? "--accent" : "--input"); d.appendChild(i); });
+    return d;
+  };
+
+  // ---- arcs from one word to the others, thickness = weight
+  function arcs(g, words, sel, w, opt = {}) {
+    g.replaceChildren();
+    const W = opt.width || 1180, y = opt.y || 190, pad = 60, step = (W - 2 * pad) / (words.length - 1);
+    const xs = words.map((_, i) => pad + i * step);
+    w.forEach((a, j) => {
+      if (j === sel || a < 0.03) return;
+      const h = Math.min(170, 30 + Math.abs(xs[j] - xs[sel]) * 0.32);
+      el("path", { d: `M${xs[sel]} ${y - 22} C${xs[sel]} ${y - 22 - h}, ${xs[j]} ${y - 22 - h}, ${xs[j]} ${y - 22}`, class: "att-line", "stroke-width": 1 + a * 14, opacity: 0.25 + a * 0.75 }, null, g);
+    });
+    words.forEach((t, j) => {
+      const bw = Math.min(step - 8, Math.max(52, t.length * 13 + 22));
+      const r = el("rect", { x: xs[j] - bw / 2, y: y - 20, width: bw, height: 40, rx: 7, "stroke-width": j === sel ? 3 : 1.5, class: j === sel ? "s-h" : "s-x" }, null, g);
+      r.style.fill = j === sel ? "var(--bg)" : mix(w[j] * 1.2);
+      const tx = el("text", { x: xs[j], y: y + 7, "text-anchor": "middle", "font-size": opt.fs || 19, "font-weight": 600, class: (j === sel ? "f-h" : w[j] > 0.4 ? "" : "f-x") + " mono-t" }, t, g);
+      if (j !== sel && w[j] > 0.4) tx.style.fill = "var(--bg)";
+      if (opt.onPick) {
+        [r, tx].forEach((n) => { n.style.cursor = "pointer"; n.addEventListener("click", () => opt.onPick(j)); });
+        // the box is the keyboard target; stopPropagation keeps Space from also advancing the slide
+        Object.entries({ tabindex: 0, role: "button", "aria-label": t, "aria-pressed": j === sel }).forEach(([k, v]) => r.setAttribute(k, v));
+        r.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter" && e.key !== " ") return;
+          e.preventDefault(); e.stopPropagation();
+          opt.onPick(j);
+          g.querySelectorAll("[role=button]")[j]?.focus(); // arcs() redrew the boxes
+        });
+      }
+      if (opt.pct !== false) el("text", { x: xs[j], y: y + 44, "text-anchor": "middle", "font-size": 15, class: "f-m mono-t" }, `${Math.round(w[j] * 100)}%`, g);
+    });
+  }
+  // illustrative weights: named targets get their share, everything else a small floor
+  const row = (n, spec, floor = 0.02) => { const w = Array(n).fill(floor); for (const k in spec) w[k] += spec[k]; const z = w.reduce((a, b) => a + b, 0); return w.map((v) => v / z); };
+
+  const IT = ["the", "animal", "didn't", "cross", "the", "street", "because", "it", "was", "too", "tired"];
+  // ---- title
+  arcs($("title-arcs"), IT, 7, row(11, { 1: 0.62, 5: 0.08, 7: 0.06, 10: 0.06 }), { y: 180, fs: 18 });
+
+  // ---- chain vs all-to-all (slide 2)
+  (function () {
+    const g = $("chain-vs-all"), words = ["the", "black", "cat", "sat", "down"];
+    const L = words.map((_, i) => 60 + i * 110), R = words.map((_, i) => 660 + i * 110), Y = 200;
+    words.forEach((w, i) => {
+      [L, R].forEach((xs) => {
+        el("rect", { x: xs[i] - 42, y: Y, width: 84, height: 40, rx: 7, class: "f-panel s-x", "stroke-width": 1.5 }, null, g);
+        el("text", { x: xs[i], y: Y + 27, "text-anchor": "middle", "font-size": 18, "font-weight": 600, class: "f-x mono-t" }, w, g);
+      });
+      el("circle", { cx: L[i], cy: 120, r: 24, class: "f-bg s-h", "stroke-width": 2.5 }, null, g);
+      el("text", { x: L[i], y: 127, "text-anchor": "middle", "font-size": 18, class: "f-h mono-t" }, `t${i + 1}`, g);
+      el("line", { x1: L[i], y1: Y, x2: L[i], y2: 146, class: "s-x", "stroke-width": 2, "marker-end": "url(#ax)" }, null, g);
+      if (i) el("line", { x1: L[i - 1] + 25, y1: 120, x2: L[i] - 27, y2: 120, class: "s-h", "stroke-width": 2.5, "marker-end": "url(#ah)" }, null, g);
+      for (let j = i + 1; j < words.length; j++) {
+        const h = 20 + (j - i) * 30;
+        el("path", { d: `M${R[i]} ${Y} C${R[i]} ${Y - h}, ${R[j]} ${Y - h}, ${R[j]} ${Y}`, class: "att-line", "stroke-width": 2, opacity: 0.65 }, null, g);
+      }
+    });
+    el("text", { x: 280, y: 40, "text-anchor": "middle", "font-size": 22, class: "f-fg" }, "RNN: 5 steps, one after another", g);
+    el("text", { x: 880, y: 40, "text-anchor": "middle", "font-size": 22, class: "f-fg" }, "self-attention: every pair, all at once", g);
+    el("text", { x: 280, y: 290, "text-anchor": "middle", "font-size": 17, class: "f-m" }, "“the” reaches “down” after 4 hops", g);
+    el("text", { x: 880, y: 290, "text-anchor": "middle", "font-size": 17, class: "f-m" }, "“the” reaches “down” in 1 hop", g);
+    el("line", { x1: 590, y1: 30, x2: 590, y2: 280, class: "s-m", "stroke-width": 1, "stroke-dasharray": "4 5" }, null, g);
+  })();
+
+  // ---- why divide by √d_k (slide 6)
+  (function () {
+    const ds = [4, 16, 64, 256, 1024], btns = [];
+    let d = 64, seed = 7;
+    ds.forEach((v) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = v;
+      b.addEventListener("click", () => { d = v; draw(); });
+      btns.push(b); $("sc-d").appendChild(b);
+    });
+    $("sc-roll").addEventListener("click", () => { seed++; draw(); });
+    const bars = (box, w) => {
+      box.replaceChildren();
+      w.forEach((a, j) => {
+        const r = document.createElement("div"); r.className = "sc-row";
+        r.innerHTML = `<span class="k">k${j + 1}</span><span class="track"><span class="fill" style="width:${(a * 100).toFixed(1)}%"></span></span><span class="pct">${Math.round(a * 100)}%</span>`;
+        box.appendChild(r);
+      });
+    };
+    function draw() {
+      btns.forEach((b) => b.setAttribute("aria-pressed", +b.textContent === d));
+      const g = gauss(rng(seed * 1000 + d)), q = Array.from({ length: d }, g);
+      const e = Array.from({ length: 6 }, () => dot(q, Array.from({ length: d }, g)));
+      const sd = (v) => Math.sqrt(v.reduce((s, x) => s + x * x, 0) / v.length);
+      const es = e.map((v) => v / Math.sqrt(d));
+      bars($("sc-raw"), softmax(e)); bars($("sc-sc"), softmax(es));
+      $("sc-raw-m").textContent = `scores spread ≈ ${sd(e).toFixed(1)} · top weight ${Math.round(Math.max(...softmax(e)) * 100)}%`;
+      $("sc-sc-m").textContent = `scores spread ≈ ${sd(es).toFixed(1)} · top weight ${Math.round(Math.max(...softmax(es)) * 100)}%`;
+    }
+    draw();
+  })();
+
+  // ---- one row by hand (slide 7)
+  (function () {
+    const words = ["the", "cat", "sat"], X = [[1, 0], [0, 2], [1, 1]];
+    const WQ = [[1, 0], [1, 1]], WK = [[0, 1], [1, 0]], WV = [[1, 1], [0, 1]], me = 2;
+    const f = (v) => `[${v.map((x) => +x.toFixed(2)).join(", ")}]`, m = (M) => `[${M.map(f).join(", ")}]`;
+    const Q = X.map((x) => matvec(x, WQ)), K = X.map((x) => matvec(x, WK)), V = X.map((x) => matvec(x, WV));
+    const e = K.map((k) => dot(Q[me], k) / Math.SQRT2), a = softmax(e);
+    const z = V[0].map((_, c) => V.reduce((s, v, j) => s + a[j] * v[c], 0));
+    let html = `<tr><th>word</th><th>x</th><th>key k = xW<sub>K</sub></th><th>value v = xW<sub>V</sub></th><th>q<sub>sat</sub>·k / √2</th><th>weight</th></tr>`;
+    words.forEach((w, j) => {
+      html += `<tr class="${j === me ? "me" : ""}"><td class="x mono">${w}</td><td class="n">${f(X[j])}</td><td class="n">${f(K[j])}</td><td class="n">${f(V[j])}</td><td class="n">${e[j].toFixed(2)}</td><td class="n h">${Math.round(a[j] * 100)}%</td></tr>`;
+    });
+    $("hand-tab").innerHTML = html;
+    $("hand-mats").innerHTML = `W<sub>Q</sub> = ${m(WQ)}<br>W<sub>K</sub> = ${m(WK)}<br>W<sub>V</sub> = ${m(WV)}<br>q<sub>sat</sub> = x<sub>sat</sub>W<sub>Q</sub> = ${f(Q[me])}`;
+    $("hand-z").innerHTML = `<span class="h">z<sub>sat</sub></span> = ${a.map((x, j) => `${x.toFixed(2)}·${f(V[j])}`).join(" + ")}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="h">${f(z)}</span>`;
+  })();
+
+  // ---- what does "it" refer to? (slide 8). Illustrative weights.
+  (function () {
+    const set = (last) => {
+      const words = IT.slice(0, 10).concat(last);
+      const w = last === "tired" ? row(11, { 1: 0.6, 5: 0.1, 7: 0.06, 10: 0.08 }) : row(11, { 1: 0.1, 5: 0.6, 7: 0.06, 10: 0.08 });
+      arcs($("it-arcs"), words, 7, w, { y: 195, fs: 18 });
+      $("it-tired").setAttribute("aria-pressed", last === "tired"); $("it-wide").setAttribute("aria-pressed", last === "wide");
+      $("it-cap").innerHTML = last === "tired"
+        ? `“it” puts most of its weight on <span class="x mono">animal</span>: animals get tired. Its new vector <span class="h">z</span> now carries “animal”.`
+        : `One word changed, at the far end, and “it” now looks at <span class="x mono">street</span>: streets are wide.`;
+    };
+    $("it-tired").addEventListener("click", () => set("tired"));
+    $("it-wide").addEventListener("click", () => set("wide"));
+    set("tired");
+  })();
+
+  // ---- order blindness (slides 11, 12): a real self-attention layer with random weights
+  const ORD = (function () {
+    const d = 8, g = gauss(rng(42)), E = {};
+    ["dog", "bites", "man"].forEach((w) => (E[w] = Array.from({ length: d }, g)));
+    const WQ = randMat(g, d, d, 0.4), WK = randMat(g, d, d, 0.4), WV = randMat(g, d, d, 0.5);
+    const pos = (p) => Array.from({ length: d }, (_, i) => (i % 2 ? Math.cos : Math.sin)(p / Math.pow(10000, (i - (i % 2)) / d)));
+    const run = (words, usePos) => {
+      const X = words.map((w, p) => (usePos ? E[w].map((v, i) => v + pos(p)[i]) : E[w]));
+      const Q = X.map((x) => matvec(x, WQ)), K = X.map((x) => matvec(x, WK)), V = X.map((x) => matvec(x, WV));
+      return Q.map((q) => { const a = softmax(K.map((k) => dot(q, k) / Math.sqrt(d))); return V[0].map((_, c) => V.reduce((s, v, j) => s + a[j] * v[c], 0)); });
+    };
+    return function (root, verdict, usePos) {
+      const A = ["dog", "bites", "man"], B = ["man", "bites", "dog"], ZA = run(A, usePos), ZB = run(B, usePos);
+      const m = Math.max(...ZA.flat().concat(ZB.flat()).map(Math.abs));
+      root.replaceChildren();
+      [[A, ZA], [B, ZB]].forEach(([ws, Z]) => {
+        const col = document.createElement("div"); col.className = "ord-col";
+        col.innerHTML = `<span class="label">“${ws.join(" ")}”</span>`;
+        ws.forEach((w, i) => { const r = document.createElement("div"); r.className = "ord-row"; r.innerHTML = `<span class="w">${w}</span>`; r.appendChild(strip(Z[i], m)); col.appendChild(r); });
+        root.appendChild(col);
+      });
+      const gap = (w) => Math.max(...ZA[A.indexOf(w)].map((v, i) => Math.abs(v - ZB[B.indexOf(w)][i])));
+      verdict.innerHTML = ["dog", "man"].map((w) => `<span class="mono">${w}</span>: ${gap(w) < 1e-9 ? `<span class="same">identical</span>` : `<span class="diff">different</span>`}`).join(" · ")
+        + (usePos ? " in the two sentences. The model can tell who bit whom." : " in the two sentences.");
+    };
+  })();
+  ORD($("ord1"), $("ord1-v"), false);
+  (function () {
+    let on = true;
+    const draw = () => { $("ord2-pos").setAttribute("aria-pressed", on); $("ord2-pos").textContent = on ? "Positions added" : "No positions"; ORD($("ord2"), $("ord2-v"), on); };
+    $("ord2-pos").addEventListener("click", () => { on = !on; draw(); });
+    draw();
+    // sinusoidal position vectors
+    const grid = $("pe-grid"), d = 32;
+    for (let p = 0; p < 24; p++) for (let i = 0; i < d; i++) {
+      const v = (i % 2 ? Math.cos : Math.sin)(p / Math.pow(10000, (i - (i % 2)) / d));
+      const c = document.createElement("i"); c.style.background = mix(Math.abs(v), v >= 0 ? "--accent" : "--input"); grid.appendChild(c);
+    }
+  })();
+
+  // ---- one head blurs (slide 13)
+  (function () {
+    const g = gauss(rng(5)), cat = Array.from({ length: 8 }, g), mat = Array.from({ length: 8 }, g);
+    const avg = cat.map((v, i) => (v + mat[i]) / 2), m = Math.max(...cat.concat(mat).map(Math.abs));
+    const rows = [
+      ["value of “cat”", cat, "who"], ["value of “mat”", mat, "where"],
+      ["one head: 50% + 50%", avg, "a blur of both"],
+      ["two heads, glued", null, "who, then where: both kept"]
+    ];
+    const box = $("blur");
+    rows.forEach(([lab, v, note], k) => {
+      const a = document.createElement("span"); a.textContent = lab; if (k >= 2) a.style.fontWeight = 600;
+      let s;
+      if (v) s = strip(v, m);
+      else { s = document.createElement("span"); s.style.display = "flex"; s.style.gap = "10px"; s.append(strip(cat, m), strip(mat, m)); s.querySelectorAll(".vec").forEach((x) => (x.style.gridTemplateColumns = "repeat(8, 14px)")); }
+      const n = document.createElement("span"); n.className = "small"; n.textContent = note;
+      box.append(a, s, n);
+    });
+  })();
+
+  // ---- heads (slide 15). Illustrative weights.
+  (function () {
+    const W = ["the", "cat", "sat", "on", "the", "mat", "because", "it", "was", "tired"], n = W.length;
+    const heads = [
+      { name: "previous word", cap: "Looks one word back. Gives every word a sense of its neighbour, a job the RNN did for free.", rowFor: (i) => row(n, i ? { [i - 1]: 0.8, [i]: 0.1 } : { 0: 0.9 }, 0.005) },
+      { name: "who did it", cap: "Links verbs and describing words to the thing doing or being them: sat → cat, tired → cat.",
+        rowFor: (i) => row(n, ({ 2: { 1: 0.75 }, 7: { 1: 0.7 }, 8: { 7: 0.45, 1: 0.3 }, 9: { 1: 0.5, 7: 0.25 }, 1: { 2: 0.4, 1: 0.3 }, 0: { 1: 0.6 }, 4: { 5: 0.6 } })[i] || { [i]: 0.6 }) },
+      { name: "where", cap: "Links the action to its place: sat → mat, on → mat.",
+        rowFor: (i) => row(n, ({ 2: { 5: 0.6, 3: 0.15 }, 3: { 5: 0.7 }, 5: { 3: 0.4, 2: 0.35 }, 4: { 5: 0.6 } })[i] || { [i]: 0.6 }) }
+    ];
+    let h = 1, sel = 2;
+    const btns = heads.map((hd, k) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = `${k + 1} · ${hd.name}`;
+      b.addEventListener("click", () => { h = k; draw(); }); $("hd-heads").appendChild(b); return b;
+    });
+    function draw() {
+      btns.forEach((b, k) => b.setAttribute("aria-pressed", k === h));
+      arcs($("hd-arcs"), W, sel, heads[h].rowFor(sel), { y: 195, onPick: (j) => { sel = j; draw(); } });
+      $("hd-cap").textContent = heads[h].cap;
+    }
+    draw();
+  })();
+
+  // ---- masked attention map (slide 16). Illustrative weights.
+  (function () {
+    const W = ["<s>", "the", "cat", "sat", "on", "the"], next = ["the", "cat", "sat", "on", "the", "mat"], n = W.length, g = gauss(rng(11));
+    const map = $("mask-map");
+    map.style.gridTemplateColumns = `90px repeat(${n}, 1fr) 70px`;
+    const add = (cls, t) => { const s = document.createElement("span"); s.className = cls; s.textContent = t; map.appendChild(s); return s; };
+    add("hd", ""); W.forEach((w) => add("hd", w)); add("hd", "guess").style.color = "var(--muted)";
+    W.forEach((w, i) => {
+      add("rl", w).style.color = "var(--input)";
+      const a = softmax(Array.from({ length: i + 1 }, (_, j) => g() + (j === i ? 1 : 0)));
+      for (let j = 0; j < n; j++) {
+        const c = document.createElement("i");
+        if (j > i) c.className = "mask-hatch"; else c.style.background = mix(a[j] * 1.3);
+        c.title = j > i ? "masked: weight 0" : `${Math.round(a[j] * 100)}%`;
+        map.appendChild(c);
+      }
+      add("rl", next[i]);
+    });
+  })();
+
+  // ---- one Transformer block (slide 17)
+  (function () {
+    const g = $("block"), Y = 130, H = 64;
+    const box = (x, w, t, cls, sub) => {
+      el("rect", { x, y: Y - H / 2, width: w, height: H, rx: 10, class: `f-panel ${cls}`, "stroke-width": 2 }, null, g);
+      el("text", { x: x + w / 2, y: Y + (sub ? -2 : 7), "text-anchor": "middle", "font-size": 19, class: "f-fg" }, t, g);
+      if (sub) el("text", { x: x + w / 2, y: Y + 20, "text-anchor": "middle", "font-size": 15, class: "f-m" }, sub, g);
+    };
+    const arrow = (x1, x2) => el("line", { x1, y1: Y, x2: x2 - 2, y2: Y, class: "s-m", "stroke-width": 2, "marker-end": "url(#am)" }, null, g);
+    const plus = (x) => { el("circle", { cx: x, cy: Y, r: 18, class: "f-bg s-h", "stroke-width": 2 }, null, g); el("text", { x, y: Y + 7, "text-anchor": "middle", "font-size": 22, class: "f-h" }, "+", g); };
+    const skip = (x1, x2) => el("path", { d: `M${x1} ${Y} L${x1} ${Y - 72} L${x2} ${Y - 72} L${x2} ${Y - 20}`, fill: "none", class: "s-h", "stroke-width": 2, "stroke-dasharray": "6 4", "marker-end": "url(#ah)" }, null, g);
+    box(10, 150, "word + position", "s-x");
+    arrow(160, 210); box(210, 220, "multi-head", "s-h", "self-attention"); arrow(430, 462); plus(480); skip(185, 480);
+    arrow(498, 530); box(530, 90, "norm", "s-m");
+    arrow(620, 660); box(660, 200, "feed-forward", "s-y", "each word alone"); arrow(860, 892); plus(910); skip(640, 910);
+    arrow(928, 960); box(960, 90, "norm", "s-m"); arrow(1050, 1100);
+    el("text", { x: 1140, y: Y + 7, "text-anchor": "middle", "font-size": 19, class: "f-h mono-t" }, "× N", g);
+    el("text", { x: 340, y: Y - 80, "text-anchor": "middle", "font-size": 15, class: "f-h" }, "skip: x + attention(x)", g);
+    el("text", { x: 780, y: Y - 80, "text-anchor": "middle", "font-size": 15, class: "f-h" }, "skip: x + feed-forward(x)", g);
+    el("path", { d: `M200 ${Y + 52} L200 ${Y + 66} L1060 ${Y + 66} L1060 ${Y + 52}`, fill: "none", class: "s-m", "stroke-width": 1.5 }, null, g);
+    el("text", { x: 630, y: Y + 94, "text-anchor": "middle", "font-size": 17, class: "f-m" }, "one block: N = 6 in the original encoder; stacked, each block's output is the next one's input", g);
+  })();
+
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const CHALKBOARD = "https://cdn.jsdelivr.net/npm/reveal.js-plugins@4.6.0/chalkboard";
+  // Offline, reveal.js never loads and its CSS keeps every slide hidden: show them as a scrolling page instead
+  if (!window.Reveal) {
+    document.documentElement.classList.add("no-reveal");
+    const msg = document.createElement("p"); msg.className = "no-reveal-msg";
+    msg.textContent = "The slide library (reveal.js) couldn't load, probably no internet. Showing every slide on one page; the demos still work.";
+    document.body.prepend(msg);
+    return;
+  }
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0.06, center: false, hash: true, hashOneBasedIndex: true,
+    controls: true, progress: true, slideNumber: "c/t",
+    transition: matchMedia("(prefers-reduced-motion: reduce)").matches ? "none" : "fade",
+    chalkboard: {
+      theme: dark ? "chalkboard" : "whiteboard",
+      storage: "chalkboard-self-attention",
+      // Plugin's default first pen is dark grey; swap it for off-white on the dark background
+      boardmarkers: [
+        [dark ? "rgba(235,235,225,1)" : "rgba(100,100,100,1)", "black"],
+        ["rgba(30,144,255,1)", "blue"], ["rgba(220,20,60,1)", "red"], ["rgba(50,205,50,1)", "green"],
+        ["rgba(255,140,0,1)", "orange"], ["rgba(150,0,150,1)", "purple"], ["rgba(255,220,0,1)", "yellow"]
+      ].map(([color, pen]) => ({ color, cursor: `url(${CHALKBOARD}/img/boardmarker-${pen}.png), auto` }))
+    },
+    plugins: [window.RevealNotes, window.RevealChalkboard].filter(Boolean)
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Recurrent Neural Networks, from the hidden state to LSTMs and GRUs
 
-Course material for learning RNNs with intuition first: four slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare, and GRU encoder–decoders, with and without attention, that translate dates.
+Course material for learning RNNs with intuition first: five slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare, and GRU encoder–decoders, with and without attention, that translate dates.
 
 ```
 slides/      four talks (reveal.js, one HTML file each)
@@ -18,6 +18,7 @@ open slides/rnn-intro.html      # Part 1
 open slides/lstm-gru.html       # Part 2
 open slides/seq2seq.html        # Part 3
 open slides/attention.html      # Part 4
+open slides/self-attention.html # Part 5
 ```
 
 | Deck | Slides | Covers |
@@ -26,8 +27,9 @@ open slides/attention.html      # Part 4
 | **Part 2 · [Memory with a door](slides/lstm-gru.html)** | 24 | Why plain RNNs forget, where the LSTM and GRU came from, how their gates work (cell diagrams, step-by-step equations), why blame survives along the LSTM's belt, measured results from the demo, and which cell to choose. |
 | **Part 3 · [Read first, then write](slides/seq2seq.html)** | 23 | Sequence to sequence: why translation needs an encoder and a decoder, the context vector, start and end tokens, training end to end, teacher forcing, greedy vs beam search, and the fixed-size bottleneck. Then the date-translation demo, live: step through the encoder, c and the decoder; greedy vs beam on inputs where they disagree; and the bottleneck, measured. Ends with attention as the fix. |
 | **Part 4 · [Look back while you write](slides/attention.html)** | 20 | Attention: keep every encoder memory, then at each decoder step score them, soften the scores with softmax and mix them into a fresh context. A softmax playground, a step-through of “the black cat”, why attention gives blame a short path back, and alignment maps. Then the date translator with attention, live: watch where it looks for each character, and four dates at once with no bottleneck. Ends with what attention doesn't fix and why the Transformer dropped the RNN. |
+| **Part 5 · [Every word looks at every word](slides/self-attention.html)** | 21 | Self-attention: drop the RNN and let the sentence attend to itself. Queries, keys and values; the scaled dot product, with a √d<sub>k</sub> playground; one row worked by hand; what “it” refers to; the whole sentence as three matrix multiplies. Then the catch, live: shuffle the words and the outputs just shuffle, fixed by adding positions. Multi-head attention with a heads explorer, masked attention for writing, one Transformer block, and the RNN vs self-attention trade. |
 
-Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, and in Parts 3 and 4 the trained date translators running in the browser, including a live attention map.
+Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, in Parts 3 and 4 the trained date translators running in the browser, including a live attention map, and in Part 5 a √d<sub>k</sub> playground, a word-order test on a real self-attention layer and a heads explorer.
 
 Keys: **→ / ←** to move, **S** for speaker notes (each slide has notes for the presenter), **Esc** for an overview of all slides, **F** for full screen.
 
