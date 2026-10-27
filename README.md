@@ -29,7 +29,7 @@ open slides/bert.html           # Part 7
 | **Part 2 · [Memory with a door](slides/lstm-gru.html)** | 24 | Why plain RNNs forget, where the LSTM and GRU came from, how their gates work (cell diagrams, step-by-step equations), why blame survives along the LSTM's belt, measured results from the demo, and which cell to choose. |
 | **Part 3 · [Read first, then write](slides/seq2seq.html)** | 23 | Sequence to sequence: why translation needs an encoder and a decoder, the context vector, start and end tokens, training end to end, teacher forcing, greedy vs beam search, and the fixed-size bottleneck. Then the date-translation demo, live: step through the encoder, c and the decoder; greedy vs beam on inputs where they disagree; and the bottleneck, measured. Ends with attention as the fix. |
 | **Part 4 · [Look back while you write](slides/attention.html)** | 20 | Attention: keep every encoder memory, then at each decoder step score them, soften the scores with softmax and mix them into a fresh context. A softmax playground, a step-through of “the black cat”, why attention gives blame a short path back, and alignment maps. Then the date translator with attention, live: watch where it looks for each character, and four dates at once with no bottleneck. Ends with what attention doesn't fix and why the Transformer dropped the RNN. |
-| **Part 5 · [Every word looks at every word](slides/self-attention.html)** | 21 | Self-attention: drop the RNN and let the sentence attend to itself. Queries, keys and values; the scaled dot product, with a √d<sub>k</sub> playground; one row worked by hand; what “it” refers to; the whole sentence as three matrix multiplies. Then the catch, live: shuffle the words and the outputs just shuffle, fixed by adding positions. Multi-head attention with a heads explorer, masked attention for writing, one Transformer block, and the RNN vs self-attention trade. |
+| **Part 5 · [Every word looks at every word](slides/self-attention.html)** | 22 | Self-attention: drop the RNN and let the sentence attend to itself. Queries, keys and values; the scaled dot product, with a √d<sub>k</sub> playground; one row worked by hand; what “it” refers to; the whole sentence as three matrix multiplies. Then the catch, live: shuffle the words and the outputs just shuffle, fixed by adding positions. Multi-head attention with a heads explorer, masked attention for writing, one Transformer block, and the RNN vs self-attention trade. Ends with a guide to its in-slide experiments and where trained self-attention runs (`transformer.py`, Part 6). No demo script of its own. |
 | **Part 6 · [The whole machine](slides/transformer.html)** | 23 | The full encoder–decoder Transformer: embeddings and positions, stacked blocks, the feed-forward sublayer, residual connections, layer norm, the decoder's masked self-attention and cross-attention (Part 4's attention again), and the output layer. Training in one masked pass vs writing one character at a time, and measured training speed. Then the date translator as a Transformer, live: one encoder block step by step on real numbers, all eight cross-attention maps, where it fails on unseen years, and four dates at once. Ends with the three families: encoder–decoder, decoder-only (GPT), encoder-only (BERT). |
 | **Part 7 · [Fill in the blanks](slides/bert.html)** | 20 | BERT: pretrain once, fine-tune many times; from word2vec and ELMo to BERT; the model as Part 6's encoder made big; WordPiece tokens, [CLS], [SEP] and segments; why an unmasked encoder can't learn by predicting the next word; the masked language model (15%, 80/10/10) and next sentence prediction. Then the real `bert-base-uncased`: guess a hidden word from both sides vs GPT-2 from the left only, “bank” by a river vs at a bank pulling apart block by block, all 144 attention heads, and a fine-tune on movie reviews (64% with no pretraining, 83% frozen, 88.5% fine-tuned). Ends with BERT vs GPT. |
 
@@ -39,7 +39,7 @@ Keys: **→ / ←** to move, **S** for speaker notes (each slide has notes for t
 
 ## Demo
 
-Two scripts train a real model on about 1.1M characters of Shakespeare and let you test it, ask it for guesses and let it write. A third trains a sequence-to-sequence model that rewrites dates, and a fourth adds attention to it. Each trains on a laptop CPU in about 25 seconds to 2 minutes (the multi-date experiments take longer).
+Two scripts train a real model on about 1.1M characters of Shakespeare and let you test it, ask it for guesses and let it write. A third trains a sequence-to-sequence model that rewrites dates, a fourth adds attention to it, and a fifth rebuilds it as a Transformer. Each trains on a laptop CPU in about 25 seconds to 3 minutes (the multi-date experiments take longer). A sixth, `bert.py`, downloads a pretrained BERT instead of training one. Part 5 has no script: its experiments run inside the slides.
 
 You need [uv](https://docs.astral.sh/uv/). It installs Python, PyTorch and NumPy on the first run.
 
@@ -98,6 +98,23 @@ uv run demo/attention.py export                             # put the weights in
 ```
 
 From one run: 100% on unseen days, as before, but also **99.8% on unseen years** (Part 3: 12%), because it can look at the `9` in `2091` and copy it. With `--max-dates 4` it gets 1, 2, 3 and 4 dates all 100% right, where Part 3's single `c` managed 99%, 1%, 0%, 0%.
+
+### `transformer.py`: the date translator, as a Transformer (Parts 5 and 6)
+
+The same task, data and exam again, with no RNN anywhere: Part 5's self-attention and sine-wave positions in the encoder, masked self-attention and cross-attention in the decoder. d = 64, 4 heads, 2 blocks each side, 238,734 weights.
+
+```sh
+uv run demo/transformer.py train                                # ~3 min
+uv run demo/transformer.py test
+uv run demo/transformer.py translate "23 Oct 2026" --details    # cross-attention map, last block, all heads averaged
+uv run demo/transformer.py translate "23 Oct 2026" --details --layer 2 --head 3
+uv run demo/transformer.py speed                                # one training round: GRU + attention vs Transformer
+uv run demo/transformer.py export                               # put the weights into the Part 6 slides
+```
+
+From one run (seed 0): 100% on unseen days, but 84.9% on unseen years (Part 4: 99.8%); its misses copy a familiar `20` instead of the `9` in `2091`. With `--max-dates 4 --steps 8000` (~20 min) it gets 100%, 99.8%, 99.7% and 98.4% for 1 to 4 dates.
+
+Part 5 has no script of its own. Its experiments run inside the slides, on random or illustrative weights; the trained self-attention is `MultiHeadAttention` and `EncoderBlock` in `transformer.py`. `--details` prints the decoder's cross-attention, not the encoder's self-attention.
 
 ### `bert.py`: open up a pretrained BERT (Part 7)
 

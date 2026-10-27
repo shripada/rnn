@@ -329,6 +329,7 @@ table.hand tr.me td { font-weight: 600; }
     <svg viewBox="0 0 1180 230" role="img" aria-label="In the sentence 'the animal didn't cross the street because it was too tired', the word 'it' puts most of its attention on 'animal'" style="width:100%;margin-top:6px">
       <g id="title-arcs"></g>
     </svg>
+    <p class="small">Weights in the picture are illustrative, not from a trained model.</p>
   </div>
   <aside class="notes">Part 4 ended with the Transformer table: keep the attention, drop the recurrence. Today we open that up. The picture is the whole talk: to work out what "it" means, the word "it" looks at every other word in its own sentence and pulls most of its meaning from "animal". No RNN carried that information along; "it" went and got it directly. The weights in the picture are illustrative.</aside>
 </section>
@@ -379,7 +380,7 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame">
     <p class="kicker">Three jobs for every word</p>
     <h2>Query, key, value</h2>
-    <p style="font-size:24px">Each word makes three vectors from its own <span class="x">x<sub>i</sub></span>, with three learned matrices shared by every word:</p>
+    <p style="font-size:24px">Each word makes three vectors from its own <span class="x">x<sub>i</sub></span>, with three matrices shared by every word. They are <strong>learned</strong>: they start as random numbers and backprop adjusts them, like every weight since Part 1.</p>
     <div class="qkv panel">
       <span></span><span class="label">what it is</span><span class="label">in Part 4</span>
       <span class="role">q<sub>i</sub> = x<sub>i</sub>W<sub>Q</sub></span><span><strong>query</strong>: what I'm looking for</span><span>the decoder's <span class="h">s<sub>t−1</sub></span> (through W<sub>s</sub>)</span>
@@ -399,20 +400,20 @@ table.hand tr.me td { font-weight: 600; }
     <div class="steps" style="grid-template-columns: 44px 1fr 1.25fr">
       <span class="n">1</span>
       <div class="w"><strong>Make</strong> a query for word i, and a key and value for every word j.</div>
-      <div class="e">q<sub>i</sub> = <span class="x">x<sub>i</sub></span>W<sub>Q</sub> · k<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>K</sub> · v<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>V</sub></div>
+      <div class="e">q<sub>i</sub> = <span class="x">x<sub>i</sub></span>W<sub>Q</sub><span class="small" style="margin-left:18px">query: word i's x times W<sub>Q</sub></span><br>k<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>K</sub><span class="small" style="margin-left:18px">key of every word j</span><br>v<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>V</sub><span class="small" style="margin-left:18px">value of every word j</span></div>
       <span class="n">2</span>
-      <div class="w"><strong>Score</strong>: dot product of query and key, divided by √d<sub>k</sub>.</div>
+      <div class="w"><strong>Score</strong>: dot product of query and key, divided by √d<sub>k</sub>, where d<sub>k</sub> is the length of each query and key.</div>
       <div class="e">e<sub>ij</sub> = q<sub>i</sub> · k<sub>j</sub> / √d<sub>k</sub></div>
       <span class="n">3</span>
-      <div class="w"><strong>Soften</strong> each word's row of scores into weights.</div>
-      <div class="e">a<sub>ij</sub> = softmax<sub>j</sub>(e<sub>i</sub>)</div>
+      <div class="w"><strong>Soften</strong> word i's scores against every word j into weights.</div>
+      <div class="e">a<sub>ij</sub> = exp(e<sub>ij</sub>) / ( exp(e<sub>i1</sub>) + … + exp(e<sub>iT</sub>) )<br><span class="small">softmax: word i's weights add up to 1</span></div>
       <span class="n">4</span>
       <div class="w"><strong>Mix</strong> the values.</div>
       <div class="e key"><span class="h">z<sub>i</sub></span> = a<sub>i1</sub>v<sub>1</sub> + a<sub>i2</sub>v<sub>2</sub> + … + a<sub>iT</sub>v<sub>T</sub></div>
     </div>
     <p class="small">Part 4 scored with a tiny network (Bahdanau's additive score). The dot product is Luong's: no extra weights, and it turns into one matrix multiply for the whole sentence.</p>
   </div>
-  <aside class="notes">Same score–soften–mix. Two changes from Part 4. The score is a dot product, big when query and key point the same way. And it's divided by √d_k, where d_k is how many numbers are in each query and key (64 in the original Transformer). The paper calls this "scaled dot-product attention". The next slide shows why the division is there. Every word does this at the same time, and none of them waits for any other.</aside>
+  <aside class="notes">Step 1 is three separate lines: each word's vector x times three different learned matrices (x W means vector times matrix, no symbol). The only dot product on this slide is in step 2: q_i · k_j. Same score–soften–mix. Two changes from Part 4. The score is a dot product, big when query and key point the same way. And it's divided by √d_k, where d_k is how many numbers are in each query and key (64 in the original Transformer). The paper calls this "scaled dot-product attention". The next slide shows why the division is there. Every word does this at the same time, and none of them waits for any other.</aside>
 </section>
 
 <!-- 6 -->
@@ -420,14 +421,14 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame" style="gap:16px">
     <p class="kicker">Try it · the √d<sub>k</sub></p>
     <h2>Why divide by √d<sub>k</sub>?</h2>
-    <p style="font-size:24px">One query, six keys, every number drawn at random. Change d<sub>k</sub>, the length of each vector:</p>
-    <div class="ctl-row" id="sc-d"><span class="label">d<sub>k</sub> =</span></div>
+    <p style="font-size:24px">One query, six keys, random numbers as at the start of training. Change d<sub>k</sub>:</p>
+    <div class="ctl-row" id="sc-d"><span class="label">d<sub>k</sub> (length of q and k) =</span></div>
     <div class="cols" style="gap:30px">
       <div class="panel" style="gap:8px"><span class="label">softmax(q · k)</span><div id="sc-raw" style="display:grid;gap:6px"></div><span class="small" id="sc-raw-m"></span></div>
       <div class="panel" style="gap:8px"><span class="label">softmax(q · k / √d<sub>k</sub>)</span><div id="sc-sc" style="display:grid;gap:6px"></div><span class="small" id="sc-sc-m"></span></div>
     </div>
     <div class="ctl-row"><button type="button" id="sc-roll">New random vectors</button></div>
-    <p class="callout" style="font-size:25px">A dot product adds up d<sub>k</sub> products, so its spread grows like √d<sub>k</sub>. Unscaled, one weight hits ~100% and the rest ~0%: softmax is <strong>saturated</strong>, and blame barely flows back.</p>
+    <p class="callout" style="font-size:25px">A dot product adds up d<sub>k</sub> products, so its typical size grows like √d<sub>k</sub>. Unscaled, one weight hits ~100%: softmax is <strong>saturated</strong>, and blame barely flows back.</p>
   </div>
   <aside class="notes">Try d_k = 4 first: both sides look alike. Then 64, the size each head uses in the original Transformer: the left side puts nearly everything on one key, while the right side still spreads. At 1024 the left side is a hard pick. Why it matters for training: when softmax is that sharp, nudging any score barely changes the weights, so the gradients are tiny. That's the vanishing blame from Part 2 again, in a new place. Dividing by √d_k brings the spread of the scores back to about 1, whatever d_k is. The vectors here are random, as at the start of training.</aside>
 </section>
@@ -437,7 +438,7 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame" style="gap:14px">
     <p class="kicker">Worked example</p>
     <h2>One row, by hand</h2>
-    <p style="font-size:23px">Three words, d = 2, small made-up weights. Follow the word <span class="x mono">sat</span> asking the sentence:</p>
+    <p style="font-size:23px">Three words, d = d<sub>k</sub> = d<sub>v</sub> = 2. The word vectors x and the matrices W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> are hand-picked small numbers so the arithmetic is easy; a trained model learns them. Follow the word <span class="x mono">sat</span> asking the sentence:</p>
     <div class="cols" style="grid-template-columns: 1.15fr 1fr; gap:36px; align-items:start">
       <table class="plain hand" id="hand-tab"></table>
       <div style="display:grid;gap:12px">
@@ -460,6 +461,7 @@ table.hand tr.me td { font-weight: 600; }
     </svg>
     <div class="ctl-row"><span class="label">last word</span><button type="button" id="it-tired" aria-pressed="true">tired</button><button type="button" id="it-wide" aria-pressed="false">wide</button></div>
     <p class="stepper-cap" id="it-cap"></p>
+    <p class="small">Weights are illustrative, not from a trained model. Trained models do show patterns like this.</p>
   </div>
   <aside class="notes">A well-known example from Google's 2017 blog post introducing the Transformer. Change one word at the far end of the sentence and "it" should switch from "animal" to "street": animals get tired, streets are wide. An RNN reading left to right has already processed "it" by the time it reads "tired"; in a one-direction RNN, the memory at "it" can't use that. In self-attention the "it" position sees the whole sentence, the words after it included, in one hop. The weights shown are illustrative, not from a trained model. Trained Transformers do have heads that behave much like this.</aside>
 </section>
@@ -473,10 +475,10 @@ table.hand tr.me td { font-weight: 600; }
     <div class="eq" style="font-size:30px;padding:18px 26px">Z = softmax( Q K<sup>⊤</sup> / √d<sub>k</sub> ) V   with  Q = <span class="x">X</span>W<sub>Q</sub>, K = <span class="x">X</span>W<sub>K</sub>, V = <span class="x">X</span>W<sub>V</sub></div>
     <table class="plain" style="font-size:22px">
       <tr><th>thing</th><th>shape</th><th>what it holds</th></tr>
-      <tr><td><span class="x">X</span></td><td class="n">T × d</td><td>one row per word</td></tr>
-      <tr><td>Q, K</td><td class="n">T × d<sub>k</sub></td><td>a query and a key per word</td></tr>
-      <tr><td>Q K<sup>⊤</sup></td><td class="n">T × T</td><td>every word's score for every word: the attention map before softmax</td></tr>
-      <tr><td>V, Z</td><td class="n">T × d<sub>v</sub></td><td>a value per word; a new vector per word</td></tr>
+      <tr><td><span class="x">X</span></td><td class="n">T × d</td><td>T words, one per row, each d numbers long</td></tr>
+      <tr><td>Q, K</td><td class="n">T × d<sub>k</sub></td><td>a query and a key per word, d<sub>k</sub> numbers each (same length, to take q · k)</td></tr>
+      <tr><td>Q K<sup>⊤</sup></td><td class="n">T × T</td><td>every q · k at once (K<sup>⊤</sup>: K's rows as columns): the attention map before softmax</td></tr>
+      <tr><td>V, Z</td><td class="n">T × d<sub>v</sub></td><td>a value per word, d<sub>v</sub> numbers each; a new vector z per word</td></tr>
     </table>
     <p class="callout">No step waits for another. A GPU does this in one go: that's the speed-up over the RNN.</p>
   </div>
@@ -504,7 +506,7 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame" style="gap:16px">
     <p class="kicker">The catch</p>
     <h2>Shuffle the words, get the same answers</h2>
-    <p style="font-size:24px">A tiny self-attention layer with random weights, run on two sentences. Each strip is one word's output <span class="h">z</span>:</p>
+    <p style="font-size:24px">A tiny self-attention layer (d = 8, random weights), run on two sentences. Each strip is one word's output <span class="h">z</span>: one square per number, rust positive, blue negative, darker is bigger.</p>
     <div class="ord" id="ord1"></div>
     <p class="verdict" id="ord1-v"></p>
     <p class="callout" style="font-size:25px">Nothing in score, soften or mix knows <em>where</em> a word is. Self-attention sees a <strong>bag of words</strong>: who bit whom is lost.</p>
@@ -523,7 +525,7 @@ table.hand tr.me td { font-weight: 600; }
         <p>The original Transformer used fixed waves: each column is a sine or cosine of the position, slower and slower to the right. Many later models (BERT, GPT) <strong>learn</strong> p<sub>i</sub> instead.</p>
       </div>
       <div style="display:grid;gap:6px">
-        <span class="label">p<sub>i</sub>: one row per position (0–23), 32 columns</span>
+        <span class="label">p<sub>i</sub>: one row per position (0–23), d = 32 columns</span>
         <div class="pe" id="pe-grid" aria-label="Sinusoidal position vectors: one row per position, columns are sine and cosine waves of decreasing frequency"></div>
       </div>
     </div>
@@ -538,8 +540,10 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame">
     <p class="kicker">One head isn't enough</p>
     <h2>One head gives one blended answer</h2>
+    <p style="font-size:24px">Everything so far, one W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> and one row of weights per word, is called <strong>one attention head</strong>.</p>
     <p style="font-size:24px">In “the cat sat on the mat”, the word <span class="x mono">sat</span> wants two things: <strong>who</strong> sat (cat) and <strong>where</strong> (mat).</p>
     <div class="blur panel" id="blur"></div>
+    <p class="small">The value of a word is its v = xW<sub>V</sub>, what it hands over when picked. Here v<sub>cat</sub> and v<sub>mat</sub> are random stand-ins, 8 numbers each. The 50/50 split is hand-picked: any split blurs, and 50/50 shows it most clearly.</p>
     <p class="callout" style="font-size:25px">One row of weights can spread over many words, but it hands back one average. Half “cat” plus half “mat” is a blur: a bit of both and all of neither.</p>
   </div>
   <aside class="notes">A word often needs several kinds of context at once: its subject, its object, the word next to it, the noun a pronoun points to. One softmax mixes them all into one average, and averaging two different value vectors loses what each one said. Two separate heads, each free to look at one thing, keep "who" and "where" apart, and the next layer gets both. The vectors are random stand-ins for the value vectors of cat and mat.</aside>
@@ -552,13 +556,13 @@ table.hand tr.me td { font-weight: 600; }
     <h2>Run several small attentions side by side</h2>
     <div class="steps" style="grid-template-columns: 44px 1fr 1.3fr">
       <span class="n">1</span>
-      <div class="w"><strong>Split.</strong> Head h has its own small W<sub>Q</sub><sup>h</sup>, W<sub>K</sub><sup>h</sup>, W<sub>V</sub><sup>h</sup>: d → d/H numbers.</div>
-      <div class="e">Q<sub>h</sub> = <span class="x">X</span>W<sub>Q</sub><sup>h</sup> ·  K<sub>h</sub> = <span class="x">X</span>W<sub>K</sub><sup>h</sup> ·  V<sub>h</sub> = <span class="x">X</span>W<sub>V</sub><sup>h</sup></div>
+      <div class="w"><strong>Split.</strong> Head h has its own small W<sub>Q</sub><sup>h</sup>, W<sub>K</sub><sup>h</sup>, W<sub>V</sub><sup>h</sup>: d → d/H numbers, so d<sub>k</sub> = d<sub>v</sub> = d/H.</div>
+      <div class="e">Q<sub>h</sub> = <span class="x">X</span>W<sub>Q</sub><sup>h</sup><br>K<sub>h</sub> = <span class="x">X</span>W<sub>K</sub><sup>h</sup><br>V<sub>h</sub> = <span class="x">X</span>W<sub>V</sub><sup>h</sup></div>
       <span class="n">2</span>
       <div class="w"><strong>Attend.</strong> Each head does score, soften, mix on its own, in parallel.</div>
       <div class="e">head<sub>h</sub> = softmax( Q<sub>h</sub>K<sub>h</sub><sup>⊤</sup> / √d<sub>k</sub> ) V<sub>h</sub></div>
       <span class="n">3</span>
-      <div class="w"><strong>Join.</strong> Glue the heads end to end, and let one more matrix mix them.</div>
+      <div class="w"><strong>Join.</strong> Glue the heads end to end, and let one more learned matrix, W<sub>O</sub> (d × d), mix them.</div>
       <div class="e key"><span class="h">Z</span> = [ head<sub>1</sub> ; … ; head<sub>H</sub> ] W<sub>O</sub></div>
     </div>
     <table class="plain" style="font-size:22px">
@@ -595,6 +599,7 @@ table.hand tr.me td { font-weight: 600; }
         <p>A model that <strong>writes</strong>, one word at a time, learns by guessing each next word, all positions at once.</p>
         <p>If “cat” could look ahead at “sat”, guessing “sat” would be trivial. So before softmax, every score for a <strong>later</strong> word is set to −∞: its weight becomes exactly 0.</p>
         <p>This is <strong>masked</strong> self-attention: the decoder of the original Transformer, and the whole of GPT.</p>
+        <p class="small">Weights in the map are illustrative.</p>
       </div>
     </div>
   </div>
@@ -610,8 +615,8 @@ table.hand tr.me td { font-weight: 600; }
       <g id="block"></g>
     </svg>
     <ul style="font-size:23px">
-      <li><strong>Self-attention</strong> moves information <em>between</em> words. The <strong>feed-forward</strong> network (two layers, 512 → 2048 → 512) then works on each word on its own.</li>
-      <li>The <strong>skip connections</strong> (x + sublayer(x)) are a short path for blame, like the LSTM's cell state in Part 2. With the norm layers, they're a big part of why stacks of 6, 24, 96 blocks train at all.</li>
+      <li><strong>Self-attention</strong> moves information <em>between</em> words. The <strong>feed-forward</strong> network (two layers; 512 → 2048 → 512 in the original) then works on each word on its own.</li>
+      <li>The <strong>skip connections</strong> (x + sublayer(x)) are a short path for blame, like the LSTM's cell state in Part 2. With the norm layers (layer normalisation: rescale each word's numbers to a steady size), they're a big part of why stacks of 6 (original Transformer), 24 (BERT-large) or 96 (GPT-3) blocks train at all.</li>
       <li>A translation Transformer also has Part 4's attention: the decoder's queries against the encoder's keys and values (<strong>cross-attention</strong>).</li>
     </ul>
   </div>
@@ -631,12 +636,32 @@ table.hand tr.me td { font-weight: 600; }
       <tr><td>knows word order</td><td>for free</td><td>only if you add positions</td></tr>
       <tr><td>memory while generating</td><td>fixed: one hidden state</td><td>grows with everything written so far</td></tr>
     </table>
+    <p class="small">T = words in the sentence, d = length of each vector. Rows 1–3 are Table 1 of “Attention Is All You Need”, and they count operations, not seconds.</p>
     <p class="callout" style="font-size:26px">Counting operations, self-attention is cheaper when the sentence is shorter than the vector size (T &lt; d), which is most sentences. And in training it removes the RNN's step-by-step wait.</p>
   </div>
   <aside class="notes">The first three rows are Table 1 of "Attention Is All You Need". They count operations, not seconds: real speed also depends on the hardware, the batch size and how well the code uses the GPU. With d = 512, a sentence of 50 words is far cheaper with self-attention; a book of 100,000 words is not, which is why long-context Transformers are an active research area. The last row is where RNNs still win: an RNN generating text carries one fixed-size state, while a Transformer has to keep keys and values for every earlier word. That's why RNN-like and "state space" models are being revived for long streams.</aside>
 </section>
 
 <!-- 19 -->
+<section>
+  <div class="frame" style="gap:14px">
+    <p class="kicker">Try it yourself</p>
+    <h2>What you can run</h2>
+    <table class="plain" style="font-size:21px">
+      <tr><th>slide</th><th>do this</th><th>look for</th><th>weights</th></tr>
+      <tr><td class="n">6</td><td>click d<sub>k</sub> = 4, then 64, then 1024</td><td>left side snaps to one key at 100%; right side stays spread</td><td>random</td></tr>
+      <tr><td class="n">8</td><td>switch the last word: tired ↔ wide</td><td>“it” moves its weight from animal to street</td><td>illustrative</td></tr>
+      <tr><td class="n">11–12</td><td>toggle “Positions added”</td><td>dog and man: identical outputs without positions, different with</td><td>random, real layer</td></tr>
+      <tr><td class="n">15</td><td>pick a head, click a word</td><td>each head looks somewhere different</td><td>illustrative</td></tr>
+    </table>
+    <p style="font-size:23px">None of these is trained. Trained self-attention runs in Part 6's date translator, <span class="mono">demo/transformer.py</span>:</p>
+    <div class="eq" style="font-size:19px;line-height:1.7">uv run demo/transformer.py train    <span class="small"># ~3 min on a laptop CPU</span><br>uv run demo/transformer.py translate "23 Oct 2026" --details</div>
+    <p class="small">Self-attention is <span class="mono">MultiHeadAttention</span> and <span class="mono">EncoderBlock</span> in that file. <span class="mono">--details</span> prints the decoder's cross-attention (Part 4's kind), not the encoder's self-attention.</p>
+  </div>
+  <aside class="notes">Part 5 has no script of its own: every experiment in this deck runs in the browser, on random or hand-made weights, so the behaviour is shown, not learned. The "weights" column says which. Slides 11–12 are the only ones that run a real self-attention layer, and its weights are random; the point there holds for any weights. To see self-attention that was actually trained, go to Part 6 and its demo; the README's transformer.py section has the commands and results.</aside>
+</section>
+
+<!-- 20 -->
 <section>
   <div class="frame">
     <p class="kicker">Be ready to answer</p>
@@ -655,7 +680,7 @@ table.hand tr.me td { font-weight: 600; }
   <aside class="notes">Cover the hints, ask each question cold, and have someone answer out loud in one or two sentences. Question 1 should come with the equation: softmax(QKᵀ/√d_k)V.</aside>
 </section>
 
-<!-- 20 -->
+<!-- 21 -->
 <section>
   <div class="frame center">
     <p class="kicker">Recap</p>
@@ -669,7 +694,7 @@ table.hand tr.me td { font-weight: 600; }
   <aside class="notes">Ask someone to write Z = softmax(QKᵀ/√d_k)V from memory and give the shape of every matrix for T words.</aside>
 </section>
 
-<!-- 21 -->
+<!-- 22 -->
 <section>
   <div class="frame center">
     <p class="kicker">Next</p>
@@ -799,8 +824,8 @@ table.hand tr.me td { font-weight: 600; }
       const sd = (v) => Math.sqrt(v.reduce((s, x) => s + x * x, 0) / v.length);
       const es = e.map((v) => v / Math.sqrt(d));
       bars($("sc-raw"), softmax(e)); bars($("sc-sc"), softmax(es));
-      $("sc-raw-m").textContent = `scores spread ≈ ${sd(e).toFixed(1)} · top weight ${Math.round(Math.max(...softmax(e)) * 100)}%`;
-      $("sc-sc-m").textContent = `scores spread ≈ ${sd(es).toFixed(1)} · top weight ${Math.round(Math.max(...softmax(es)) * 100)}%`;
+      $("sc-raw-m").textContent = `typical score ≈ ±${sd(e).toFixed(1)} · biggest weight ${Math.round(Math.max(...softmax(e)) * 100)}%`;
+      $("sc-sc-m").textContent = `typical score ≈ ±${sd(es).toFixed(1)} · biggest weight ${Math.round(Math.max(...softmax(es)) * 100)}%`;
     }
     draw();
   })();
@@ -883,13 +908,13 @@ table.hand tr.me td { font-weight: 600; }
     const g = gauss(rng(5)), cat = Array.from({ length: 8 }, g), mat = Array.from({ length: 8 }, g);
     const avg = cat.map((v, i) => (v + mat[i]) / 2), m = Math.max(...cat.concat(mat).map(Math.abs));
     const rows = [
-      ["value of “cat”", cat, "who"], ["value of “mat”", mat, "where"],
+      ["v<sub>cat</sub>, value of “cat”", cat, "who"], ["v<sub>mat</sub>, value of “mat”", mat, "where"],
       ["one head: 50% + 50%", avg, "a blur of both"],
       ["two heads, glued", null, "who, then where: both kept"]
     ];
     const box = $("blur");
     rows.forEach(([lab, v, note], k) => {
-      const a = document.createElement("span"); a.textContent = lab; if (k >= 2) a.style.fontWeight = 600;
+      const a = document.createElement("span"); a.innerHTML = lab; if (k >= 2) a.style.fontWeight = 600;
       let s;
       if (v) s = strip(v, m);
       else { s = document.createElement("span"); s.style.display = "flex"; s.style.gap = "10px"; s.append(strip(cat, m), strip(mat, m)); s.querySelectorAll(".vec").forEach((x) => (x.style.gridTemplateColumns = "repeat(8, 14px)")); }
