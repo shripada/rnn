@@ -335,3 +335,108 @@ The map for several dates shows one block per date, marching down the input: to 
 | `decode_step`: `c_t` into the decoder and the head | What changed from Part 3 |
 | `translate --details` | Watch where it looks |
 | `--max-dates 4` | Four dates, no single c · More dates, no bottleneck |
+
+## The Transformer: `transformer.py` (Part 6)
+
+### The problem
+
+The same as `seq2seq.py` and `attention.py`: read a date written any of six ways, write it as `YYYY-MM-DD`. Same data, same train / test split, same exam. This time there's no RNN anywhere.
+
+### The model
+
+The encoder–decoder Transformer from "Attention Is All You Need", written out block by block (no `nn.Transformer`) so every slide points at a few named lines:
+
+- **Encoder:** embed each character (times √d), add Part 5's sine-wave positions, then 2 blocks of *self-attention → add & norm → feed-forward → add & norm*.
+- **Decoder:** embed the answer so far, shifted right, add positions, then 2 blocks of *masked self-attention → add & norm → cross-attention to the encoder's output → add & norm → feed-forward → add & norm*.
+- **Output:** score every output character against the top decoder vector with the decoder's own embedding table (shared weights, as in the paper), then softmax.
+- d = 64, 4 heads, feed-forward 64 → 256 → 64: 238,734 weights. Post-norm, as in the paper, with a short learning-rate warm-up.
+
+Training feeds the whole answer in one masked pass (`forward(teacher_forcing=True)`); writing runs the decoder once per character (`decode_step`), recomputing earlier positions instead of caching their keys and values.
+
+### The commands
+
+```sh
+uv run demo/transformer.py train                                # ~3 min
+uv run demo/transformer.py test
+uv run demo/transformer.py translate "23 Oct 2026" --details    # cross-attention map, block 2, all heads
+uv run demo/transformer.py translate "23 Oct 2026" --details --layer 2 --head 3
+uv run demo/transformer.py speed                                # one training round: GRU + attention vs Transformer
+uv run demo/transformer.py export                               # write the weights into slides/transformer.html
+uv run demo/transformer.py export --max-dates 4
+```
+
+Every command takes `--d N` (default 64), `--layers N` (default 2) and `--max-dates N` (default 1), and saves to its own file: `transformer-64-2.pt`, `transformer-64-2-x4.pt`.
+
+### `test`: right on dates, weaker on unseen years
+
+From a real run (seed 0):
+```
+Whole date exactly right: 100.0%          (39,444 inputs from 6,574 days it never saw)
+
+Years it never saw (2080-2099), all formats: 84.9%
+  year written in digits ('2091'):             81.9%
+  year spelled out ('twenty ninety-one'):      99.8%
+```
+Part 4's GRU + attention got 99.9% on years in digits. The Transformer's mistakes look like `30 MAY 2093` → `2003-05-30`: for the third digit, its cross-attention spreads over the `2` and `0` instead of landing on the `9`, and it writes a digit it has seen after `20` in training. Spelled-out years are fine: "ninety" appears in training (1990s). One seed, one small model: the point is that the two architectures generalise differently, not that one is better.
+
+### `translate --details`: the cross-attention map
+
+```
+          23 Oct 2026
+          ‾‾‾‾‾‾‾‾‾‾‾
+     2 ←          █     looked at '0' (#9) 92%
+     0 ←          █     looked at '0' (#9) 83%
+     2 ←           █    looked at '2' (#10) 93%
+     6 ←            █   looked at '6' (#11) 98%
+     - ←            █   looked at '6' (#11) 95%
+     1 ←      █·        looked at 'c' (#5) 88%
+     0 ←      ·█        looked at 't' (#6) 85%
+     - ←       █        looked at 't' (#6) 82%
+     2 ←  █·            looked at '2' (#1) 80%
+     3 ←  ▓░            looked at '2' (#1) 61%
+  ⟨/s⟩ ←  ▒··   ·       looked at '2' (#1) 45%
+```
+That's block 2, head 3: almost exactly Part 4's alignment. The other heads are messier, and block 1's are less tidy still. The slides show all eight at once.
+
+### `speed`: is it faster to train?
+
+```
+  dates per input  avg input    GRU + attention  Transformer
+                1       19 ch              36 ms        36 ms
+              1-4       51 ch             222 ms       130 ms
+```
+One training round, forward and backward, on a laptop CPU. A tie on short inputs; on longer ones the GRU's step-by-step wait shows. Speeds vary by machine.
+
+### Four dates: `--max-dates 4`
+
+```sh
+uv run demo/transformer.py train --max-dates 4 --steps 8000    # ~20 min
+uv run demo/transformer.py test  --max-dates 4
+```
+
+Whole answer right, on dates none of the models saw:
+
+| model | 1 date | 2 dates | 3 dates | 4 dates |
+|---|---|---|---|---|
+| `seq2seq.py`, one c of 128 | 99.3% | 0.6% | 0.0% | 0.0% |
+| `attention.py`, h of 128 | 100% | 100% | 100% | 100% |
+| `transformer.py`, `--steps 8000` | 100% | 99.8% | 99.7% | 98.4% |
+| `transformer.py`, default 4,000 steps | 99.9% | 99.0% | 96.4% | 83.2% |
+
+No bottleneck here either: every decoder step looks at every input character. It needs more training rounds than Part 4's model (at 4,000 it was still improving), but each round is quicker, so the wall-clock time is similar.
+
+### Which slide each part matches (Part 6)
+
+| Part | Slide |
+|---|---|
+| `Transformer.embed`, `positions()` | Embed, add positions, then N identical blocks |
+| `FeedForward` | Feed-forward: each position on its own |
+| `x + ...` in `EncoderBlock.forward` / `DecoderBlock.forward` | Add, don't replace: the residual path |
+| `nn.LayerNorm` in each block | Layer norm: a steady scale for every word |
+| `DecoderBlock` | Three sublayers instead of two |
+| `DecoderBlock.cross` | Cross-attention is Part 4 again |
+| `Transformer.head` (shares `tgt_embed.weight`) | From a vector to the next character |
+| `forward(teacher_forcing=True)` | Training: the whole answer in one pass |
+| `decode_step` | Writing: still one character at a time |
+| `speed` | Is it actually faster to train? |
+| `translate --details` | Watch cross-attention look · Eight maps, not one |

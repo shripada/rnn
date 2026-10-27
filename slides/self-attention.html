@@ -615,7 +615,7 @@ table.hand tr.me td { font-weight: 600; }
       <li>A translation Transformer also has Part 4's attention: the decoder's queries against the encoder's keys and values (<strong>cross-attention</strong>).</li>
     </ul>
   </div>
-  <aside class="notes">This is as deep as the course goes into the Transformer, by design. The original stacks 6 of these blocks in the encoder. "Norm" is layer normalisation, which keeps each word's numbers at a steady scale; the original paper puts it after the add, and most newer models put it before the sublayer instead, which trains more stably. Ask: "which of the four earlier parts shows up here?" The skip path echoes Part 2's protected path; cross-attention is Part 4; the encoder–decoder shape is Part 3; and the idea of one set of weights used at every position is Part 1's parameter sharing.</aside>
+  <aside class="notes">Part 6 opens this block up and builds the full encoder–decoder. The original stacks 6 of these blocks in the encoder. "Norm" is layer normalisation, which keeps each word's numbers at a steady scale; the original paper puts it after the add, and most newer models put it before the sublayer instead, which trains more stably. Ask: "which of the four earlier parts shows up here?" The skip path echoes Part 2's protected path; cross-attention is Part 4; the encoder–decoder shape is Part 3; and the idea of one set of weights used at every position is Part 1's parameter sharing.</aside>
 </section>
 
 <!-- 18 -->
@@ -672,9 +672,9 @@ table.hand tr.me td { font-weight: 600; }
 <!-- 21 -->
 <section>
   <div class="frame center">
-    <p class="kicker">End of the course</p>
+    <p class="kicker">Next</p>
     <h2>From one memory to every word at once</h2>
-    <p class="lede">Part 1: a hidden state. Part 2: gates to protect it. Part 3: two RNNs and a context. Part 4: attention. Part 5: attention without the RNN.</p>
+    <p class="lede">Part 1: a hidden state. Part 2: gates to protect it. Part 3: two RNNs and a context. Part 4: attention. Part 5: attention without the RNN. Next, Part 6: the whole Transformer, encoder and decoder.</p>
     <p style="font-size:44px;margin-top:30px">Questions?</p>
   </div>
   <aside class="notes">One sentence per part, as a closing recap of the whole course. The thread through all five: how to get information from one part of a sequence to another without it fading. A hidden state carried it, gates protected it, a context vector packed it, attention looked it up, and self-attention lets every word look it up directly.</aside>

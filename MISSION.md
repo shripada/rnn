@@ -11,6 +11,8 @@ Be able to explain RNNs confidently in an interview or exam setting: what they a
 - Explain how LSTM gates fix this, and contrast with GRUs and Transformers
 - Name the main sequence task shapes (one-to-many, many-to-one, many-to-many) with an example of each
 - Explain self-attention with queries, keys and values, why scores are divided by √d, why position information is needed, and what multi-head attention adds
+- Draw the full encoder–decoder Transformer and explain residual connections, layer norm, the feed-forward sublayer and cross-attention, and why training runs in parallel while generation does not
+- Explain how BERT is pretrained (masked language model, next-sentence prediction) and fine-tuned, why it reads in both directions, what contextual embeddings are, and how it differs from GPT
 
 ## Constraints
 - ~45 minute sessions
@@ -18,5 +20,5 @@ Be able to explain RNNs confidently in an interview or exam setting: what they a
 - Backprop is understood only conceptually, so math is built up gently
 
 ## Out of scope
-- Implementing RNNs from scratch or training models in PyTorch (for now)
-- Transformer internals beyond self-attention, multi-head attention, position information and a one-block overview (no training recipes, tokenisers, normalisation variants or scaling laws)
+- Implementing RNNs from scratch (the demos train small models and use a pretrained BERT, but writing them isn't a goal)
+- Transformer topics beyond the full architecture and BERT: GPT only as a contrast to BERT; no optimiser schedules, normalisation variants, tokeniser algorithms beyond what WordPiece looks like, or scaling laws
