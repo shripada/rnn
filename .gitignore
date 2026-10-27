@@ -7,3 +7,7 @@ __pycache__/
 
 # Office lock files
 ~$*
+
+# BERT demo: fine-tuned models and the SST-2 download (`uv run demo/bert.py finetune` recreates them)
+demo/bert-sst2*/
+demo/data/SST-2.zip

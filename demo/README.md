@@ -440,3 +440,93 @@ No bottleneck here either: every decoder step looks at every input character. It
 | `decode_step` | Writing: still one character at a time |
 | `speed` | Is it actually faster to train? |
 | `translate --details` | Watch cross-attention look · Eight maps, not one |
+
+## BERT: `bert.py` (Part 7)
+
+### What's different
+
+Every other script here trains a small model from nothing. This one downloads one someone else trained: `bert-base-uncased` (Devlin and colleagues, Google, 2018): 12 encoder blocks, d = 768, 12 heads, 110 million weights, pretrained for 4 days on 3.3 billion words of books and Wikipedia. Hugging Face's `transformers` library fetches it on first use (~440 MB) and caches it in `~/.cache/huggingface`. `fill --left-only` and `export` also fetch GPT-2 (~550 MB), the same size but decoder-only, as the left-to-right contrast.
+
+### The commands
+
+```sh
+uv run demo/bert.py tokens "Transformers revolutionised embeddings"
+uv run demo/bert.py fill "the man went to the [MASK] to buy a gallon of milk ." --left-only
+uv run demo/bert.py senses bank
+uv run demo/bert.py attention "the animal didn't cross the street because it was too tired ." --layer 7 --head 11
+uv run demo/bert.py nsp "the man went to the store ." "he bought a gallon of milk ."
+uv run demo/bert.py finetune                 # ~3 min; --frozen trains only the new layer
+uv run demo/bert.py classify "not bad at all ." "not good at all ."
+uv run demo/bert.py export                   # write the slide examples (and BERT's vocabulary) into slides/bert.html
+```
+
+### `tokens`: WordPiece
+
+```
+    1  transformers      19081  A
+    2  revolution         4329  A
+    3  ##ised             5084  A
+    4  em                 7861  A
+    5  ##bed              8270  A
+    6  ##ding             4667  A
+    7  ##s                2015  A
+```
+30,522 pieces: common words whole, rare ones in parts, so no word is ever unknown. `[CLS]` and `[SEP]` wrap every input; give a second sentence and its tokens get segment B.
+
+### `fill`: the masked language model, both sides vs left only
+
+```
+BERT, reading both sides:  'the man went to the [MASK] to buy a gallon of milk .'
+  [MASK] 1:  store 47%, refrigerator 8%, fridge 7%, kitchen 6%, counter 4%
+
+GPT-2, reading left to right, has only:  'the man went to the'
+  next word:  police 16%, hospital 9%, store 2%, bathroom 2%, doctor 1%
+```
+The words after the blank are what make "store" the answer.
+
+### `senses`: contextual embeddings
+
+The vector for "bank" in three money sentences and three river sentences, compared by cosine similarity after each block:
+```
+  layer   same  different
+      0   0.95       0.96      (the embedding table: one vector per word, plus position)
+      3   0.85       0.57
+      6   0.82       0.50
+     12   0.80       0.45
+```
+Use `--sentences "..." "..."` with another word to try your own.
+
+### `attention`: one head of 144
+
+Prints one head's map and, for each block, where the heads look hardest on average. For the "it" sentence, block 7 head 11 sends "it" to "animal" (28%, vs "street" 7%); change "tired" to "wide" and it sends "it" to "street" (59%). Most heads in the middle blocks put most of their weight on `[SEP]`.
+
+### `nsp`: next sentence prediction
+
+The milk pair gets IsNext 100%, "penguins cannot fly ." after the store sentence gets 0%, and the milk pair in reverse order also gets 100%: the task mostly tests whether two sentences share a topic.
+
+### `finetune`: does pretraining pay?
+
+2,000 random SST-2 training sentences, graded on the 872 dev sentences (SST-2's test labels are hidden), seed 0:
+
+| model | trained weights | dev accuracy |
+|---|---|---|
+| average of word vectors, from random | 282,434 | 64.0% |
+| BERT frozen + one new layer (`--frozen`) | 1,538 | 83.0% |
+| BERT fine-tuned + one new layer | 108,893,186 | 88.5% |
+| BERT-base in the paper, all 67,349 sentences | | 93.5% |
+
+Fine-tuning: AdamW, learning rate 3e-5 with warm-up, batch 16, 2 passes (250 rounds), about 3 minutes on a laptop CPU. `classify` runs the result: "not bad at all ." is positive (92%) after fine-tuning, but negative (60%) with `--frozen`.
+
+The fine-tuned model is saved to `demo/bert-sst2/` (~420 MB); the frozen one only saves its new layer.
+
+### Which slide each part matches (Part 7)
+
+| Part | Slide |
+|---|---|
+| `cmd_tokens` | Words become WordPiece tokens |
+| `guesses` (`prediction_logits`) | The masked language model |
+| `cmd_fill --left-only`, `next_word` | Both sides vs left only |
+| `is_next` (`seq_relationship_logits`) | Next sentence prediction |
+| `word_vectors`, `cosines` | Same word, different vectors |
+| `attentions` | What do the heads look at? |
+| `Classifier`, `cmd_finetune` | One small layer on top; Movie reviews: does pretraining pay? |

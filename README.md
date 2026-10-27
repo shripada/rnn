@@ -1,10 +1,10 @@
 # Recurrent Neural Networks, from the hidden state to LSTMs and GRUs
 
-Course material for learning RNNs with intuition first: six slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare, and date translators built as GRU encoder–decoders, with and without attention, and as a Transformer.
+Course material for learning RNNs with intuition first: seven slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare, and date translators built as GRU encoder–decoders, with and without attention, and as a Transformer, and that open up a pretrained BERT.
 
 ```
-slides/      six talks (reveal.js, one HTML file each)
-demo/        char_rnn.py, word_rnn.py, seq2seq.py, attention.py and transformer.py: train, test and play with real models
+slides/      seven talks (reveal.js, one HTML file each)
+demo/        char_rnn.py, word_rnn.py, seq2seq.py, attention.py, transformer.py and bert.py: train, test and play with real models
 lessons/     five interactive lessons, one HTML page each
 reference/   a one-page cheat sheet
 ```
@@ -20,6 +20,7 @@ open slides/seq2seq.html        # Part 3
 open slides/attention.html      # Part 4
 open slides/self-attention.html # Part 5
 open slides/transformer.html    # Part 6
+open slides/bert.html           # Part 7
 ```
 
 | Deck | Slides | Covers |
@@ -30,8 +31,9 @@ open slides/transformer.html    # Part 6
 | **Part 4 · [Look back while you write](slides/attention.html)** | 20 | Attention: keep every encoder memory, then at each decoder step score them, soften the scores with softmax and mix them into a fresh context. A softmax playground, a step-through of “the black cat”, why attention gives blame a short path back, and alignment maps. Then the date translator with attention, live: watch where it looks for each character, and four dates at once with no bottleneck. Ends with what attention doesn't fix and why the Transformer dropped the RNN. |
 | **Part 5 · [Every word looks at every word](slides/self-attention.html)** | 21 | Self-attention: drop the RNN and let the sentence attend to itself. Queries, keys and values; the scaled dot product, with a √d<sub>k</sub> playground; one row worked by hand; what “it” refers to; the whole sentence as three matrix multiplies. Then the catch, live: shuffle the words and the outputs just shuffle, fixed by adding positions. Multi-head attention with a heads explorer, masked attention for writing, one Transformer block, and the RNN vs self-attention trade. |
 | **Part 6 · [The whole machine](slides/transformer.html)** | 23 | The full encoder–decoder Transformer: embeddings and positions, stacked blocks, the feed-forward sublayer, residual connections, layer norm, the decoder's masked self-attention and cross-attention (Part 4's attention again), and the output layer. Training in one masked pass vs writing one character at a time, and measured training speed. Then the date translator as a Transformer, live: one encoder block step by step on real numbers, all eight cross-attention maps, where it fails on unseen years, and four dates at once. Ends with the three families: encoder–decoder, decoder-only (GPT), encoder-only (BERT). |
+| **Part 7 · [Fill in the blanks](slides/bert.html)** | 20 | BERT: pretrain once, fine-tune many times; from word2vec and ELMo to BERT; the model as Part 6's encoder made big; WordPiece tokens, [CLS], [SEP] and segments; why an unmasked encoder can't learn by predicting the next word; the masked language model (15%, 80/10/10) and next sentence prediction. Then the real `bert-base-uncased`: guess a hidden word from both sides vs GPT-2 from the left only, “bank” by a river vs at a bank pulling apart block by block, all 144 attention heads, and a fine-tune on movie reviews (64% with no pretraining, 83% frozen, 88.5% fine-tuned). Ends with BERT vs GPT. |
 
-Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, in Parts 3 and 4 the trained date translators running in the browser, including a live attention map, in Part 5 a √d<sub>k</sub> playground, a word-order test on a real self-attention layer and a heads explorer, and in Part 6 a layer-norm slider and the trained Transformer running in the browser.
+Several slides are interactive: sliders for gates, a "you are the gates" puzzle, a blame race between a plain RNN and an LSTM, in Parts 3 and 4 the trained date translators running in the browser, including a live attention map, in Part 5 a √d<sub>k</sub> playground, a word-order test on a real self-attention layer and a heads explorer, and in Part 6 a layer-norm slider and the trained Transformer running in the browser, and in Part 7 BERT's real WordPiece tokenizer and explorers for its guesses, word vectors and attention heads.
 
 Keys: **→ / ←** to move, **S** for speaker notes (each slide has notes for the presenter), **Esc** for an overview of all slides, **F** for full screen.
 
@@ -97,9 +99,26 @@ uv run demo/attention.py export                             # put the weights in
 
 From one run: 100% on unseen days, as before, but also **99.8% on unseen years** (Part 3: 12%), because it can look at the `9` in `2091` and copy it. With `--max-dates 4` it gets 1, 2, 3 and 4 dates all 100% right, where Part 3's single `c` managed 99%, 1%, 0%, 0%.
 
+### `bert.py`: open up a pretrained BERT (Part 7)
+
+No training from scratch: it downloads `bert-base-uncased` (~440 MB, once) and GPT-2 for one comparison, through Hugging Face's `transformers`.
+
+```sh
+uv run demo/bert.py tokens "Transformers revolutionised embeddings"     # WordPiece: em + ##bed + ##ding + ##s
+uv run demo/bert.py fill "the man went to the [MASK] to buy a gallon of milk ." --left-only
+uv run demo/bert.py senses bank                                        # one word, six sentences, 13 layers
+uv run demo/bert.py attention "the animal didn't cross the street because it was too tired ." --layer 7 --head 11
+uv run demo/bert.py nsp "the man went to the store ." "he bought a gallon of milk ."
+uv run demo/bert.py finetune                                           # SST-2 movie reviews, ~3 min
+uv run demo/bert.py classify "not bad at all ." "not good at all ."
+uv run demo/bert.py export                                             # put the examples into the Part 7 slides
+```
+
+From one run: on 2,000 SST-2 training sentences, word vectors learned from scratch get 64.0% of the 872 dev sentences right, frozen BERT with one new layer 83.0%, and BERT fine-tuned end to end 88.5%.
+
 [demo/README.md](demo/README.md) has the full walkthrough: the train / validation / test split, what one training round does, sample output from every command, and which lesson each part of the code matches.
 
-Trained models (`demo/*.pt`) aren't in the repo; `train` creates them.
+Trained models (`demo/*.pt`, `demo/bert-sst2*/`) aren't in the repo; `train` and `finetune` create them.
 
 ## Lessons
 
