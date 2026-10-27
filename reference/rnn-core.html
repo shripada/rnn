@@ -13,7 +13,7 @@
 <p class="subtitle">The vanilla RNN and its gated successors. Grows as the course does.</p>
 
 <h2>The equation</h2>
-<div class="eq"><span class="h">h<sub>t</sub></span> = tanh( W<sub>hh</sub>·<span class="h">h<sub>t−1</sub></span> + W<sub>xh</sub>·<span class="x">x<sub>t</sub></span> + b<sub>h</sub> ) &nbsp;&nbsp;·&nbsp;&nbsp; <span class="y">y<sub>t</sub></span> = W<sub>hy</sub>·<span class="h">h<sub>t</sub></span> &nbsp;&nbsp;·&nbsp;&nbsp; <span class="h">h<sub>0</sub></span> = 0</div>
+<div class="eq"><span class="h">h<sub>t</sub></span> = tanh( W<sub>hh</sub>·<span class="h">h<sub>t−1</sub></span> + W<sub>xh</sub>·<span class="x">x<sub>t</sub></span> + b<sub>h</sub> )<br><span class="y">y<sub>t</sub></span> = W<sub>hy</sub>·<span class="h">h<sub>t</sub></span><br><span class="h">h<sub>0</sub></span> = 0</div>
 <p class="notes">Subscripts read “to, from” (W<sub>xh</sub>: x → h). Column-vector convention as in <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">Karpathy</a>; <a href="https://d2l.ai/chapter_recurrent-neural-networks/rnn.html"><em>Dive into Deep Learning</em> (D2L) §9.4</a> uses row vectors (<span class="mono">X<sub>t</sub>W<sub>xh</sub></span>), which transposes the matrices.</p>
 
 <h2>Shapes</h2>

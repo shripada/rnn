@@ -112,7 +112,7 @@ uv run demo/transformer.py speed                                # one training r
 uv run demo/transformer.py export                               # put the weights into the Part 6 slides
 ```
 
-From one run (seed 0): 100% on unseen days, but 84.9% on unseen years (Part 4: 99.8%); its misses copy a familiar `20` instead of the `9` in `2091`. With `--max-dates 4 --steps 8000` (~20 min) it gets 100%, 99.8%, 99.7% and 98.4% for 1 to 4 dates.
+From one run (seed 0): 100% on unseen days, but 84.9% on unseen years, all formats together (Part 4: 99.8%): 81.9% when the year is in digits (Part 4: 99.9%), 99.8% when it is spelled out. Its misses copy a familiar `20` instead of the `9` in `2091`. With `--max-dates 4 --steps 8000` (~20 min) it gets 100%, 99.8%, 99.7% and 98.4% for 1 to 4 dates.
 
 Part 5 has no script of its own. Its experiments run inside the slides, on random or illustrative weights; the trained self-attention is `MultiHeadAttention` and `EncoderBlock` in `transformer.py`. `--details` prints the decoder's cross-attention, not the encoder's self-attention.
 

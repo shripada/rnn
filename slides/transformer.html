@@ -363,8 +363,8 @@ table.hand tr.me td { font-weight: 600; }
     <p class="lede">The full Transformer: an encoder that reads, a decoder that writes, and attention joining them. No RNN anywhere.</p>
     <div class="strip" style="margin-top:20px">
       <span class="c src w">23 Oct 2026</span><span class="arr">→</span>
-      <span class="c w" style="border-color:var(--accent);color:var(--accent)">encoder × 2</span><span class="arr">→</span>
-      <span class="c w" style="border-color:var(--accent);color:var(--accent)">decoder × 2</span><span class="arr">→</span>
+      <span class="c w" style="border-color:var(--accent);color:var(--accent)">encoder · 2 blocks</span><span class="arr">→</span>
+      <span class="c w" style="border-color:var(--accent);color:var(--accent)">decoder · 2 blocks</span><span class="arr">→</span>
       <span class="c out w">2026-10-23</span>
     </div>
   </div>
@@ -380,7 +380,7 @@ table.hand tr.me td { font-weight: 600; }
       <g id="block"></g>
     </svg>
     <ol style="font-size:24px">
-      <li>What do the <strong>feed-forward</strong>, the <strong>skip</strong> and the <strong>norm</strong> each do, and why stack N blocks?</li>
+      <li>What do the <strong>feed-forward</strong>, the <strong>skip</strong> and the <strong>norm</strong> each do, and why stack N blocks (N: how many copies of the block, one on top of another)?</li>
       <li>How does a <strong>decoder</strong> built from blocks write an answer, and how does it see the input?</li>
       <li>Training sees the whole answer at once; writing can't. How do both work with the same model?</li>
     </ol>
@@ -400,6 +400,7 @@ table.hand tr.me td { font-weight: 600; }
       <div style="display:grid;gap:14px">
         <div class="ctl-row" id="arch-btns" style="gap:8px"></div>
         <p class="stepper-cap" id="arch-cap" style="font-size:23px;min-height:6em"></p>
+        <p class="small">N = blocks stacked on each side; d = how many numbers each character's vector has. The paper: N = 6, d = 512. Our date model: N = 2, d = 64.</p>
         <p class="small">Redrawn from Figure 1 of <a class="x" href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a> (Vaswani and colleagues, 2017).</p>
       </div>
     </div>
@@ -414,18 +415,18 @@ table.hand tr.me td { font-weight: 600; }
     <h2>Embed, add positions, then N identical blocks</h2>
     <div class="steps" style="grid-template-columns: 44px 1fr 1.2fr">
       <span class="n">1</span>
-      <div class="w"><strong>Embed.</strong> Each input character picks its row of a learned table, times √d.</div>
-      <div class="e">e<sub>i</sub> = E<sub>in</sub>[<span class="x">x<sub>i</sub></span>] · √d     <span class="small">(68 × 64 table)</span></div>
+      <div class="w"><strong>Embed.</strong> Input character i picks its row of a learned table E<sub>in</sub>, then is multiplied by √d (√64 = 8), the paper's choice so the position added next doesn't drown it.</div>
+      <div class="e">e<sub>i</sub> = E<sub>in</sub>[<span class="x">x<sub>i</sub></span>] · √d<br><span class="small">E<sub>in</sub>: 68 rows (one per input character: letters, digits, space, , - . / ;) × 64 numbers</span></div>
       <span class="n">2</span>
-      <div class="w"><strong>Add positions</strong>, Part 5's sine waves.</div>
+      <div class="w"><strong>Add positions.</strong> p<sub>i</sub> is Part 5's sine-wave vector for position i: fixed, not learned.</div>
       <div class="e">z<sub>i</sub><sup>(0)</sup> = e<sub>i</sub> + p<sub>i</sub></div>
       <span class="n">3</span>
       <div class="w"><strong>N blocks</strong>, each with its own weights; one block's output is the next one's input.</div>
-      <div class="e key">z<sup>(l)</sup> = Block<sub>l</sub>( z<sup>(l−1)</sup> )    l = 1 … N</div>
+      <div class="e key">z<sup>(l)</sup> = Block<sub>l</sub>( z<sup>(l−1)</sup> )    l = 1 … N<br><span class="small">l: which block; z<sup>(0)</sup> is step 2's output</span></div>
     </div>
     <ul style="font-size:23px">
-      <li>Every block keeps the shape: <strong>T × d</strong> in, <strong>T × d</strong> out, one vector per input character. The last one is the encoder's output, the <span class="h">memory</span>.</li>
-      <li>Why stack? Block 1 mixes characters. Block 2 mixes those mixtures: “the 2 that sits in a 4-digit group after a month name”. More blocks, more steps of combining.</li>
+      <li>Every block keeps the shape: <strong>T × d</strong> in, <strong>T × d</strong> out (T input characters, d numbers each). The last one is the encoder's output, the <span class="h">memory</span>.</li>
+      <li>Why stack? Block 1 mixes characters. Block 2 mixes those mixtures: “the 2 that sits in a 4-digit group after a month name” (a made-up example: nobody tells a block what to learn). More blocks, more steps of combining.</li>
     </ul>
   </div>
   <aside class="notes">Compared with Part 4, the memory plays the role of h_1 … h_T: one vector per input position for the decoder to look at. The difference is how it was built: by self-attention over the whole input instead of an RNN reading left to right, so every memory has seen both sides. The √d: embeddings start small, and multiplying by √d brings them to about the same size as the positions, so neither drowns the other (this is the paper's choice). The paper stacks 6 encoder blocks; BERT-base 12; big models 100 or more. Our date model uses 2, which is enough for this task.</aside>
@@ -443,11 +444,13 @@ table.hand tr.me td { font-weight: 600; }
       <div style="display:grid;gap:12px">
         <div class="eq" style="font-size:24px">FFN(z) = ReLU( z W<sub>1</sub> + b<sub>1</sub> ) W<sub>2</sub> + b<sub>2</sub></div>
         <p style="font-size:23px">Two layers: <strong>d → 4d → d</strong>. The same weights for every position, but no position sees another.</p>
+        <p class="small">ReLU(x) = max(0, x), number by number. W<sub>1</sub> (d × 4d), W<sub>2</sub> (4d × d) and the biases b<sub>1</sub>, b<sub>2</sub> are learned.</p>
       </div>
       <table class="plain" style="font-size:21px">
         <tr><th></th><th>sizes</th><th>share of a block's weights</th></tr>
         <tr><td>original Transformer</td><td class="n">512 → 2048 → 512</td><td class="n">about ⅔</td></tr>
         <tr><td>our date model</td><td class="n">64 → 256 → 64</td><td class="n">about ⅔</td></tr>
+        <tr><td colspan="3" class="small">Why ⅔, in an encoder block: attention has four d × d matrices (W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, W<sub>O</sub>) = 4d² weights; the feed-forward has d × 4d + 4d × d = 8d². 8 of every 12, leaving out biases and norms.</td></tr>
       </table>
     </div>
     <p class="callout" style="font-size:25px">Attention <strong>gathers</strong>: it moves information between positions. The feed-forward <strong>works on</strong> what each position gathered.</p>
@@ -463,8 +466,8 @@ table.hand tr.me td { font-weight: 600; }
     <div class="cols" style="grid-template-columns: 1fr 1fr; gap:40px; align-items:start">
       <div style="display:grid;gap:14px;font-size:23px">
         <div class="eq" style="font-size:26px">z ← z + sublayer(z)</div>
-        <p>Each sublayer <strong>adds</strong> a correction to z instead of replacing it. Stack 12 sublayers and there's still a straight line from the input to the top: the plus signs.</p>
-        <p>Blame (the gradient) flows back down that line <strong>untouched</strong>: the derivative of z + f(z) is 1 + f′(z), never just f′. The same trick as the LSTM's belt in Part 2.</p>
+        <p>Each sublayer (the attention or the feed-forward) <strong>adds</strong> a correction to z instead of replacing it. Stack 12 sublayers (6 blocks × 2, the paper's encoder) and there's still a straight line from the input to the top: the plus signs.</p>
+        <p>Blame (the gradient) flows back down that line <strong>untouched</strong>: call the sublayer f; the derivative of z + f(z) is 1 + f′(z), never just f′(z). The same trick as the LSTM's belt in Part 2.</p>
         <p class="small">From image models: Kaiming He and colleagues, <a class="x" href="https://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">Deep Residual Learning</a> (2015).</p>
       </div>
       <div class="panel" style="gap:14px">
@@ -486,15 +489,15 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame" style="gap:14px">
     <p class="kicker">Inside a block · 3</p>
     <h2>Layer norm: a steady scale for every word</h2>
-    <p style="font-size:23px">After each add, take <strong>one word's vector</strong>, subtract its own mean and divide by its own spread. Then a learned scale γ and shift β per slot.</p>
+    <p style="font-size:23px">After each add, take <strong>one word's</strong> d numbers, subtract their mean, divide by their spread (std, standard deviation). Then, slot by slot (⊙), multiply by a learned γ and add a learned β.</p>
     <div class="eq" style="font-size:24px">LayerNorm(z) = γ ⊙ ( z − mean(z) ) / std(z) + β</div>
     <div class="panel" style="gap:12px">
       <div class="slider-row"><span>multiply by</span><input type="range" id="ln-scale" min="-10" max="20" value="0" aria-label="Scale the word vector"><span class="v" id="ln-scale-v"></span></div>
       <div class="slider-row"><span>add</span><input type="range" id="ln-shift" min="-30" max="30" value="0" aria-label="Shift the word vector"><span class="v" id="ln-shift-v"></span></div>
-      <div class="ln-row"><span>one word's z <span class="small">(8 of its numbers)</span></span><span id="ln-in"></span><span class="st" id="ln-in-s"></span></div>
+      <div class="ln-row"><span>a made-up z <span class="small">(8 numbers)</span></span><span id="ln-in"></span><span class="st" id="ln-in-s"></span></div>
       <div class="ln-row"><span>after layer norm <span class="small">(γ = 1, β = 0)</span></span><span id="ln-out"></span><span class="st" id="ln-out-s"></span></div>
     </div>
-    <p class="callout" style="font-size:24px">Scale or shift the input as much as you like: the output doesn't move. Every block hands the next one numbers of about the same size.</p>
+    <p class="callout" style="font-size:24px">Scale or shift the input as much as you like: the output doesn't move. Every block hands the next one numbers of about the same size. <span class="small">Rust positive, blue negative.</span></p>
   </div>
   <aside class="notes">Why it's needed: every residual add makes z a bit bigger, and after many blocks the numbers would drift in size, which upsets softmax (Part 5's √d_k slide) and makes training unstable. Layer norm resets every word's vector to mean 0 and spread 1, and γ and β let the model choose a different scale per slot if that helps. "Layer" norm because it normalises across the d numbers of one word, not across the batch (that would be batch norm, from image models). Introduced by Jimmy Ba, Jamie Kiros and Geoffrey Hinton, "Layer Normalization" (2016). The paper normalises after the add ("post-norm"), as our demo does; most models since GPT-2 normalise before each sublayer ("pre-norm"), which trains more stably in deep stacks. That's the one variant worth knowing by name.</aside>
 </section>
@@ -512,6 +515,7 @@ table.hand tr.me td { font-weight: 600; }
         <p class="stepper-cap" id="eb-cap" style="font-size:21px;min-height:3em"></p>
       </div>
     </div>
+    <p class="small">Block 1 of the trained date model (seed 0), run in your browser on “23 Oct 2026”. Rows: the input characters. Columns: their numbers. Rust positive, blue negative, darker is bigger. Shapes read rows × columns.</p>
     <p class="warn" id="eb-warn" style="min-height:0"></p>
   </div>
   <aside class="notes">This is block 1 of the trained date model, run in the browser on "23 Oct 2026". Each row is one input character; each column is one of its numbers (rust positive, blue negative). Walk down the stages and say the shape at each one: it starts and ends at 11 × 64, and only grows inside (the four heads' 11 × 11 maps, and the feed-forward's 11 × 256). Things to point out: after the positions are added, the two "2"s have different rows; after layer norm, every row has the same overall strength. The encoder's own attention maps are honestly hard to read: they spread over separators and digits. The clean maps are the decoder's cross-attention, later.</aside>
@@ -530,7 +534,7 @@ table.hand tr.me td { font-weight: 600; }
     </table>
     <ul style="font-size:23px">
       <li>Each one wrapped the same way: <span class="mono">z ← LayerNorm(z + sublayer(z))</span>.</li>
-      <li>Its input is the answer written so far, <strong>shifted right</strong>: <span class="mono">⟨s⟩ 2 0 2 6 …</span>, so the position that sees “⟨s⟩” must guess “2”.</li>
+      <li>Its input is the answer written so far, <strong>shifted right</strong>: <span class="mono">⟨s⟩ 2 0 2 6 …</span> (⟨s⟩: Part 3's start token), so the position that sees “⟨s⟩” must guess “2”.</li>
       <li>Every decoder block uses the <strong>same</strong> memory: the encoder runs once, the decoder's blocks all look at its output.</li>
     </ul>
   </div>
@@ -550,6 +554,7 @@ table.hand tr.me td { font-weight: 600; }
       <span class="role">score</span><span>v · tanh(W<sub>s</sub>s + W<sub>h</sub>h<sub>j</sub>)</span><span>q · k<sub>j</sub> / √d<sub>k</sub>, in 4 heads</span>
       <span class="role">how often</span><span>once per character written</span><span>once per decoder block, for every position</span>
     </div>
+    <p class="small">Part 4's symbols: s<sub>t−1</sub> the decoder GRU's memory; h<sub>j</sub> the encoder GRU's memory at input character j; W<sub>s</sub>, W<sub>h</sub> and the vector v its learned weights. 4 heads is our date model; the paper used 8.</p>
     <p class="callout">Same question as Part 4: “for what I'm about to write, which input characters matter?” Score, soften, mix. Only the score and the plumbing changed.</p>
   </div>
   <aside class="notes">This is the slide that ties the course together. Bahdanau-style attention between an encoder and a decoder didn't go away in the Transformer; it became the cross-attention sublayer. What's different: the score is the scaled dot product from Part 5, there are several heads, and it happens in every decoder block. If someone asks "where's the attention from the 2014 translation paper in a Transformer?", this is the answer. The maps we'll draw from the demo are the weights of this sublayer.</aside>
@@ -562,15 +567,15 @@ table.hand tr.me td { font-weight: 600; }
     <h2>From a vector to the next character</h2>
     <div class="steps" style="grid-template-columns: 44px 1fr 1.2fr">
       <span class="n">1</span>
-      <div class="w"><strong>Score every character</strong> in the output alphabet against the top decoder vector u.</div>
-      <div class="e">score(c) = u · e<sub>c</sub> + b<sub>c</sub></div>
+      <div class="w"><strong>Score every character</strong> c in the output alphabet against u, the top decoder block's vector at this position.</div>
+      <div class="e">score(c) = u · e<sub>c</sub> + b<sub>c</sub><br><span class="small">e<sub>c</sub>: c's row of the decoder's embedding table; b<sub>c</sub>: one learned number per character</span></div>
       <span class="n">2</span>
       <div class="w"><strong>Softmax</strong> the 14 scores into probabilities, as in every part so far.</div>
       <div class="e key">P(next = c) = softmax(score)<sub>c</sub></div>
     </div>
     <ul style="font-size:23px">
       <li>e<sub>c</sub> is the <strong>same row</strong> the decoder used to embed character c. The paper shares these weights: one table, used at the bottom to read a character and at the top to score it.</li>
-      <li>Our model: u has 64 numbers, the output alphabet has 14 characters (⟨s⟩, ⟨/s⟩, -, ;, 0–9). With the paper's 37,000-token vocabulary, sharing saves millions of weights.</li>
+      <li>Our model: u has 64 numbers, the output alphabet has 14 characters (⟨s⟩, ⟨/s⟩, -, ;, 0–9). The paper's English–German model reads and writes about 37,000 tokens (word pieces) with d = 512: sharing saves 37,000 × 512 ≈ 19 million weights.</li>
     </ul>
     <p class="small">Weight sharing: Ofir Press and Lior Wolf, <a class="x" href="https://arxiv.org/abs/1608.05859" target="_blank" rel="noopener">Using the Output Embedding to Improve Language Models</a> (2016).</p>
   </div>
@@ -586,8 +591,9 @@ table.hand tr.me td { font-weight: 600; }
       <div class="amap" id="tf-mask" aria-label="The decoder's mask for the answer 2026-10-23: each position may look at itself and earlier positions only"></div>
       <div style="display:grid;gap:14px;font-size:23px">
         <p>Feed in the right answer, shifted right (Part 3's teacher forcing). The mask stops each position seeing the characters after it.</p>
-        <p>So one pass of the decoder makes <strong>11 guesses at once</strong>, one per row, each from only what came before. 11 losses, one backward pass.</p>
+        <p>So one pass of the decoder makes <strong>11 guesses at once</strong> (the 10 characters of 2026-10-23, then ⟨/s⟩, the end token), one per row, each from only what came before. 11 losses, one backward pass.</p>
         <p>Part 3's GRU decoder had to take 11 steps, one after another, to get the same 11 losses.</p>
+        <p class="small">Hatched: masked, weight exactly 0. The shading in the allowed cells is illustrative, not the model's weights.</p>
       </div>
     </div>
   </div>
@@ -603,6 +609,7 @@ table.hand tr.me td { font-weight: 600; }
       <button type="button" id="wr-step" class="primary">Next pass</button><button type="button" id="wr-play">Play</button><button type="button" id="wr-reset">Reset</button>
       <span class="small" id="wr-count" style="margin-left:12px"></span>
     </div>
+    <p class="small">The trained date model (seed 0), writing the answer to “23 Oct 2026” in your browser. Each line is one decoder pass: what is fed in → the one character it writes.</p>
     <div class="passes grow" id="wr-passes" style="min-height:0"></div>
     <p class="small" id="wr-warn" style="min-height:0"></p>
     <p class="callout" style="font-size:24px">Nobody knows the answer yet, so each character must be written before it can be fed back in: one decoder pass per character, as in Part 3.</p>
@@ -615,9 +622,9 @@ table.hand tr.me td { font-weight: 600; }
   <div class="frame">
     <p class="kicker">Measured</p>
     <h2>Is it actually faster to train?</h2>
-    <p style="font-size:23px">One training round (128 inputs, forward and backward), on a laptop CPU, untrained weights:</p>
+    <p style="font-size:23px">Milliseconds for one training round (a batch of 128 inputs, forward and backward), averaged over 10 rounds. Untrained weights: speed doesn't depend on their values. One run, on a laptop CPU; yours will differ.</p>
     <table class="plain" style="font-size:24px">
-      <tr><th>dates per input</th><th>average input</th><th>Part 4 · GRU + attention</th><th>Part 6 · Transformer</th></tr>
+      <tr><th>dates per input</th><th>average input length</th><th>Part 4 · GRU + attention</th><th>Part 6 · Transformer</th></tr>
       <tr><td>1</td><td class="n">19 characters</td><td class="n">36 ms</td><td class="n">36 ms</td></tr>
       <tr><td>1–4</td><td class="n">51 characters</td><td class="n">222 ms</td><td class="n">130 ms</td></tr>
     </table>
@@ -634,7 +641,7 @@ table.hand tr.me td { font-weight: 600; }
     <h2>The date translator, with no RNN</h2>
     <div class="cols" style="grid-template-columns: 1.2fr 1fr; align-items:start">
       <div style="display:grid;gap:14px;font-size:23px">
-        <p>Same data and exam as Parts 3 and 4. The model: d = 64, 4 heads, 2 encoder + 2 decoder blocks, <strong>238,734</strong> weights (Part 4's had 200,590).</p>
+        <p>Same data and exam as Parts 3 and 4. The model: d = 64, 4 heads, 2 encoder + 2 decoder blocks, <strong>238,734</strong> weights (Part 4's had 200,590), as counted by each demo: every learned number.</p>
         <p>Written out block by block in <span class="mono">demo/transformer.py</span>, so every slide so far is a few named lines.</p>
       </div>
       <pre class="cmd" style="font-size:17px">uv run demo/transformer.py train
@@ -648,7 +655,7 @@ uv run demo/transformer.py translate \
       <div class="vs-row"><span>years it never saw <span class="small">· 2080–2099, in digits</span></span><span class="track"><span class="fill" style="width:99.9%;background:var(--output)"></span><span class="pct">99.9%</span></span><span class="track"><span class="fill" style="width:81.9%;background:var(--bad)"></span><span class="pct">81.9%</span></span></div>
       <div class="vs-row"><span>years it never saw <span class="small">· spelled out</span></span><span class="track"><span class="fill" style="width:99.3%;background:var(--output)"></span><span class="pct">99.3%</span></span><span class="track"><span class="fill" style="width:99.8%;background:var(--output)"></span><span class="pct">99.8%</span></span></div>
     </div>
-    <p class="small">Perfect on every format and length it was trained on. The surprise is the second row: we'll look at why in a moment.</p>
+    <p class="small">Whole date exactly right, one run each (seed 0) of <span class="mono">attention.py test</span> and <span class="mono">transformer.py test</span>: 39,444 inputs with unseen days, 43,836 with unseen years. Perfect on every format and length it was trained on; the surprise is the red bar, and we'll look at why in a moment.</p>
   </div>
   <aside class="notes">Numbers from one run each (seed 0) of demo/attention.py test and demo/transformer.py test: 39,444 inputs from unseen days, 43,836 from unseen years. Training took about 2.5 minutes on a laptop CPU, a little longer than Part 4's, mostly because the check on the validation set writes answers one character at a time. Don't oversell the comparison: one seed each, small models, a toy task. The point is that the RNN can be removed entirely and the task still gets solved, and that the models fail in different places.</aside>
 </section>
@@ -663,6 +670,7 @@ uv run demo/transformer.py translate \
       <button type="button" id="tm-step" class="primary">Step</button><button type="button" id="tm-play">Play</button><button type="button" id="tm-reset">Reset</button>
     </div>
     <div class="ctl-row" style="gap:8px"><span class="label">decoder block</span><span id="tm-layer" class="ctl-row" style="gap:6px"></span><span class="label" style="margin-left:14px">head</span><span id="tm-head" class="ctl-row" style="gap:6px"></span></div>
+    <p class="small">The trained date model (seed 0) in your browser. Rows: characters written; columns: characters read; darker: more cross-attention weight. 8 maps: 2 decoder blocks × 4 heads; “all” averages a block's 4 heads.</p>
     <p class="warn" id="tm-warn" style="min-height:0"></p>
     <div class="cols grow" style="grid-template-columns: 1.7fr 1fr; gap:30px; min-height:0">
       <div class="amap" id="tm-map" aria-label="Cross-attention map: one row per character written, one column per character read"></div>
@@ -685,6 +693,7 @@ uv run demo/transformer.py translate \
       <input id="h8-text" type="text" value="Friday, 13 March 2071" aria-label="A date to translate" spellcheck="false" autocomplete="off" style="flex:1;min-width:0;font-size:22px;padding:6px 12px">
       <span class="ans" id="h8-out" style="font-size:24px"></span>
     </div>
+    <p class="small">Real trained weights (seed 0), not illustrative. Top row: decoder block 1; bottom row: block 2; one map per head. Rows: characters written; columns: characters read.</p>
     <p class="warn" id="h8-warn" style="min-height:0"></p>
     <div class="heads8 grow" id="h8-grid"></div>
   </div>
@@ -702,6 +711,7 @@ uv run demo/transformer.py translate \
       <div style="display:grid;gap:12px;align-content:start;font-size:22px">
         <div><span class="label">answer</span><br><span class="ans" id="yr-out"></span></div>
         <p id="yr-cap"></p>
+        <p class="small">Map: decoder block 2, its 4 heads averaged; rows written, columns read. The years 2080–2099 never appear in training.</p>
       </div>
     </div>
   </div>
@@ -719,14 +729,15 @@ uv run demo/transformer.py translate \
     <p class="warn" id="t4-warn" style="min-height:0"></p>
     <div class="amap" id="t4-map" aria-label="Cross-attention map for several dates"></div>
     <div style="display:grid;grid-template-columns:190px 1fr;gap:4px 16px;align-items:baseline"><span class="label">Transformer</span><span class="ans" id="t4-out" style="font-size:22px"></span></div>
-    <table class="plain" style="font-size:20px" id="t4-table">
+    <table class="plain" style="font-size:18px" id="t4-table">
       <tr><th>whole answer right</th><th>1 date</th><th>2 dates</th><th>3 dates</th><th>4 dates</th></tr>
       <tr><td>Part 3 · one c</td><td class="n">99.3%</td><td class="n">0.6%</td><td class="n">0.0%</td><td class="n">0.0%</td></tr>
       <tr><td>Part 4 · GRU + attention</td><td class="n">100%</td><td class="n">100%</td><td class="n">100%</td><td class="n">100%</td></tr>
       <tr><td>Part 6 · Transformer</td><td class="n">100%</td><td class="n">99.8%</td><td class="n">99.7%</td><td class="n">98.4%</td></tr>
     </table>
+    <p class="small">Map: one row per character of the answer, block 2, heads averaged. Table: 3,000 unseen inputs per cell, seed 0, each model trained on 1–4 dates.</p>
   </div>
-  <aside class="notes">The --max-dates 4 model, live: trained on inputs of 1 to 4 dates. Each row is one character written (tiny, there are 44), each column one character read; the map is block 2, all heads. Same shape as Part 4's: one block per date, marching down the input. Numbers from demo/transformer.py train --max-dates 4 --steps 8000, then test --max-dates 4 (seed 0), 3,000 inputs per column. It needed twice the training rounds of Part 4's model: at 4,000 rounds it was still learning and got 83% on four dates. Each round is quicker, though, so the wall-clock time was similar (about 20 minutes on a laptop CPU). The default input avoids 2080–2099, the unseen years from the previous slide.</aside>
+  <aside class="notes">The --max-dates 4 model, live: trained on inputs of 1 to 4 dates. Each row is one character written (unlabelled, there are 44: they spell the answer below the map), each column one character read; the map is block 2, all heads. Same shape as Part 4's: one block per date, marching down the input. Numbers from demo/transformer.py train --max-dates 4 --steps 8000, then test --max-dates 4 (seed 0), 3,000 inputs per column. It needed twice the training rounds of Part 4's model: at 4,000 rounds it was still learning and got 83% on four dates. Each round is quicker, though, so the wall-clock time was similar (about 20 minutes on a laptop CPU). The default input avoids 2080–2099, the unseen years from the previous slide.</aside>
 </section>
 
 <!-- 15 -->
@@ -1319,9 +1330,9 @@ uv run demo/transformer.py translate \
       const steps = TF4.greedy(TF4.encode(s));
       drawMap(map, s, steps.map((st) => TF4.show(st.ch)), steps.map((st) => pick(st, TF4.L - 1, -1)), -1, null);
       map.style.gap = "1px";
-      map.querySelectorAll(".rl").forEach((l) => { l.style.lineHeight = "6px"; l.style.fontSize = "7px"; });
+      map.querySelectorAll(".rl").forEach((l) => { l.style.lineHeight = "4px"; l.style.fontSize = "0"; });
       map.querySelectorAll(".hd").forEach((l) => (l.style.fontSize = "13px"));
-      map.querySelectorAll("i").forEach((c) => { c.style.height = "6px"; c.style.borderRadius = "1px"; });
+      map.querySelectorAll("i").forEach((c) => { c.style.height = "4px"; c.style.borderRadius = "1px"; });
       $("t4-out").textContent = answer(TF4, steps);
     }
     text.addEventListener("input", draw);
