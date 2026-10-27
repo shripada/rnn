@@ -3,7 +3,7 @@
 Course material for learning RNNs with intuition first: five slide decks, a set of interactive lessons, and small PyTorch demos that train RNNs, LSTMs and GRUs on Shakespeare, and GRU encoder–decoders, with and without attention, that translate dates.
 
 ```
-slides/      four talks (reveal.js, one HTML file each)
+slides/      five talks (reveal.js, one HTML file each)
 demo/        char_rnn.py, word_rnn.py, seq2seq.py and attention.py: train, test and play with real models
 lessons/     five interactive lessons, one HTML page each
 reference/   a one-page cheat sheet
