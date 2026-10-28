@@ -256,6 +256,13 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
 .beam-row .pct { font-family: var(--mono); font-size: 20px; text-align: right; }
 .beam-row .rk { font-family: var(--mono); font-size: 18px; color: var(--muted); }
 
+/* last layer rows (slide 12b) */
+table.wrows { font-size: 21px; }
+table.wrows td { padding: 6px 18px 6px 0; white-space: pre; }
+table.wrows tr.top td { background: color-mix(in srgb, var(--output) 12%, transparent); }
+.wbar { display: inline-block; width: 90px; height: 16px; background: var(--panel); border-radius: 3px; overflow: hidden; vertical-align: middle; margin-right: 10px; }
+.wbar i { display: block; height: 100%; background: var(--output); }
+
 
 </style>
 </head>
@@ -508,6 +515,36 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
   <aside class="notes">Connect to Part 1: the Shakespeare model output a chance for each of 65 characters; here it's a chance for each of ~30,000 French words. Same softmax, bigger list. The numbers are illustrative. Ask the class: "Which word would you pick?" Most will say "le", the top one. That's the setup for the next slide: picking the top word at every step isn't always the best plan.</aside>
 </section>
 
+<!-- 12b -->
+<section>
+  <div class="frame">
+    <p class="kicker">Writing · where the scores come from</p>
+    <h2>The last layer has one row for each word in the vocabulary</h2>
+    <p>Before training, we number every word that appears in the training text. That numbered list is the <strong>vocabulary</strong>, and W gets one row per number. A toy version, with 5 words and a memory of 3 numbers:</p>
+    <div class="cols" style="grid-template-columns: 1.45fr 1fr; gap:36px; align-items:start">
+      <div style="display:flex; flex-direction:column; gap:12px">
+        <div class="eq" style="font-size:22px; align-self:start">decoder memory <span class="h">s<sub>t</sub></span> = [0.9, 0.1, 0.8]</div>
+        <table class="plain wrows">
+          <tr><th>#</th><th>word</th><th>row of W</th><th>score</th><th>chance</th></tr>
+          <tr><td class="n">0</td><td class="n">&lt;bos&gt;</td><td class="n">[ 0.0, 0.5, −0.2]</td><td class="n">−0.11</td><td><span class="wbar"><i style="width:10%"></i></span><span class="n">10%</span></td></tr>
+          <tr><td class="n">1</td><td class="n">&lt;eos&gt;</td><td class="n">[−0.3, 0.2,  0.1]</td><td class="n">−0.17</td><td><span class="wbar"><i style="width:9%"></i></span><span class="n">9%</span></td></tr>
+          <tr class="top"><td class="n">2</td><td class="n y">le</td><td class="n">[ 1.0, 0.0,  0.9]</td><td class="n">1.62</td><td><span class="wbar"><i style="width:55%"></i></span><span class="n y">55%</span></td></tr>
+          <tr><td class="n">3</td><td class="n">chat</td><td class="n">[ 0.2, 0.9,  0.1]</td><td class="n">0.35</td><td><span class="wbar"><i style="width:16%"></i></span><span class="n">16%</span></td></tr>
+          <tr><td class="n">4</td><td class="n">noir</td><td class="n">[−0.5, 0.3,  0.4]</td><td class="n">−0.10</td><td><span class="wbar"><i style="width:10%"></i></span><span class="n">10%</span></td></tr>
+        </table>
+      </div>
+      <div class="panel" style="font-size:22px">
+        <p><strong>score</strong> = row · <span class="h">s<sub>t</sub></span>: multiply matching entries, then add them up. Row 2:</p>
+        <p class="mono" style="font-size:18px">0.9×1.0 + 0.1×0.0 + 0.8×0.9 = 1.62</p>
+        <p><strong>chance</strong> = softmax: e<sup>score</sup> ÷ the total over all rows. For “le”: 5.05 ÷ 9.12 ≈ 55%.</p>
+        <p>The model's answer is a number, #2. The vocabulary turns it back into “le”.</p>
+      </div>
+    </div>
+    <p class="callout">Training gives each row its meaning: when the right word is “le”, row 2 is nudged so its score goes up, and the other rows so theirs go down.</p>
+  </div>
+  <aside class="notes">This answers "how does the last layer know words?": it doesn't. It has one learned row per numbered slot, and the vocabulary list maps numbers back to words. Where the numbers come from: the memory, the rows of W and therefore the scores are made up for illustration; the scores, the e^score totals and the chances are computed from them exactly (e^1.62 ≈ 5.05; the five e^score values add to ≈ 9.12; the chances round to 10 + 9 + 55 + 16 + 10 = 100%). At the start of training the rows are random. The Shakespeare model in Part 1 did the same with 65 characters, so it had 65 rows. The ~30,000-word figure on the previous slide is illustrative of a real translation vocabulary, and a real memory has hundreds of numbers, not 3. Two consequences worth asking the class about: the model can never write a word that isn't on the list, and with ~30,000 rows the last layer is one of the biggest parts of the model.</aside>
+</section>
+
 <!-- 12 -->
 <section>
   <div class="frame">
@@ -742,6 +779,7 @@ uv run demo/seq2seq.py translate \
     <p class="kicker">Next time</p>
     <h2>Next: attention</h2>
     <p class="lede">Letting the decoder look back at the input while it writes.</p>
+    <p style="margin-top:24px"><a href="attention.html" style="color:var(--accent);font-weight:600">Continue: Look back while you write (Attention) →</a></p>
     <p style="font-size:44px;margin-top:30px">Questions?</p>
   </div>
   <aside class="notes">Only name attention here; the previous slides already previewed what it fixes.</aside>

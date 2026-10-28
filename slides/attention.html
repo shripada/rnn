@@ -278,6 +278,22 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
 .vs-row .fill { display: block; height: 100%; }
 .vs-row .pct { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .legend { display: flex; gap: 22px; font-size: 20px; color: var(--muted); align-items: center; }
+/* one step, every number */
+.nx { display: grid; gap: 3px 4px; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; align-items: center; }
+.nx .lab { font-family: var(--serif); font-size: 19px; white-space: nowrap; }
+.nx span.c { text-align: center; padding: 3px 0; border-radius: 4px; }
+.nx span.hd { color: var(--input); font-weight: 600; font-size: 21px; cursor: pointer; border: 1.5px solid var(--rule); white-space: pre; }
+.nx span.hd.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.nx span.w { font-weight: 600; }
+.nx-out { display: flex; gap: 3px; }
+.nx-out span { font-family: var(--mono); font-size: 21px; min-width: 18px; padding: 2px 6px; border-radius: 4px; text-align: center; border: 1.5px solid var(--output); color: var(--output); cursor: pointer; }
+.nx-out span.now { background: color-mix(in srgb, var(--output) 25%, var(--bg)); font-weight: 600; }
+.nx-out span.future { opacity: .35; }
+.nx-calc { font-family: var(--mono); font-size: 17px; line-height: 1.55; display: grid !important; grid-template-columns: auto 1fr; gap: 1px 10px !important; padding: 14px 20px !important; font-variant-numeric: tabular-nums; align-content: start; }
+.nx-calc .label { font-size: 14px; margin-bottom: 4px; grid-column: 1 / -1; }
+.nx-calc .full { grid-column: 1 / -1; }
+.nx-calc .m { color: var(--muted); }
+.nx-calc b { color: var(--accent); }
 .legend i { display: inline-block; width: 16px; height: 16px; border-radius: 3px; margin-right: 6px; vertical-align: -2px; }
 </style>
 </head>
@@ -381,7 +397,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     </svg>
     <div class="steps" style="grid-template-columns: 44px 1fr 1.25fr; gap:10px 22px">
       <span class="n">1</span>
-      <div class="w"><strong>Score</strong> each input memory: how useful is it for what I'm about to write?</div>
+      <div class="w"><strong>Score</strong> each input memory: how useful is it for what I'm about to write?<br><span class="small">score = a small learned network that turns the two memories into one number; how it works on slide 7.</span></div>
       <div class="e">e<sub>j</sub> = score(<span class="h">s<sub>t−1</sub></span>, <span class="h">h<sub>j</sub></span>)</div>
       <span class="n">2</span>
       <div class="w"><strong>Soften</strong> the scores into weights: positive, adding up to 1.</div>
@@ -418,7 +434,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
     <p style="font-size:24px;margin:0;max-width:none">In: decoder memory <span class="h">s<sub>t−1</sub></span> and input memory <span class="h">h<sub>j</sub></span>. Out: one number <span class="h">e<sub>j</sub></span>; big means “look here”.</p>
     <div class="steps" style="grid-template-columns: 44px 1.2fr 1fr; gap:12px 22px">
       <span class="n">1</span>
-      <div class="w"><strong>Describe the need.</strong> A learned matrix turns the decoder's memory into 64 numbers. <em>“I've written <span class="mono">2026-10-</span>; I need the day.”</em></div>
+      <div class="w"><strong>Describe the need.</strong> A learned matrix turns the decoder's memory (128 numbers in our demo) into 64 numbers. 64 is a size we picked; any size works. <em>“I've written <span class="mono">2026-10-</span>; I need the day.”</em></div>
       <div class="e">W<sub>s</sub> <span class="h">s<sub>t−1</sub></span></div>
       <span class="n">2</span>
       <div class="w"><strong>Describe what's here.</strong> A second matrix does the same for input position j. <em>“I'm the memory just after reading <span class="mono">23</span>.”</em></div>
@@ -465,7 +481,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <div class="e">P(<span class="y">y<sub>t</sub></span>) = softmax( W<sub>out</sub> [<span class="h">s<sub>t</sub></span> ; <span class="h">c<sub>t</sub></span>] )</div>
     </div>
     <table class="plain" style="font-size:22px">
-      <tr><th></th><th>Part 3</th><th>Part 4</th></tr>
+      <tr><th></th><th>No attention (Part 3)</th><th>Attention (Part 4)</th></tr>
       <tr><td>context</td><td>one <span class="h">c</span> = <span class="h">h<sub>T</sub></span>, used once</td><td>a new <span class="h">c<sub>t</sub></span> at every step</td></tr>
       <tr><td>the decoder sees the input</td><td>only through <span class="h">s<sub>0</sub></span></td><td>at every step, all of it</td></tr>
     </table>
@@ -482,7 +498,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
       <g id="blame"></g>
     </svg>
     <div class="cols" style="font-size:24px">
-      <p><strong>Part 3:</strong> blame for a wrong day travels back through every decoder step, through <span class="h">c</span>, then back through every encoder step to the <span class="x">23</span> it came from. It fades on the way, as in Part 2.</p>
+      <p><strong>Without attention</strong> (Part 3's seq2seq): blame for a wrong day travels back through every decoder step, through <span class="h">c</span>, then back through every encoder step to the <span class="x">23</span> it came from. It fades on the way, as in Part 2.</p>
       <p><strong>With attention:</strong> every output step is wired straight to every <span class="h">h<sub>j</sub></span>. Blame reaches the <span class="x">23</span> in one hop.</p>
     </div>
   </div>
@@ -560,11 +576,27 @@ uv run demo/attention.py translate \
   <aside class="notes">This runs the real trained model in the browser. Each row is one character written; each column is one character read; the darker the square, the more weight. Play "23 Oct 2026": it writes the year first, looking at 2, 0, 2, 6 one by one, then jumps back to "Oct" for the month, then to "23" for the day. That's the order flip, done by looking. Interesting detail: for the month it looks at the "c" of "Oct", and in "March" at the "r": the encoder reads left to right, so the memory after "Mar" is the first one that rules out "May". Same for the spelled-out year: the "w" of "two" separates it from "three". Then 2091: it has never written that year, but it copies the 9 and the 1. Finally the trap, 23/10/2026: day and year are copied right, but no training format writes the month as a number, so it writes 12. Attention lets it copy; it doesn't teach it what a month number means. Click any row label to see that step's top guesses.</aside>
 </section>
 
+<!-- D2b -->
+<section>
+  <div class="frame" style="gap:12px">
+    <p class="kicker">Demo · one step, every number</p>
+    <h2>Inside one step of the trained model</h2>
+    <p style="font-size:21px;max-width:none">Input <span class="x mono" style="font-weight:400">23 Oct 2026</span>. Click a character it wrote to open that step; click a column to work its score. Every number is computed live in your browser from the same trained weights as the last slide.</p>
+    <div class="ctl-row" style="gap:12px"><span class="label">it wrote</span><div class="nx-out" id="nx-out"></div></div>
+    <div class="nx" id="nx-grid" aria-label="Scores, softmax and weights for each input character at the chosen step"></div>
+    <div class="cols" style="gap:24px;grid-template-columns:1.05fr 1fr">
+      <div class="panel nx-calc" id="nx-score"></div>
+      <div class="panel nx-calc" id="nx-mix"></div>
+    </div>
+  </div>
+  <aside class="notes">Slides 5–9 with real numbers. Default step: it has written "2026-10-" and is about to write the day's first digit. Row 1: scores e_j = v · tanh(W_s s_{t−1} + b + W_h h_j), one per character read. Row 2: softmax, done the safe way: subtract the biggest score first (only differences matter, slide 6), exponentiate, divide by the sum. The "2" of "23" gets about 96%. Bottom left: the score for one column, with the first 4 of the 64 numbers shown; v has learned which of the 64 count for a match and which against. The bias b on W_s is a learned offset we left out of slide 7. Bottom right: the context c_t is the weighted average of the 128-number memories (first number shown worked out), then the GRU updates the decoder memory and W_out turns [s_t ; c_t] into 14 scores, one per output character (^ is start, $ is end), and softmax again. The model is extremely sure: a gap of 11 in output scores is a factor of e^11 ≈ 60,000. Try the "1" of the month: the weight spreads over "Oct". Try the final ⟨/s⟩: nothing to copy, so it spreads out. Numbers are float16 weights in float32 maths, so the last digit can differ slightly from `uv run demo/attention.py translate "23 Oct 2026" --details`.</aside>
+</section>
+
 <!-- D3 -->
 <section>
   <div class="frame" style="gap:14px">
     <p class="kicker">Demo · the bottleneck, again</p>
-    <h2>Four dates, no single c</h2>
+    <h2>Four dates in one input</h2>
     <div class="ctl-row" style="gap:10px">
       <input id="md-text" type="text" value="23 Oct 2026; May 5, 1990; FRIDAY, 13 MARCH 2091; the first of June, nineteen oh five" aria-label="Up to four dates, separated by semicolons" spellcheck="false" autocomplete="off" style="flex:1;min-width:0;font-size:21px;padding:8px 12px">
     </div>
@@ -666,6 +698,7 @@ uv run demo/attention.py translate \
     <p class="kicker">Next</p>
     <h2>From one memory to looking back at all of them</h2>
     <p class="lede">Part 1: a hidden state. Part 2: gates to protect it. Part 3: two RNNs and a context. Part 4: attention. Next, Part 5: drop the RNN and let every word look at every other word.</p>
+    <p style="margin-top:24px"><a href="self-attention.html" style="color:var(--accent);font-weight:600">Continue: Every word looks at every word (Self-attention) →</a></p>
     <p style="font-size:44px;margin-top:30px">Questions?</p>
   </div>
   <aside class="notes">One sentence per part, as a closing recap of the whole course. If there's time, ask: "which of the four ideas survives in a Transformer?" Attention directly; gating in a different form (residual connections play a similar role to the LSTM's belt); the encoder–decoder shape in the original Transformer.</aside>
@@ -857,14 +890,14 @@ uv run demo/attention.py translate \
         if (i) el("line", { x1: x - 60, y1: y, x2: x - 32, y2: y, class: "s-h", "stroke-width": 2 }, null, g);
       });
       if (!attn) {
-        el("path", { d: `M1060 ${y + 26} C1060 ${y + 64}, 290 ${y + 64}, 290 ${y + 28}`, fill: "none", class: "s-bad", "stroke-width": 2.5, "stroke-dasharray": "7 5", "marker-end": "url(#ab)" }, null, g);
-        el("text", { x: 650, y: y + 70, "text-anchor": "middle", "font-size": 17, class: "f-bad" }, "blame: back through every step, fading", g);
+        el("path", { d: `M1060 ${y + 26} C1060 ${y + 64}, 420 ${y + 64}, 294 ${y + 26}`, fill: "none", class: "s-bad", "stroke-width": 2.5, "stroke-dasharray": "7 5", "marker-end": "url(#ab)" }, null, g);
+        el("text", { x: 650, y: y + 76, "text-anchor": "middle", "font-size": 17, class: "f-bad" }, "blame: back through every step, fading", g);
       } else {
-        el("path", { d: `M1060 ${y + 26} C1060 ${y + 80}, 290 ${y + 80}, 290 ${y + 26}`, fill: "none", class: "s-bad", "stroke-width": 3.5, "marker-end": "url(#ab)" }, null, g);
+        el("path", { d: `M1060 ${y + 26} C1060 ${y + 80}, 420 ${y + 80}, 294 ${y + 26}`, fill: "none", class: "s-bad", "stroke-width": 3.5, "marker-end": "url(#ab)" }, null, g);
         el("text", { x: 650, y: y + 90, "text-anchor": "middle", "font-size": 17, class: "f-bad" }, "blame: one hop, through the attention weight", g);
       }
     };
-    row(50, "PART 3", false);
+    row(50, "NO ATTENTION", false);
     row(165, "ATTENTION", true);
   })();
 
@@ -929,15 +962,15 @@ uv run demo/attention.py translate \
       const e = enc.keys.map((k) => { let t = 0; for (let i = 0; i < A; i++) t += v[i] * Math.tanh(k[i] + q[i]); return t; });
       const a = softmax(e), c = new Float32Array(H);
       enc.hs.forEach((h, j) => { for (let i = 0; i < H; i++) c[i] += a[j] * h[i]; });
-      return { a, c };
+      return { a, c, e, q };
     }
     function step(enc, prev, s) {
-      const { a, c } = attend(enc, s), x = new Float32Array(V + H);
+      const { a, c, e, q } = attend(enc, s), x = new Float32Array(V + H);
       x[prev] = 1; x.set(c, V);
       const s2 = gru("decoder", x, s), sc = new Float32Array(2 * H);
       sc.set(s2); sc.set(c, H);
       const l = matvec(W["head.weight"].v, sc, W["head.bias"].v, V, 2 * H);
-      return { s: s2, a, p: softmax([...l]) };
+      return { s: s2, a, e, q, c, l, p: softmax([...l]) };
     }
     const MAXOUT = 11 * M.maxDates + 3;
     function greedy(enc) {
@@ -945,14 +978,14 @@ uv run demo/attention.py translate \
       for (let t = 0; t < MAXOUT; t++) {
         const r = step(enc, prev, s); s = r.s;
         const order = [...r.p.keys()].sort((x, y) => r.p[y] - r.p[x]);
-        steps.push({ ch: order[0], p: r.p[order[0]], top: order.slice(0, 3).map((i) => [i, r.p[i]]), a: r.a });
+        steps.push({ ch: order[0], p: r.p[order[0]], top: order.slice(0, 3).map((i) => [i, r.p[i]]), a: r.a, r });
         prev = order[0];
         if (prev === END) break;
       }
       return steps;
     }
     const show = (i) => (i === END ? "⟨/s⟩" : i === START ? "⟨s⟩" : OUT[i]);
-    return { H, IN, OUT, END, unknown, encode, greedy, show };
+    return { H, A, IN, OUT, END, v: W["v.weight"].v, unknown, encode, greedy, show };
   }
   const AT = makeModel(window.ATTN_MODEL), AT4 = makeModel(window.ATTN_MODEL_X4);
 
@@ -1029,6 +1062,59 @@ uv run demo/attention.py translate \
     text.addEventListener("input", load);
     $("am-chips").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { text.value = b.dataset.t; load(); } });
     load();
+  })();
+
+  // ---- one step, every number (demo slide D2b)
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    if (!AT) return noModel($("nx-score"), "");
+    const s = "23 Oct 2026", enc = AT.encode(s), steps = AT.greedy(enc), n = s.length;
+    const f = (x, d = 2) => (x < 0 ? "−" : "") + Math.abs(x).toFixed(d);
+    const vec = (xs) => `[${[...xs].slice(0, 4).map((x) => f(x)).join(", ")}, …]`;
+    const pr = (p) => (p >= 0.999 ? (p * 100).toFixed(3) + "%" : p >= 0.001 ? (p * 100).toFixed(1) + "%" : p.toExponential(1).replace("-", "−"));
+    const row = (l, rhs) => `<span>${l}</span><span>= ${rhs}</span>`;
+    const nm = (ch) => (ch === " " ? "space" : `“${ch}”`);
+    let t = steps.findIndex((x, i) => i > 7 && AT.OUT[x.ch] === "2"), j = -1;
+    if (t < 0) t = 0;
+    const out = $("nx-out");
+    steps.forEach((st, i) => {
+      const b = document.createElement("span"); b.textContent = AT.show(st.ch);
+      b.addEventListener("click", () => { t = i; j = -1; render(); });
+      out.appendChild(b);
+    });
+    function render() {
+      const r = steps[t].r, e = [...r.e], a = r.a, mx = Math.max(...e), ex = e.map((x) => Math.exp(x - mx)), Z = ex.reduce((x, y) => x + y, 0);
+      if (j < 0) j = a.indexOf(Math.max(...a));
+      [...out.children].forEach((b, i) => { b.className = i === t ? "now" : i > t ? "future" : ""; });
+      const g = $("nx-grid"); g.innerHTML = "";
+      g.style.gridTemplateColumns = `250px repeat(${n}, minmax(0, 1fr))`;
+      const cell = (txt, cls, bg) => { const c = document.createElement("span"); c.className = "c " + (cls || ""); c.textContent = txt; if (bg) c.style.background = bg; g.appendChild(c); return c; };
+      const lab = (html) => { const l = document.createElement("span"); l.className = "lab"; l.innerHTML = html; g.appendChild(l); };
+      lab(`<span class="label">read, position j</span>`);
+      [...s].forEach((ch, k) => { const c = cell(ch, "hd" + (k === j ? " sel" : "")); c.title = `position ${k + 1}`; c.addEventListener("click", () => { j = k; render(); }); });
+      lab(`1 score e<sub>j</sub>`); e.forEach((x) => cell(f(x)));
+      lab(`2 exp(e<sub>j</sub> − ${f(mx)})`); ex.forEach((x) => cell(x < 0.005 ? "0.00" : f(x)));
+      lab(`2 weight a<sub>j</sub> <span class="small">÷ ${f(Z)}</span>`); a.forEach((x) => cell((x * 100).toFixed(1) + "%", "w", mix(x ** 0.7)));
+      const q = r.q, k = enc.keys[j], v = AT.v, th = [...k].map((x, i) => Math.tanh(x + q[i]));
+      const terms = th.slice(0, 4).map((x, i) => v[i] * x);
+      const ch = s[j], wr = steps.slice(0, t).map((x) => AT.OUT[x.ch]).join("");
+      $("nx-score").innerHTML = `<span class="label">1 score for ${nm(ch)}, position ${j + 1} · first 4 of 64 numbers and terms</span>
+        ${row(`q = W<sub>s</sub> s<sub>t−1</sub> + b`, `${vec(q)} <span class="m">what I need</span>`)}
+        ${row(`k = W<sub>h</sub> h<sub>${j + 1}</sub>`, `${vec(k)} <span class="m">what's here</span>`)}
+        ${row(`tanh(q + k)`, vec(th))}
+        ${row(`v`, `${vec(v)} <span class="m">learned</span>`)}
+        ${row(`e<sub>${j + 1}</sub> = Σ v·tanh`, `${terms.map((x, i) => (i ? (x < 0 ? " − " : " + ") + Math.abs(x).toFixed(2) : f(x))).join("")} + … = <b>${f(e[j])}</b>`)}
+        ${row(`a<sub>${j + 1}</sub>`, `${ex[j] < 0.005 ? ex[j].toExponential(1).replace("-", "−") : f(ex[j])} ÷ ${f(Z)} = <b>${(a[j] * 100).toFixed(1)}%</b>`)}`;
+      const h0 = enc.hs.map((h) => h[0]), big = [...a.keys()].sort((x, y) => a[y] - a[x]).slice(0, 2);
+      const lo = [...r.l.keys()].sort((x, y) => r.l[y] - r.l[x]).slice(0, 3);
+      $("nx-mix").innerHTML = `<span class="label">3 mix (weighted average) · then guess, after “${wr}”</span>
+        ${row(`c<sub>t</sub>[1]`, `${big.map((i) => `${a[i].toFixed(3)}×(${f(h0[i])})`).join(" + ")} + … = ${f(r.c[0])}`)}
+        ${row(`c<sub>t</sub> = Σ a<sub>j</sub> h<sub>j</sub>`, `${vec(r.c)} <span class="m">of 128</span>`)}
+        <span class="full m">s<sub>t</sub> = GRU([y<sub>t−1</sub> ; c<sub>t</sub>], s<sub>t−1</sub>), then 14 output scores</span>
+        <span class="full m">z = W<sub>out</sub> [s<sub>t</sub> ; c<sub>t</sub>] and P = softmax(z); top 3:</span>
+        ${lo.map((i, m) => row(`z(${nm(AT.show(i))})`, `${f(r.l[i])} → P = ${m ? pr(r.p[i]) : `<b>${pr(r.p[i])}</b>`}`)).join("")}`;
+    }
+    render();
   })();
 
   // ---- several dates at once (demo slide D3)
