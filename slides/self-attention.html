@@ -59,6 +59,7 @@ body, .reveal-viewport { background: var(--bg); color: var(--fg); }
 .reveal p { margin: 0; max-width: 34em; }
 .reveal ul, .reveal ol { margin: 0; padding-left: 1.1em; display: grid; gap: 10px; }
 .reveal li { max-width: 34em; }
+.reveal ul.wide li { max-width: none; }
 .reveal em { font-style: italic; }
 .reveal strong { font-weight: 600; }
 .reveal code, .mono { font-family: var(--mono); font-size: .8em; }
@@ -170,7 +171,7 @@ pre.cmd .c { color: var(--muted); }
 .word-gap .chip.out { border-color: var(--output); color: var(--output); border-style: dashed; }
 .word-gap .dots-txt { color: var(--muted); font-style: italic; font-size: 24px; }
 
-/* gate grid (slide 10) */
+/* gate grid (slide 11) */
 .gates { display: grid; grid-template-columns: 170px repeat(8, 1fr); gap: 6px; font-family: var(--mono); font-size: 20px; align-items: stretch; }
 .gates .lab { font-family: var(--serif); font-size: 22px; display: flex; align-items: center; }
 .gates .lab.h { color: var(--accent); } .gates .lab.x { color: var(--input); }
@@ -185,20 +186,20 @@ pre.cmd .c { color: var(--muted); }
 .chal .tk { font-family: var(--mono); color: var(--muted); width: 1.2em; flex: none; }
 .chal .done { color: var(--muted); } .chal .done .tk { color: var(--output); }
 
-/* valve + mix bars (slides 6, 14) */
+/* valve + mix bars (slides 7, 15) */
 .meter { display: grid; grid-template-columns: 200px 1fr 90px; gap: 16px; align-items: center; font-size: 24px; }
 .meter .track { height: 36px; background: var(--panel); border-radius: 6px; overflow: hidden; display: flex; }
 .meter .fill { display: block; height: 100%; transition: width .15s; }
 .meter .v { font-family: var(--mono); font-size: 24px; text-align: right; font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .meter .fill { transition: none; } }
 
-/* blame race (slide 12) */
+/* blame race (slide 13) */
 .race { display: grid; grid-template-columns: 260px repeat(4, 1fr); gap: 6px 16px; align-items: center; font-size: 24px; }
 .race .hd { font-family: var(--mono); font-size: 16px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .race .cell { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; }
 .race .dot { border-radius: 50%; flex: none; }
 
-/* inside a gate (slide 8) */
+/* inside a gate (slide 9) */
 .flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 22px; }
 .flow .chip { font-size: 21px; }
 .flow .chip.hh { border-color: var(--accent); color: var(--accent); }
@@ -206,7 +207,7 @@ pre.cmd .c { color: var(--muted); }
 .flow .box.dial-out { border: 1.5px solid var(--accent); color: var(--accent); font-weight: 600; }
 .flow .arr { color: var(--muted); }
 
-/* step-by-step equations (slides 9, 15) */
+/* step-by-step equations (slides 10, 16) */
 .steps { display: grid; grid-template-columns: 44px 1fr 1.3fr; gap: 14px 22px; align-items: center; }
 .steps .n { font-family: var(--mono); font-size: 20px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); display: grid; place-items: center; }
 .steps .w { font-size: 23px; }
@@ -214,7 +215,7 @@ pre.cmd .c { color: var(--muted); }
 .steps .e.key { box-shadow: inset 0 0 0 2px var(--accent); }
 .steps .e .h, .steps .e .x { font-weight: 400; }
 
-/* France trace (slide 11) */
+/* France trace (slide 12) */
 table.trace { font-size: 22px; }
 table.trace td { vertical-align: middle; }
 table.trace td.ph { font-size: 20px; font-style: italic; }
@@ -235,7 +236,7 @@ table.trace td.ph { font-size: 20px; font-style: italic; }
 .memrow .vec { grid-template-columns: repeat(12, 26px); }
 .memrow .vec i { height: 26px; }
 
-/* bottleneck (slide 13) */
+/* bottleneck (slide 14) */
 .squeeze-txt { font-size: 22px; line-height: 1.5; min-height: 5.6em; }
 .squeeze-txt .off { color: var(--muted); opacity: .45; }
 .seg { display: flex; height: 38px; border-radius: 6px; overflow: hidden; gap: 1px; background: var(--rule); }
@@ -299,8 +300,6 @@ table.hand tr.me td { font-weight: 600; }
 .ord-col { display: grid; gap: 10px; align-content: start; }
 .ord-row { display: grid; grid-template-columns: 110px auto; gap: 14px; align-items: center; }
 .ord-row .w { font-family: var(--mono); font-size: 24px; font-weight: 600; color: var(--input); }
-.blur .vec { grid-template-columns: repeat(8, 30px); }
-.blur .vec i { height: 30px; }
 .ord-row { grid-template-columns: 90px auto; }
 .ord .vec { grid-template-columns: repeat(8, 52px); }
 .ord .vec i { height: 34px; font: 600 15px/34px var(--mono); font-style: normal; text-align: center; color: var(--fg); }
@@ -308,13 +307,22 @@ table.hand tr.me td { font-weight: 600; }
 .verdict .same { color: var(--bad); font-weight: 600; } .verdict .diff { color: var(--output); font-weight: 600; }
 .pe { display: grid; grid-template-columns: repeat(32, 1fr); gap: 1px; }
 .pe i { display: block; height: 13px; }
-.blur { display: grid; grid-template-columns: 230px 300px 1fr; gap: 12px 18px; align-items: center; font-size: 22px; }
 .wbar { display: inline-block; width: 150px; height: 18px; background: var(--panel); border-radius: 4px; overflow: hidden; vertical-align: middle; }
 .wbar i { display: block; height: 100%; background: var(--accent); }
 table.step th { text-transform: none; letter-spacing: .02em; }
 table.step td.n { white-space: nowrap; }
 table.step tr.me td { font-weight: 600; }
 table.colsum { font-size: 23px; }
+.mats { display: flex; align-items: flex-end; gap: 14px; margin-top: 4px; }
+.mats .m { display: grid; gap: 4px; }
+.mats .mh { font-family: var(--mono); font-size: 18px; color: var(--fg); white-space: nowrap; }
+.mats .mh small { font-size: 14px; color: var(--muted); margin-left: 6px; }
+.mats table { border-collapse: separate; border-spacing: 0 3px; font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; color: var(--num); }
+.mats td { padding: 1px 9px; min-width: 2.2em; text-align: right; background: var(--panel); }
+.mats td.w { color: var(--input); text-align: left; background: none; padding: 2px 8px 2px 0; }
+.mats th { font-size: 13px; color: var(--muted); font-weight: 400; padding: 0 9px; text-align: right; }
+.mats tr.me td:not(.w) { color: var(--accent); font-weight: 600; }
+.mats .op { font-family: var(--mono); font-size: 15px; color: var(--muted); align-self: center; text-align: center; line-height: 1.3; }
 table.colsum td:nth-child(n+4), table.colsum th:nth-child(n+4) { text-align: right; padding-right: 30px; }
 table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
 .mask-hatch { background: repeating-linear-gradient(45deg, var(--rule) 0 3px, transparent 3px 9px) !important; }
@@ -353,15 +361,15 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <div class="frame">
     <p class="kicker">Where we left off</p>
     <h2>The encoder still reads one step at a time</h2>
-    <svg viewBox="0 0 1180 300" role="img" aria-label="Left: an RNN passes its memory along five words in a chain, five steps one after another. Right: self-attention links every word to every other word directly, all in one step" style="width:100%">
+    <svg viewBox="0 0 1180 300" role="img" aria-label="The first six words of 'the animal didn't cross the street because it was too tired'. Left: an RNN passes its memory along the six words in a chain, six steps one after another. Right: self-attention links every word to every other word directly, all in one step" style="width:100%">
       <g id="chain-vs-all"></g>
     </svg>
     <div class="cols" style="font-size:24px">
-      <p><strong>Part 4:</strong> the decoder looks back at every <span class="h">h<sub>j</sub></span> directly. But each <span class="h">h<sub>j</sub></span> was still built by an RNN, one character after another.</p>
+      <p><strong>Part 4:</strong> the decoder looks back at every <span class="h">h<sub>j</sub></span> directly. But each <span class="h">h<sub>j</sub></span> was still built by an RNN reading the date one character after another. Read a sentence the same way, one word per step, and you get the chain on the left.</p>
       <p><strong>The question:</strong> if attention can link any two positions in one hop, why build the memories with a chain at all? Let the input words attend <em>to each other</em>.</p>
     </div>
   </div>
-  <aside class="notes">This is point 2 from "What attention doesn't fix" in Part 4. Two costs of the chain: it's slow, because step t waits for step t − 1, so a GPU can't work along the sentence in parallel; and information between far-apart words still travels many steps, so it fades, as in Part 2. On the right, every word is wired to every other word, and all the wires can be computed at the same time.</aside>
+  <aside class="notes">This is point 2 from "What attention doesn't fix" in Part 4. Part 4's encoder read characters of a date; from here on the pieces are words of a sentence, the slide 1 sentence, but the chain is the same either way: one piece per step. Two costs of the chain: it's slow, because step t waits for step t − 1, so a GPU can't work along the sentence in parallel; and information between far-apart words still travels many steps, so it fades, as in Part 2. On the right, every word is wired to every other word, and all the wires can be computed at the same time.</aside>
 </section>
 
 <!-- 3 -->
@@ -379,19 +387,39 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
         <p>Every <span class="x">word</span> asks, and every word of the <strong>same</strong> sentence answers. One sequence, looking at itself.</p>
       </div>
     </div>
-    <ul>
-      <li>Each word <span class="x">x<sub>i</sub></span> gets a new vector <span class="h">z<sub>i</sub></span>: a mix of the whole sentence, weighted by what's useful <em>to that word</em>.</li>
-      <li>A first try, with Part 4's three verbs, for word i looking at every word j (itself included). <strong>Score</strong>: <span class="mono" style="white-space:nowrap">e<sub>ij</sub> = <span class="x">x<sub>i</sub></span> · <span class="x">x<sub>j</sub></span></span>. <strong>Soften</strong> word i's scores into weights that add up to 1: <span class="mono" style="white-space:nowrap">a<sub>ij</sub> = exp(e<sub>ij</sub>) / Σ<sub>k</sub> exp(e<sub>ik</sub>)</span>. <strong>Mix</strong> the <span class="x">x<sub>j</sub></span> themselves: <span class="mono" style="white-space:nowrap"><span class="h">z<sub>i</sub></span> = Σ<sub>j</sub> a<sub>ij</sub> <span class="x">x<sub>j</sub></span></span>.</li>
-    </ul>
-    <div class="callout" style="font-size:22px;line-height:1.45">
-      <strong>Problem 1:</strong> a word is usually most similar to <strong>itself</strong>. “it” would look at “it”, not at “animal”.<br>
-      <strong>Problem 2:</strong> the score is <strong>symmetric</strong>, the same both ways: <span class="mono" style="white-space:nowrap"><span class="x">x<sub>it</sub></span>·<span class="x">x<sub>animal</sub></span> = <span class="x">x<sub>animal</sub></span>·<span class="x">x<sub>it</sub></span></span>. But “it” is looking for a noun; “animal” isn't looking for a pronoun.
-    </div>
+    <p style="font-size:25px;max-width:none">Each word <span class="x">x<sub>i</sub></span> gets a new vector <span class="h">z<sub>i</sub></span>: a mix of the whole sentence, weighted by what's useful <em>to that word</em>. The z's take the place of Part 4's encoder memories h<sub>j</sub>: they are what the decoder reads.</p>
+    <p class="callout" style="font-size:25px;max-width:none"><strong>The goal, on one word.</strong> Translate “the animal didn't cross the street because <span class="x mono">it</span> was too tired” into French: “it” must become <em>il</em> if it means the animal (<em>l'animal</em>) or <em>elle</em> if it means the street (<em>la rue</em>). <span class="x">x<sub>it</sub></span> only says “a pronoun”, so a decoder reading it can't choose. Here “it” means the animal, so a good <span class="h">z<sub>it</sub></span> should carry “animal”.</p>
   </div>
-  <aside class="notes">Say the interview sentence: "self-attention is attention where the queries, keys and values all come from the same sequence; every position computes a weighted average over every position, including itself." The first try is deliberately naive, and it fails for a reason worth understanding: x_i · x_i is the squared length of x_i, usually the biggest score in its row. And it forces one vector to do two jobs: say what this word is, and say what it's looking for. A pronoun is looking for a noun, which is not what a pronoun is. The second problem comes from the same place: a dot product doesn't care about order, so x_it · x_animal = x_animal · x_it. Any score built from one vector per word is symmetric, but "who is looking for whom" isn't: "it" needs "animal", "animal" doesn't need "it". The next twelve slides work both out in numbers, one step per slide, and split those jobs; slide 16 then names them.</aside>
+  <aside class="notes">The il/elle choice is the payoff to keep in mind: French nouns have gender, animal is masculine and street (la rue) feminine, so the translation of "it" depends on what "it" refers to. Swap "tired" for "wide" and the answer flips to elle; slide 34 comes back to that. Say the interview sentence: "self-attention is attention within one sequence: every position computes a weighted average over every position of the same sequence, including itself." On its own, the word "it" says almost nothing; its meaning is in another word. That makes it the cleanest test: if z_it ends up carrying "animal", the mixing worked. Every word gets its own z at the same time, but we follow just this one.</aside>
 </section>
 
 <!-- 4 -->
+<section>
+  <div class="frame">
+    <p class="kicker">A first try</p>
+    <h2>Mix the words, weighted by how well they match</h2>
+    <p style="font-size:24px">For each word i, look at every word j, itself included. i is the word doing the looking (for us, “it”); j is each word being looked at. Four steps:</p>
+    <div class="steps" style="grid-template-columns: 44px 1fr 1.1fr">
+      <span class="n">1</span>
+      <div class="w"><strong>Score</strong> how well word j matches word i: the dot product of their vectors (slide 6 works one out).</div>
+      <div class="e">e<sub>ij</sub> = <span class="x">x<sub>i</sub></span> · <span class="x">x<sub>j</sub></span></div>
+      <span class="n">2</span>
+      <div class="w"><strong>Make</strong> every score positive, with exp (slide 7 shows how).</div>
+      <div class="e">exp(e<sub>ij</sub>)</div>
+      <span class="n">3</span>
+      <div class="w"><strong>Divide</strong> by the total over every word k, so word i's weights add up to 1.</div>
+      <div class="e">a<sub>ij</sub> = exp(e<sub>ij</sub>) / Σ<sub>k</sub> exp(e<sub>ik</sub>)</div>
+      <span class="n">4</span>
+      <div class="w"><strong>Mix</strong>: scale each word vector by its weight, and add them up over every word j.</div>
+      <div class="e key"><span class="h">z<sub>i</sub></span> = Σ<sub>j</sub> a<sub>ij</sub> <span class="x">x<sub>j</sub></span></div>
+    </div>
+    <p class="small">Steps 2 and 3 are Part 4's soften, in two steps.</p>
+    <p class="callout" style="font-size:24px">Does this work? The next slides run it on three words, by hand.</p>
+  </div>
+  <aside class="notes">This is Part 4's score, soften, mix, with nothing new: the word vectors x themselves do the matching and get mixed, so there are no weights to learn. Soften is split into its two halves, because the next slides do one step per slide. Σ_k means "add up over every word k"; k is a second name for "each word", needed because j is already used on top of the fraction. Don't say yet whether it works: let the room guess, then slides 6 to 10 run it in numbers and show what goes wrong.</aside>
+</section>
+
+<!-- 5 -->
 <section>
   <div class="frame">
     <p class="kicker">The first try, in numbers · setup</p>
@@ -401,20 +429,15 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
       <table class="plain step" id="ft-x" style="font-size:24px"></table>
       <div class="panel" style="gap:10px">
         <span class="label">The goal</span>
-        <p style="font-size:23px">A new vector <span class="h">z<sub>it</sub></span> for “it”, mixed from the words “it” relates to. Four steps, one slide each:</p>
-        <ol style="font-size:22px;gap:6px">
-          <li><strong>Score</strong> each word against “it”.</li>
-          <li><strong>Make</strong> every score positive.</li>
-          <li><strong>Divide</strong> by the total, so the weights add up to 1.</li>
-          <li><strong>Mix</strong> the vectors with those weights.</li>
-        </ol>
+        <p style="font-size:23px">A new vector <span class="h">z<sub>it</sub></span> for “it”, mixed from the words “it” relates to.</p>
+        <p style="font-size:22px">How: the four steps from the last slide (score, make positive, divide, mix), one slide each.</p>
       </div>
     </div>
   </div>
-  <aside class="notes">These ten slides take the first try from the last slide and run it by hand, one step per slide, then fix it. Read the table across: animal is a thing and alive; street is a thing but not alive; it is a pronoun, with a half for "alive" because "it" often refers to something alive. We follow one word, "it". In the formulas, i is the word doing the looking (here always "it") and j is the word being looked at, which runs over all three, including "it" itself.</aside>
+  <aside class="notes">The next slides take the first try from the last slide and run it by hand, one step per slide, then fix it. Read the table across: animal is a thing and alive; street is a thing but not alive; it is a pronoun, with a half for "alive" because "it" often refers to something alive. We follow one word, "it". In the formulas, i is the word doing the looking (here always "it") and j is the word being looked at, which runs over all three, including "it" itself.</aside>
 </section>
 
-<!-- 5 -->
+<!-- 6 -->
 <section>
   <div class="frame">
     <p class="kicker">The first try · step 1 of 4</p>
@@ -426,7 +449,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Do the animal row aloud: 0 times 1, plus 0.5 times 1, plus 1 times 0, is 0.5. Each score is a single number, one per word j. The self-score is the largest because nothing matches a vector as well as itself: it has big numbers in exactly its own places. "Squared length" is the sum of its numbers squared (Pythagoras), which is what a vector dotted with itself is.</aside>
 </section>
 
-<!-- 6 -->
+<!-- 7 -->
 <section>
   <div class="frame">
     <p class="kicker">The first try · step 2 of 4</p>
@@ -442,7 +465,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Why 2.718 and not, say, 2 or 10? Any number above 1 would make scores positive and keep their order; a bigger base just makes the winner win harder. 2.718 is chosen because the slope of 2.718^s is 2.718^s itself, which makes the gradients in backprop simple. On a calculator: 2.718^0.5 is the square root of 2.718, about 1.65. Here no score is negative, but in a trained model plenty are: a dot product is negative when the two vectors point opposite ways.</aside>
 </section>
 
-<!-- 7 -->
+<!-- 8 -->
 <section>
   <div class="frame">
     <p class="kicker">The first try · step 3 of 4</p>
@@ -454,7 +477,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">The weight a_it,j is the share of "it"'s attention that goes to word j. Dividing by the total is what makes the shares add up to 1 (100%), so the mix on the next slide is an average and not a sum that grows with the sentence. Point at the bars: "it" gives more than half of its attention to itself. The formula is the same softmax as Part 4; k is just a second name for "each word", needed because j is already used on the top of the fraction.</aside>
 </section>
 
-<!-- 8 -->
+<!-- 9 -->
 <section>
   <div class="frame" style="gap:16px">
     <p class="kicker">The first try · step 4 of 4</p>
@@ -462,12 +485,12 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     <p style="font-size:24px">Scale each word's vector <span class="x">x<sub>j</sub></span> by its weight, then add the results <strong>column by column</strong>. Vectors in, so a vector out.</p>
     <p class="eq" style="font-size:22px;line-height:1.7;max-width:none"><span class="h">z<sub>it</sub></span> = Σ<sub>j</sub> a<sub>it,j</sub> <span class="x">x<sub>j</sub></span> <span style="color:var(--muted)">(Σ<sub>j</sub>: add up over every word j)</span><br>&nbsp;&nbsp;&nbsp;&nbsp;= a<sub>it,animal</sub> <span class="x">x<sub>animal</sub></span> + a<sub>it,street</sub> <span class="x">x<sub>street</sub></span> + a<sub>it,it</sub> <span class="x">x<sub>it</sub></span></p>
     <table class="plain step colsum" id="ft-mix1"></table>
-    <p class="callout" style="font-size:22px" id="ft-cmp1"></p>
+    <p class="callout" style="font-size:22px;max-width:none" id="ft-cmp1"></p>
   </div>
   <aside class="notes">This is the step that confused people: the Σ adds vectors, not single numbers, so the answer is a vector. Each column is added on its own: the "is a thing" column is 0.27 + 0.16 + 0, and so on. The weights add up to 1, so z is a weighted average: each of its numbers lies between the smallest and biggest number in that column. How to judge the result: in this sentence "it" means the animal, so the best z_it could do is copy animal's vector. Read the two vectors column by column: wanted 1, 1, 0; got 0.43, 0.55, 0.57. The pronoun column, where animal has 0, came out the biggest.</aside>
 </section>
 
-<!-- 9 -->
+<!-- 10 -->
 <section>
   <div class="frame">
     <p class="kicker">The first try · what went wrong</p>
@@ -475,19 +498,20 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     <div class="cols" style="gap:32px;align-items:start">
       <div class="panel">
         <span class="label">Problem 1 · it picks itself</span>
-        <p style="font-size:26px" id="ft-p1"></p>
+        <p style="font-size:24px" id="ft-p1"></p>
       </div>
       <div class="panel">
         <span class="label">Problem 2 · same both ways</span>
-        <p style="font-size:26px" id="ft-p2"></p>
+        <p style="font-size:24px" id="ft-p2"></p>
       </div>
     </div>
-    <p class="callout" style="font-size:24px">The cause: in the score x<sub>it</sub> · x<sub>j</sub>, one vector does two jobs. x<sub>j</sub> says what word j <strong>is</strong>. x<sub>it</sub> has to say what “it” is <strong>looking for</strong>, but x<sub>it</sub> = [0, 0.5, 1] only says what “it” is: mostly a pronoun. What “it” is looking for is a different thing: a word that is a thing and alive, like [1, 1, 0]. Matching on “I am a pronoun” finds the only pronoun around: “it” itself. The fix: give each word a second vector for the looking.</p>
+    <p class="callout" style="font-size:24px">The cause: x<sub>j</sub> says what word j <strong>is</strong>. x<sub>it</sub> should say what “it” is <strong>looking for</strong>, but x<sub>it</sub> = [0, 0.5, 1] only says what “it” is: a pronoun. So it finds the only pronoun around: itself.</p>
+    <p style="font-size:24px;max-width:none"><strong>The fix:</strong> give each word extra vectors, made from x by matrices that training can learn, so “what it is” and “what it looks for” can differ.</p>
   </div>
-  <aside class="notes">Problem 2 comes from the dot product itself: a·b = b·a, because each pair of numbers multiplies the same either way round. Any score built from one vector per word is symmetric. But "who is looking for whom" isn't: "it" needs "animal" to know what it means; "animal" doesn't need "it". The fix on the next slide uses two different matrices, so the word asking and the word answering use different vectors.</aside>
+  <aside class="notes">Problem 2 comes from the dot product itself: a·b = b·a, because each pair of numbers multiplies the same either way round. Any score built from one vector per word is symmetric. But the two directions are different questions: "it" is looking for a noun to take its meaning from (here: a thing that's alive); "animal" is looking for whatever helps "animal", which need not be "it". The deeper cause: the first try has no weights beyond the word vectors themselves, so training could only change x, and one x has to say both what a word is and what it is looking for. The fix starts on the next slide: learned matrices make extra vectors per word, and because the word asking and the word answering use different matrices, the score no longer has to be the same both ways.</aside>
 </section>
 
-<!-- 10 -->
+<!-- 11 -->
 <section>
   <div class="frame">
     <p class="kicker">The fix · make a query</p>
@@ -510,7 +534,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Do q_it aloud: x_it is [0, 0.5, 1], so take 0 of W_Q's first row, 0.5 of its second, and 1 of its third, and add: [2, 2, 0]. The query is not what "it" is (a pronoun); it is what "it" wants (a thing that's alive). That is the split the last slide asked for. The shape of W_Q: the rows are fixed by x (each number in x scales one row), the columns are a free choice that sets the length of q. We picked 3 so q reads with the same labels as x. A real model picks d_k as a setting; the original Transformer used x of 512 numbers and d_k = 64, with no human labels on the columns. Only "it" needs a query here, because we only follow "it"; in the real layer every word makes a query, a key and a value at the same time.</aside>
 </section>
 
-<!-- 11 -->
+<!-- 12 -->
 <section>
   <div class="frame" style="gap:16px">
     <p class="kicker">The fix · make the keys</p>
@@ -523,7 +547,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Read one row: animal's x is [1, 1, 0], so take 1 of W_K's thing row, 1 of its alive row and 0 of its pronoun row: [1, 1, 0]. The key is what a word puts on display for matching; the query is what a word goes looking for. Here the key is just x with the pronoun number removed, because nothing in this toy is looking for pronouns. A trained W_K is not this simple, but it does the same kind of job: it picks out the features worth being found by.</aside>
 </section>
 
-<!-- 12 -->
+<!-- 13 -->
 <section>
   <div class="frame">
     <p class="kicker">The fix · steps 1 to 3 again</p>
@@ -536,7 +560,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Walk across one row, animal: the score is 2·1 + 2·1 + 0·0 = 4, then 2.718^4 ≈ 54.6, then divide by the total. The weights still add up to 1 (up to rounding). Compare with step 3 of the first try: there "it" kept 57% for itself.</aside>
 </section>
 
-<!-- 13 -->
+<!-- 14 -->
 <section>
   <div class="frame">
     <p class="kicker">The fix · step 4 again</p>
@@ -548,78 +572,98 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     </div>
     <p class="small">The query and key decide <strong>who</strong> gets picked. But step 4 still hands over each word's raw <span class="x">x<sub>j</sub></span>. Next: choose <strong>what</strong> gets handed over.</p>
   </div>
-  <aside class="notes">Same column-by-column add as before, with the new weights. Then the second problem: "animal" asking about "it" uses animal's query, which is all zeros (W_Q only reacts to the pronoun number), so it scores 0; "it" asking about "animal" scores 4. Two different matrices make the score one-way. Both matrices are hand-picked here; in a model they are learned. The real recipe also divides each score by √d_k; that comes on slide 17.</aside>
-</section>
-
-<!-- 14 -->
-<section>
-  <div class="frame" style="gap:16px">
-    <p class="kicker">The fix · make the values</p>
-    <h2>Give every word a value: what it hands over if picked</h2>
-    <p style="font-size:23px">The weights say how much of each word “it” takes. The <strong>value</strong> is the vector that actually gets taken: one per word, made from its x with a third matrix W<sub>V</sub>, the same way as the keys. W<sub>V</sub> is hand-picked here; a trained model learns it.</p>
-    <div><div class="eq" id="ft-wv" style="font-size:21px;line-height:1.6"></div></div>
-    <table class="plain step" id="ft-vals" style="font-size:22px"></table>
-    <p class="callout" style="font-size:22px;max-width:none" id="ft-kv"></p>
-  </div>
-  <aside class="notes">Why the −0.5? "it" is half alive in x only as a guess about what it refers to. That guess helps when matching, so the key keeps it. But it isn't something "it" knows to pass on, so the value cancels it: 0.5 of the alive row gives +0.5 alive, and 1 of the pronoun row gives −0.5 alive, which add to 0. animal and street have no pronoun number, so their values are just their thing and alive numbers. The point of this slide: the key and the value of the same word can differ, because one is for being found and the other for being handed over. A single vector could not do both.</aside>
+  <aside class="notes">Same column-by-column add as before, with the new weights. Then the second problem. Compare weights, not raw scores: softmax turns each word's row of scores into weights on its own, so a score of 4 in one row and 0 in another can't be compared; only the shares within a row mean anything. "it" gives animal 84%. "animal" asking uses animal's query, which is all zeros (W_Q only reacts to the pronoun number), so every score in its row is 0 and its weights are even: 33% each, "it" included. 84% one way, 33% the other: two different matrices mean the two directions are no longer forced to be equal. An all-zero query is the toy's way of saying animal isn't looking for anything; a trained W_Q gives every word its own question. Both matrices are hand-picked here; in a model they are learned.</aside>
 </section>
 
 <!-- 15 -->
 <section>
   <div class="frame" style="gap:16px">
-    <p class="kicker">The fix · step 4 with values</p>
-    <h2>Mix the values, not x</h2>
-    <p style="font-size:24px">Same weights as before, from the query and keys. Step 4 now scales and adds each word's value <span class="mono">v<sub>j</sub></span> instead of its <span class="x">x<sub>j</sub></span>: <span class="h">z<sub>it</sub></span> = Σ<sub>j</sub> a<sub>it,j</sub> v<sub>j</sub>.</p>
-    <table class="plain step colsum" id="ft-mix3"></table>
-    <p class="callout" style="font-size:23px" id="ft-cmp3"></p>
-    <p class="small">Who to pick comes from q and k; what to hand over comes from v. Each has its own matrix, so each can be learned for its own job.</p>
+    <p class="kicker">The fix · make the values</p>
+    <h2>Give every word a value: what it hands over if picked</h2>
+    <p style="font-size:23px;max-width:none" id="ft-echo"></p>
+    <div><div class="eq" id="ft-wv" style="font-size:21px;line-height:1.6"></div></div>
+    <table class="plain step" id="ft-vals" style="font-size:22px"></table>
+    <p class="callout" style="font-size:22px;max-width:none" id="ft-kv"></p>
   </div>
-  <aside class="notes">The weights are unchanged from slide 12: changing W_V does not change who is picked, only what arrives. Mixing x let "it" pass a little of its own guess, and its pronoun number, back into itself. Mixing values, it passes nothing of its own, so z_it is built only from what animal and street hand over. In this toy the difference is small because "it" already gets little weight; in a real model the features good for being found and the features worth handing over differ a lot, which is why every word gets all three vectors.</aside>
+  <aside class="notes">Start from the problem: the weights now pick well, but step 4 still hands over x, the very vector the key was made from. "it" keeps 4% of its own attention, so 4% of its own x comes back into z_it: its half-alive guess and its pronoun number, now looking like evidence about what "it" refers to. That's circular: "it" is using its own guess to confirm its own guess. So what gets handed over should be chosen separately from what gets matched, and that is the value. Why the −0.5? "it" is half alive in x only as a guess about what it refers to. That guess helps when matching, so the key keeps it. But it isn't something "it" knows to pass on, so the value cancels it: 0.5 of the alive row gives +0.5 alive, and 1 of the pronoun row gives −0.5 alive, which add to 0. animal and street have no pronoun number, so their values are just their thing and alive numbers. The point of this slide: the key and the value of the same word can differ, because one is for being found and the other for being handed over. A single vector could not do both.</aside>
 </section>
 
 <!-- 16 -->
 <section>
-  <div class="frame">
-    <p class="kicker">Three jobs for every word</p>
-    <h2>Query, key, value</h2>
-    <p style="font-size:24px">Each word makes three vectors from its own <span class="x">x<sub>i</sub></span>, with three matrices shared by every word. They are <strong>learned</strong>: they start as random numbers and backprop adjusts them, like every weight since Part 1.</p>
-    <div class="qkv panel">
-      <span></span><span class="label">what it is</span><span class="label">in Part 4</span>
-      <span class="role">q<sub>i</sub> = x<sub>i</sub>W<sub>Q</sub></span><span><strong>query</strong>: what I'm looking for</span><span>the decoder's <span class="h">s<sub>t−1</sub></span> (through W<sub>s</sub>)</span>
-      <span class="role">k<sub>j</sub> = x<sub>j</sub>W<sub>K</sub></span><span><strong>key</strong>: what I offer, for matching</span><span>each <span class="h">h<sub>j</sub></span> (through W<sub>h</sub>)</span>
-      <span class="role">v<sub>j</sub> = x<sub>j</sub>W<sub>V</sub></span><span><strong>value</strong>: what I hand over if picked</span><span>each <span class="h">h<sub>j</sub></span> itself</span>
-    </div>
-    <p style="font-size:22px">The query and key fix both problems from the first try. The value is the third job, from the last two slides: the key only gets word j <strong>picked</strong> (a big weight a<sub>ij</sub>); the value is what word j <strong>passes on</strong> once picked, so z<sub>i</sub> mixes the v<sub>j</sub>, not the <span class="x">x<sub>j</sub></span>.</p>
-    <p class="callout" style="font-size:24px">A library: your <strong>query</strong> is what you type in the search box, the <strong>keys</strong> are the catalogue entries it's matched against, and the <strong>values</strong> are the books you take home.</p>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">The fix · step 4 with values</p>
+    <h2>Mix the values: no more echo</h2>
+    <p style="font-size:24px">Same weights as before, from the query and keys. Step 4 now scales and adds each word's value <span class="mono">v<sub>j</sub></span> instead of its <span class="x">x<sub>j</sub></span>: <span class="h">z<sub>it</sub></span> = Σ<sub>j</sub> a<sub>it,j</sub> v<sub>j</sub>.</p>
+    <table class="plain step colsum" id="ft-mix3"></table>
+    <p class="callout" style="font-size:23px;max-width:none" id="ft-cmp3"></p>
+    <p style="font-size:22px;max-width:none" id="ft-alive"></p>
+    <p class="small">Who to pick comes from q and k; what to hand over comes from v. Each has its own matrix, so each can be learned for its own job.</p>
   </div>
-  <aside class="notes">You've already met all three roles, without the names: Part 4's slide on the score said the decoder side is a "query", the encoder side a "key", and what gets mixed are the "values". Self-attention just makes all three from the same word with three different learned matrices. That fixes the first try: "it" can have a query that means "looking for a noun that could be tired" while its key says "I'm a pronoun", so it no longer matches itself best. And the score is now x_i W_Q W_Kᵀ x_jᵀ: because W_Q ≠ W_K, swapping i and j changes it, so it can be one-way. The value is a separate choice: the features used to match aren't the ones you want handed over, and W_V lets the layer pick the second set (and, per head later, shrink it to d_v). Why two matrices W_Q, W_K and not one d × d matrix M = W_Q W_Kᵀ? Two thin d × d_k matrices have fewer weights, and are what lets each head score in its own small space. Shapes, for the whiteboard: x_i has d numbers (512 in the original Transformer); W_Q and W_K are d × d_k, W_V is d × d_v. Row vectors times matrices is the paper's convention.</aside>
+  <aside class="notes">The weights are unchanged from slide 13: changing W_V does not change who is picked, only what arrives. Look at the "it" row of the table: with x it added [0, 0.02, 0.04] to its own z, an echo of its own guess and pronoun number; with values it adds [0, 0, 0]. Every number in z_it now comes from animal and street, the words "it" actually picked. The alive number drops from 0.86 to 0.84, and that's the point, not a loss: 0.02 of the old "alive" was "it" hearing its own guess back. In this toy the matching features and the handed-over features are almost the same; in real models they differ much more, which is why every word gets all three vectors.</aside>
 </section>
 
 <!-- 17 -->
 <section>
   <div class="frame">
-    <p class="kicker">How it works · one word</p>
-    <h2>Score with a dot product, then scale it</h2>
-    <div class="steps" style="grid-template-columns: 44px 1fr 1.25fr">
-      <span class="n">1</span>
-      <div class="w"><strong>Make</strong> a query for word i, and a key and value for every word j.</div>
-      <div class="e">q<sub>i</sub> = <span class="x">x<sub>i</sub></span>W<sub>Q</sub><span class="small" style="margin-left:18px">query: word i's x times W<sub>Q</sub></span><br>k<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>K</sub><span class="small" style="margin-left:18px">key of every word j</span><br>v<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>V</sub><span class="small" style="margin-left:18px">value of every word j</span></div>
-      <span class="n">2</span>
-      <div class="w"><strong>Score</strong>: dot product of query and key, divided by √d<sub>k</sub>, where d<sub>k</sub> is the length of each query and key.</div>
-      <div class="e">e<sub>ij</sub> = q<sub>i</sub> · k<sub>j</sub> / √d<sub>k</sub></div>
-      <span class="n">3</span>
-      <div class="w"><strong>Soften</strong> word i's scores against every word j into weights.</div>
-      <div class="e">a<sub>ij</sub> = exp(e<sub>ij</sub>) / ( exp(e<sub>i1</sub>) + … + exp(e<sub>iT</sub>) )<br><span class="small">softmax: word i's weights add up to 1</span></div>
-      <span class="n">4</span>
-      <div class="w"><strong>Mix</strong> the values.</div>
-      <div class="e key"><span class="h">z<sub>i</sub></span> = a<sub>i1</sub>v<sub>1</sub> + a<sub>i2</sub>v<sub>2</sub> + … + a<sub>iT</sub>v<sub>T</sub></div>
+    <p class="kicker">Three jobs for every word</p>
+    <h2>Query, key, value</h2>
+    <p style="font-size:24px">The last slides gave each word three vectors, each made from its own <span class="x">x</span> with a matrix that every word shares. In a real model these three matrices are <strong>learned</strong>: they start as random numbers and backprop adjusts them, like every weight since Part 1.</p>
+    <div class="qkv panel" style="grid-template-columns: 150px 1fr 1.15fr">
+      <span></span><span class="label">what it is</span><span class="label">in our example</span>
+      <span class="role">q<sub>i</sub> = x<sub>i</sub>W<sub>Q</sub></span><span><strong>query</strong>: what I'm looking for</span><span id="qkv-q"></span>
+      <span class="role">k<sub>j</sub> = x<sub>j</sub>W<sub>K</sub></span><span><strong>key</strong>: what I offer, for matching</span><span id="qkv-k"></span>
+      <span class="role">v<sub>j</sub> = x<sub>j</sub>W<sub>V</sub></span><span><strong>value</strong>: what I hand over if picked</span><span id="qkv-v"></span>
     </div>
-    <p class="small">Part 4 scored with a tiny network (Bahdanau's additive score). The dot product is Luong's: no extra weights, and it turns into one matrix multiply for the whole sentence.</p>
+    <p class="callout" style="font-size:24px">A library: your <strong>query</strong> is what you type in the search box, the <strong>keys</strong> are the catalogue entries it's matched against, and the <strong>values</strong> are the books you take home.</p>
   </div>
-  <aside class="notes">Step 1 is three separate lines: each word's vector x times three different learned matrices (x W means vector times matrix, no symbol). The only dot product on this slide is in step 2: q_i · k_j. Same score–soften–mix. Two changes from Part 4. The score is a dot product, big when query and key point the same way. And it's divided by √d_k, where d_k is how many numbers are in each query and key (64 in the original Transformer). The paper calls this "scaled dot-product attention". The next slide shows why the division is there. Every word does this at the same time, and none of them waits for any other.</aside>
+  <aside class="notes">This slide only names what the last slides built. The interview sentence: "self-attention is attention where the queries, keys and values all come from the same sequence: every position computes a weighted average over every position's values, including its own, with weights from its query against every key." Point at the last column: "it" can have a query that means "looking for a thing that's alive" while its key no longer says "I'm a pronoun", so it no longer matches itself best. The value is a separate choice: the features used to match aren't the ones you want handed over, and W_V lets the layer pick the second set (and, per head later, shrink it to d_v numbers). In the toy the matrices were hand-picked so the numbers read; in a model all three are learned from the loss alone.</aside>
 </section>
 
 <!-- 18 -->
+<section>
+  <div class="frame">
+    <p class="kicker">You've met them before</p>
+    <h2>Part 4 had the same three roles</h2>
+    <table class="plain" style="font-size:23px">
+      <tr><th></th><th>Part 4 · attention</th><th>Part 5 · self-attention</th></tr>
+      <tr><td><strong>query</strong></td><td>W<sub>s</sub> <span class="h">s<sub>t−1</sub></span>: the decoder's memory, “what I need”</td><td class="n">x<sub>i</sub>W<sub>Q</sub></td></tr>
+      <tr><td><strong>key</strong></td><td>W<sub>h</sub> <span class="h">h<sub>j</sub></span>: each encoder memory, “what's here”</td><td class="n">x<sub>j</sub>W<sub>K</sub></td></tr>
+      <tr><td><strong>value</strong></td><td>each <span class="h">h<sub>j</sub></span> itself</td><td class="n">x<sub>j</sub>W<sub>V</sub></td></tr>
+    </table>
+    <p style="font-size:24px">The difference: in Part 4 the query came from one sequence (the decoder) and the keys from another (the encoder). Here all three come from the same sentence.</p>
+    <p class="callout" style="font-size:24px" id="qkv-swap"></p>
+  </div>
+  <aside class="notes">Part 4's score slide wrote the decoder side as W_s s_{t−1}, "what I need", and the encoder side as W_h h_j, "what's here"; its live-numbers slide labelled them q and k, and the values were the h_j themselves. Part 4 wrote matrix times column vector (W_s s); this deck writes row vector times matrix (x W_Q), the Transformer paper's convention. Same idea. One more difference: Part 4 combined query and key with a small network, v · tanh(q + k); self-attention uses a plain dot product, next slide. The swap point: the score is x_i W_Q · x_j W_K, which is x_i W_Q W_Kᵀ x_jᵀ; swapping i and j gives x_j W_Q W_Kᵀ x_iᵀ, a different number unless W_Q W_Kᵀ is symmetric. Why two matrices W_Q, W_K and not one d × d matrix M = W_Q W_Kᵀ? The score is the same either way, but the two matrices hold 2·d·d_k numbers against d² for M, fewer only when d_k is less than d/2: in the original Transformer, 2·512·64 = 65,536 against 512² = 262,144. And the split is what lets each head score in its own small space of d_k numbers. Shapes, for the whiteboard: x_i has d numbers (512 in the original Transformer); W_Q and W_K are d × d_k, W_V is d × d_v.</aside>
+</section>
+
+<!-- 19 -->
+<section>
+  <div class="frame" style="gap:18px">
+    <p class="kicker">How it works · one word</p>
+    <h2>The same four steps, with q, k and v</h2>
+    <div class="steps" style="grid-template-columns: 44px 1fr 1.15fr;gap:10px 22px">
+      <span class="n" style="border-style:dashed">0</span>
+      <div class="w"><strong>First</strong>, make a query for word i, and a key and value for every word j.</div>
+      <div class="e">q<sub>i</sub> = <span class="x">x<sub>i</sub></span>W<sub>Q</sub>,&emsp;k<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>K</sub>,&emsp;v<sub>j</sub> = <span class="x">x<sub>j</sub></span>W<sub>V</sub></div>
+      <span class="n">1</span>
+      <div class="w"><strong>Score</strong> how well word j matches word i: dot product of q<sub>i</sub> and k<sub>j</sub>, divided by √d<sub>k</sub> (d<sub>k</sub>: the length of each query and key).</div>
+      <div class="e">e<sub>ij</sub> = q<sub>i</sub> · k<sub>j</sub> / √d<sub>k</sub></div>
+      <span class="n">2</span>
+      <div class="w"><strong>Make</strong> every score positive, with exp.</div>
+      <div class="e">exp(e<sub>ij</sub>)</div>
+      <span class="n">3</span>
+      <div class="w"><strong>Divide</strong> by the total over every word k, so word i's weights add up to 1.</div>
+      <div class="e">a<sub>ij</sub> = exp(e<sub>ij</sub>) / Σ<sub>k</sub> exp(e<sub>ik</sub>)</div>
+      <span class="n">4</span>
+      <div class="w"><strong>Mix</strong>: scale each word's <em>value</em> by its weight, and add them up over every word j.</div>
+      <div class="e key"><span class="h">z<sub>i</sub></span> = Σ<sub>j</sub> a<sub>ij</sub> v<sub>j</sub></div>
+    </div>
+    <p class="callout" style="font-size:23px;max-width:none">Same four steps as the first try, with three changes: step 1 scores q with k instead of x with x, and divides by √d<sub>k</sub>; step 4 mixes v instead of x.</p>
+  </div>
+  <aside class="notes">Line them up with the first try's slide: step 0 is new (x W means vector times matrix, no symbol), and steps 1 to 4 are the same recipe. Steps 2 and 3 together are still softmax. The only dot product on this slide is in step 1: q_i · k_j, big when query and key point the same way. The division by √d_k is the other change; d_k is how many numbers are in each query and key (3 in our toy, 64 in the original Transformer). The paper calls this "scaled dot-product attention". The next slide shows why the division is there. Part 4 scored with a tiny network (Bahdanau's additive score); the dot product is Luong's: no extra weights, and for the whole sentence it turns into one matrix multiply. Every word does this at the same time, and none of them waits for any other.</aside>
+</section>
+
+<!-- 20 -->
 <section>
   <div class="frame" style="gap:12px">
     <p class="kicker">Try it · the √d<sub>k</sub></p>
@@ -627,157 +671,146 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     <p style="font-size:24px">One query, six keys, every number drawn at random with average 0 and spread 1, as at the start of training. Change d<sub>k</sub>:</p>
     <div class="ctl-row" id="sc-d"><span class="label">d<sub>k</sub> (length of q and k) =</span></div>
     <div class="cols" style="gap:30px">
-      <div class="panel" style="gap:8px"><span class="label">softmax(q · k)</span><div id="sc-raw" style="display:grid;gap:6px"></div><span class="small" id="sc-raw-m"></span></div>
-      <div class="panel" style="gap:8px"><span class="label">softmax(q · k / √d<sub>k</sub>)</span><div id="sc-sc" style="display:grid;gap:6px"></div><span class="small" id="sc-sc-m"></span></div>
+      <div class="panel" style="gap:8px"><span class="label">softmax(q · k)</span><div id="sc-raw" style="display:grid;gap:6px"></div><span class="small" id="sc-raw-m" style="white-space:nowrap"></span></div>
+      <div class="panel" style="gap:8px"><span class="label">softmax(q · k / √d<sub>k</sub>)</span><div id="sc-sc" style="display:grid;gap:6px"></div><span class="small" id="sc-sc-m" style="white-space:nowrap"></span></div>
     </div>
-    <p class="callout" style="font-size:22px">A dot product adds up d<sub>k</sub> products, each of typical size 1, so its typical size is √d<sub>k</sub>. Unscaled, one weight hits ~100%: softmax is <strong>saturated</strong>, and blame barely flows back.</p>
+    <p class="callout" style="font-size:22px;max-width:none">A dot product adds up d<sub>k</sub> products, each of typical size 1, so its typical size (root-mean-square) is √d<sub>k</sub>. Unscaled, one weight hits ~100%: softmax is <strong>saturated</strong>, and blame barely flows back.</p>
   </div>
   <aside class="notes">Try d_k = 4 first: both sides look alike. Then 64, the size each head uses in the original Transformer: the left side puts nearly everything on one key, while the right side still spreads. At 1024 the left side is a hard pick. Why it matters for training: when softmax is that sharp, nudging any score barely changes the weights, so the gradients are tiny. That's the vanishing blame from Part 2 again, in a new place. Where the expected size comes from: each product q_c·k_c of two independent spread-1 numbers has average 0 and variance 1; a score adds d_k of them, so its variance is d_k and its typical size is √d_k (8 at d_k = 64). The caption's number is measured from only 6 scores, so it wanders around that, often by 30%; click "New random vectors" to show it. Dividing by √d_k brings the spread of the scores back to about 1, whatever d_k is. The vectors here are random, as at the start of training.</aside>
 </section>
 
-<!-- 19 -->
-<section>
-  <div class="frame" style="gap:14px">
-    <p class="kicker">Worked example</p>
-    <h2>One row, by hand</h2>
-    <p style="font-size:23px">Three words, d = d<sub>k</sub> = d<sub>v</sub> = 2. The word vectors x and the matrices W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> are hand-picked small numbers so the arithmetic is easy; a trained model learns them. Follow the word <span class="x mono">sat</span> asking the sentence:</p>
-    <div class="cols" style="grid-template-columns: 1.15fr 1fr; gap:36px; align-items:start">
-      <table class="plain hand" id="hand-tab"></table>
-      <div style="display:grid;gap:12px">
-        <div class="eq" id="hand-mats" style="font-size:19px;line-height:1.6"></div>
-        <div class="eq" id="hand-z" style="font-size:19px;line-height:1.6"></div>
-      </div>
-    </div>
-    <p class="small">The other two rows work the same way, with their own query. All three can be done at the same time. <span class="h">z<sub>sat</sub></span> is what sat gathered from the sentence; the next slide shows where it goes.</p>
-  </div>
-  <aside class="notes">Good to do at the whiteboard: copy x and the three matrices, then ask someone to compute q for "sat", the three scores, and the weights, before revealing them. Key point to check: the query is sat's, but the keys and values are everyone's, including sat's own. The output z_sat is a weighted average of the three value vectors, so it lands between them, closest to the value with the biggest weight.</aside>
-</section>
-
-<!-- 20 -->
-<section>
-  <div class="frame" style="gap:14px">
-    <p class="kicker">Worked example, continued</p>
-    <h2>What z<sub>sat</sub> is for</h2>
-    <p style="font-size:23px"><span class="x">x<sub>sat</sub></span> says what “sat” means in any sentence; <span class="h">z<sub>sat</sub></span> is what it gathered from <em>this</em> one (<span id="use-mix"></span>). The rest of the model works on the two combined:</p>
-    <div class="steps" style="grid-template-columns: 44px 1fr 1.05fr">
-      <span class="n">1</span>
-      <div class="w"><strong>Add back.</strong> Keep what sat was, add what it gathered: the <strong>skip connection</strong>. Needs d<sub>v</sub> = d (here 2).</div>
-      <div class="e key" id="use-add"></div>
-      <span class="n">2</span>
-      <div class="w"><strong>Tidy, then think.</strong> <strong>norm</strong> (layer normalisation) rescales to a steady size; <strong>FFN</strong> (feed-forward network, two layers) works on sat alone.</div>
-      <div class="e">a = norm( <span class="x">x<sub>sat</sub></span> + <span class="h">z<sub>sat</sub></span> )<br>x′<sub>sat</sub> = norm( a + FFN(a) )</div>
-      <span class="n">3</span>
-      <div class="w"><strong>Next block.</strong> x′<sub>sat</sub> is sat's input there, with new W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>: it asks with a vector that already holds some of “cat”.</div>
-      <div class="e">q′<sub>sat</sub> = x′<sub>sat</sub>W′<sub>Q</sub>, k′<sub>sat</sub> = x′<sub>sat</sub>W′<sub>K</sub>, …</div>
-      <span class="n">4</span>
-      <div class="w"><strong>The task.</strong> After the last block (6 in the original), each word's vector feeds the prediction: next word (GPT) or a hidden word (BERT, Part 7).</div>
-      <div class="e"><span class="x">x<sub>sat</sub></span> → block 1 → block 2 → … → block N → guess</div>
-    </div>
-    <p class="small">Only step 1 has numbers: this toy has no norm or FFN weights. Steps 1 and 2 together are one Transformer block, drawn on slide 30.</p>
-  </div>
-  <aside class="notes">This answers "what do we do with z?". z is not an answer on its own; it is a context update for one word. Step 1: the skip connection adds it to the word's own vector instead of replacing it, so the word keeps its own meaning and z only adds context. That is also why d_v has to equal d; with several heads, W_O brings the glued heads back to length d (slide 27). Step 2: norm and FFN are only named here; slide 30 draws the whole block and Part 6 opens it up. Step 3 is the key idea of stacking: in block 2, "sat" asks its question with a vector that already knows about "cat", so it can ask a better question, and each block gathers more context. Step 4: only at the very end does a word's vector get turned into a prediction.</aside>
-</section>
-
 <!-- 21 -->
 <section>
-  <div class="frame" style="gap:16px">
-    <p class="kicker">What it's for</p>
-    <h2>What does “it” refer to?</h2>
-    <svg viewBox="0 0 1180 250" role="img" aria-label="Attention from the word 'it' to every word in the sentence; changing the last word from tired to wide moves the weight from animal to street" style="width:100%">
-      <g id="it-arcs"></g>
-    </svg>
-    <div class="ctl-row"><span class="label">last word</span><button type="button" id="it-tired" aria-pressed="true">tired</button><button type="button" id="it-wide" aria-pressed="false">wide</button></div>
-    <p class="stepper-cap" id="it-cap"></p>
-    <p class="small">Weights are illustrative, not from a trained model. Trained models do show patterns like this.</p>
+  <div class="frame">
+    <p class="kicker">The real recipe · ÷√d<sub>k</sub> · step 1</p>
+    <h2>Divide the scores by √3</h2>
+    <p style="font-size:24px">Back to “it”, with the full recipe. Slide 13 skipped one thing: q<sub>it</sub> and each key have 3 numbers, so d<sub>k</sub> = 3, and every score is divided by <span id="sc3-root"></span>.</p>
+    <table class="plain step" id="sc3-div" style="font-size:24px"></table>
+    <p class="callout" style="font-size:24px">Why: a dot product adds up d<sub>k</sub> products, so it grows with d<sub>k</sub>. Dividing by √d<sub>k</sub> keeps scores near size 1, so softmax doesn't snap to one word (the d<sub>k</sub> demo showed this).</p>
   </div>
-  <aside class="notes">A well-known example from Google's 2017 blog post introducing the Transformer. Change one word at the far end of the sentence and "it" should switch from "animal" to "street": animals get tired, streets are wide. An RNN reading left to right has already processed "it" by the time it reads "tired"; in a one-direction RNN, the memory at "it" can't use that. In self-attention the "it" position sees the whole sentence, the words after it included, in one hop. The weights shown are illustrative, not from a trained model. Trained Transformers do have heads that behave much like this.</aside>
+  <aside class="notes">Same q_it and keys as slide 13, same scores 4, 2 and 1; only the division is new. With d_k = 3 the division is small; with d_k = 64, as in the original Transformer, it is a division by 8, and that's where it matters. Do one row aloud: 4 / 1.73 = 2.31.</aside>
 </section>
 
 <!-- 22 -->
 <section>
   <div class="frame">
-    <p class="kicker">All words at once</p>
-    <h2>The whole sentence is a few matrix multiplies</h2>
-    <p style="font-size:24px">Stack the T word vectors as rows of <span class="x">X</span>. Three multiplies make every word's Q, K and V; two more (Q K<sup>⊤</sup>, then the weights times V) do every row's score and mix together:</p>
-    <div class="eq" style="font-size:30px;padding:18px 26px">Z = softmax( Q K<sup>⊤</sup> / √d<sub>k</sub> ) V   with  Q = <span class="x">X</span>W<sub>Q</sub>, K = <span class="x">X</span>W<sub>K</sub>, V = <span class="x">X</span>W<sub>V</sub></div>
-    <table class="plain" style="font-size:22px">
-      <tr><th>thing</th><th>shape</th><th>what it holds</th></tr>
-      <tr><td><span class="x">X</span></td><td class="n">T × d</td><td>T words, one per row, each d numbers long</td></tr>
-      <tr><td>Q, K</td><td class="n">T × d<sub>k</sub></td><td>a query and a key per word, d<sub>k</sub> numbers each (same length, to take q · k)</td></tr>
-      <tr><td>Q K<sup>⊤</sup></td><td class="n">T × T</td><td>every q · k at once (K<sup>⊤</sup>: K's rows as columns): the attention map before softmax</td></tr>
-      <tr><td>V, Z</td><td class="n">T × d<sub>v</sub></td><td>a value per word, d<sub>v</sub> numbers each; a new vector z per word</td></tr>
-    </table>
-    <p class="callout">No step waits for another. A GPU does this in one go: that's the speed-up over the RNN.</p>
+    <p class="kicker">The real recipe · ÷√d<sub>k</sub> · steps 2 and 3</p>
+    <h2>Make positive and divide, again</h2>
+    <p style="font-size:24px" id="sc3-lede"></p>
+    <table class="plain step" id="sc3-soft" style="font-size:22px"></table>
+    <p class="callout" style="font-size:24px;max-width:none" id="sc3-cmp"></p>
+    <p class="small">With hand-picked matrices this makes “it” pick less sharply. A trained model learns its matrices with the division in place, so it learns bigger scores where it needs a sharp pick.</p>
   </div>
-  <aside class="notes">This is the equation from "Attention Is All You Need", worth writing from memory. Softmax is applied row by row. The T × T matrix is why long inputs are expensive: double the length, four times the scores. That's the same cost as Part 4's T × T′ map, now inside the encoder too. Ask: "how many learned weights does one self-attention layer have, and does it depend on T?" Three matrices, d × d_k each; no, it doesn't depend on T. That's why it handles any length, like the parameter sharing in Part 1.</aside>
+  <aside class="notes">Same two steps as slides 7 and 8: exp each scaled score, add them up, divide by the total. Compare with the last column, slide 13's weights without the division: smaller scores mean smaller gaps between them, and exp turns smaller gaps into more even weights. animal still wins clearly. Our matrices were chosen before we divided by √3, so here the division just softens; a trained W_Q and W_K would have been learned with it and would come out bigger to compensate where a sharp choice helps.</aside>
 </section>
 
 <!-- 23 -->
 <section>
-  <div class="frame center">
-    <p class="kicker">A little history</p>
-    <h2>From a side idea to the whole model</h2>
-    <table class="plain" style="font-size:22px">
-      <tr><td class="n">2016</td><td><span class="h">Jianpeng Cheng, Li Dong and Mirella Lapata</span>, <a class="x" href="https://arxiv.org/abs/1601.06733" target="_blank" rel="noopener">Long Short-Term Memory-Networks for Machine Reading</a>: an LSTM that attends to its own earlier words (“intra-attention”). <span class="h">Ankur Parikh and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1606.01933" target="_blank" rel="noopener">A Decomposable Attention Model for Natural Language Inference</a>: attention with no RNN at all.</td></tr>
-      <tr><td class="n">2017</td><td><span class="h">Zhouhan Lin and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1703.03130" target="_blank" rel="noopener">A Structured Self-Attentive Sentence Embedding</a>: several attention “hops” over one sentence.</td></tr>
-      <tr><td class="n">2017</td><td><span class="h">Ashish Vaswani and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>: scaled dot-product self-attention, multiple heads, position encodings. The Transformer.</td></tr>
-      <tr><td class="n">2018</td><td><span class="h">Jacob Devlin and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1810.04805" target="_blank" rel="noopener">BERT</a>: a Transformer encoder, pre-trained on lots of text. <span class="h">Alec Radford and colleagues</span> (OpenAI), the first GPT: a Transformer decoder.</td></tr>
-    </table>
-    <p class="small"><span class="h">Orange</span>: authors · <span class="x">blue</span>: paper titles (click to open on arXiv)</p>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">The real recipe · ÷√d<sub>k</sub> · step 4</p>
+    <h2>Mix the values, with the new weights</h2>
+    <p style="font-size:24px">Same values as slide 15; only the weights changed. <span class="h">z<sub>it</sub></span> = Σ<sub>j</sub> a<sub>it,j</sub> v<sub>j</sub>, column by column:</p>
+    <table class="plain step colsum" id="sc3-mix"></table>
+    <p class="callout" style="font-size:23px;max-width:none" id="sc3-echo"></p>
+    <p style="font-size:22px;max-width:none"><strong>The goal, met:</strong> z<sub>it</sub> reads like animal's value, a thing that's alive, so a decoder reading it can pick <em>il</em>. <span style="color:var(--muted)"><strong>Keep this z<sub>it</sub>:</strong> later slides use it.</span></p>
   </div>
-  <aside class="notes">Self-attention existed before 2017, mostly bolted onto an RNN. The Transformer paper's claim was in the title: you don't need the RNN at all. Its full title is worth knowing for an interview. BERT's full title is "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding". The first GPT paper is "Improving Language Understanding by Generative Pre-Training" (2018), published by OpenAI, not on arXiv. BERT uses the encoder half, GPT the decoder half; we'll see the difference on the masking slide.</aside>
+  <aside class="notes">This is the real recipe end to end, on our toy: query, keys, scores divided by √d_k, softmax, mix the values. With the softer weights "it" gives itself more attention, so the echo from slide 16 would be bigger here if we mixed x; mixing values, it is still zero, because v_it = [0, 0, 0]. That is where values earn their keep. This z_it is the one the skip-connection slide picks up.</aside>
 </section>
 
 <!-- 24 -->
 <section>
-  <div class="frame" style="gap:16px">
-    <p class="kicker">The catch</p>
-    <h2>Shuffle the words, get the same answers</h2>
-    <p style="font-size:23px">A tiny self-attention layer, run on two sentences. Each word starts as 8 random numbers (its vector <span class="x">x</span>), and W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> are random too: nothing is trained. Each row is that word's output <span class="h">z</span>, its 8 numbers rounded to 2 decimals. Compare <span class="mono">dog</span> on the left with <span class="mono">dog</span> on the right.</p>
-    <div class="ord" id="ord1"></div>
-    <p class="small" style="margin:0">Cell colour is only a guide: rust positive, blue negative, stronger colour = bigger number.</p>
-    <p class="verdict" id="ord1-v"></p>
-    <p class="callout" style="font-size:25px">Nothing in score, soften or mix knows <em>where</em> a word is. Self-attention sees a <strong>bag of words</strong>: who bit whom is lost.</p>
+  <div class="frame" style="gap:12px">
+    <p class="kicker">All words at once</p>
+    <h2>The whole sentence is a few matrix multiplies</h2>
+    <p style="font-size:22px;max-width:none">Stack our three words' <span class="x">x</span> vectors as the rows of one matrix <span class="x">X</span>. Then every word's q, k, v, scores, weights and z come out together, one row per word. The <span class="x mono">it</span> row of each is the one we worked by hand.</p>
+    <div class="mats" id="mm-qkv"></div>
+    <div class="mats" id="mm-mix"></div>
+    <div class="eq" style="font-size:20px;padding:8px 18px;align-self:start">Z = softmax( Q K<sup>⊤</sup> / √d<sub>k</sub> ) V   with  Q = <span class="x">X</span>W<sub>Q</sub>, K = <span class="x">X</span>W<sub>K</sub>, V = <span class="x">X</span>W<sub>V</sub></div>
+    <p class="small" style="font-size:19px;max-width:none">K<sup>⊤</sup> is K with its rows turned into columns, so row i, column j of Q K<sup>⊤</sup> is q<sub>i</sub> · k<sub>j</sub>. Sizes are rows × columns: T = number of words (3 here), d = numbers per <span class="x">x</span> (3), d<sub>k</sub> = numbers per query and key, d<sub>v</sub> = per value (3 each, our choice).</p>
+    <p class="callout" style="font-size:22px;max-width:none">No row waits for another. A GPU does them all in one go: that's the speed-up over the RNN.</p>
   </div>
-  <aside class="notes">This is the price of dropping the RNN. An RNN knows order for free: it reads in order. Self-attention treats the input as a set: each word's score with "dog" is the same wherever "dog" sits, so the outputs are the same, just listed in a different order. The technical name is "permutation equivariant": shuffle the input, and the output is shuffled the same way, nothing more. The strips are real computations, done in the browser with random weights; the point holds for any weights.</aside>
+  <aside class="notes">Point at the "it" rows: q_it = [2, 2, 0] from slide 11, its scores 2.31, 1.15, 0.58 from slide 21, its weights from slide 22, z_it from slide 23. The other rows are the same recipe for animal and street, done at the same time. In this toy only "it" has a query (W_Q's only non-zero row is the pronoun row), so animal's and street's scores are all 0 and their weights are an even third each; a trained W_Q gives every word a query. This is the equation from "Attention Is All You Need", worth writing from memory. Softmax is applied row by row. The T × T matrix is why long inputs are expensive: double the length, four times the scores. That's the same cost as Part 4's T × T′ map, now inside the encoder too. Ask: "how many learned weights does one self-attention layer have, and does it depend on T?" Three matrices, d × d_k each; no, it doesn't depend on T. That's why it handles any length, like the parameter sharing in Part 1.</aside>
 </section>
 
 <!-- 25 -->
 <section>
-  <div class="frame" style="gap:14px">
-    <p class="kicker">The fix</p>
-    <h2>Add a position to each word</h2>
-    <div class="cols" style="grid-template-columns: 1fr 1.1fr; gap:36px; align-items:start">
-      <div style="display:grid;gap:12px;font-size:23px">
-        <p>Before the first layer, add a <strong>position vector</strong> to each word vector: <span class="mono"><span class="x">x<sub>i</sub></span> + p<sub>i</sub></span>. Now “dog” at position 1 and “dog” at position 3 are different inputs.</p>
-        <p>The original Transformer used fixed waves: each column is a sine or cosine of the position, slower and slower to the right. Many later models (BERT, GPT) <strong>learn</strong> p<sub>i</sub> instead.</p>
-      </div>
-      <div style="display:grid;gap:6px">
-        <span class="label">p<sub>i</sub>: one row per position (0–23), d = 32 columns</span>
-        <div class="pe" id="pe-grid" aria-label="Sinusoidal position vectors: one row per position, columns are sine and cosine waves of decreasing frequency"></div>
-      </div>
-    </div>
-    <div class="ord" id="ord2"></div>
-    <div class="ctl-row"><button type="button" id="ord2-pos" aria-pressed="true">Positions added</button><p class="verdict" id="ord2-v" style="margin:0"></p></div>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">All words at once · in code</p>
+    <h2>The same equation is four lines of code</h2>
+    <p style="font-size:23px;max-width:none">In PyTorch, <span class="mono">@</span> is matrix multiply and <span class="mono">K.T</span> is K<sup>⊤</sup>. Each line makes one or two of the last slide's matrices, and does one or two of the four steps:</p>
+    <pre class="cmd" style="font-size:22px">Q, K, V = X @ W_Q, X @ W_K, X @ W_V      <span class="c"># step 0: (T, d_k), (T, d_k), (T, d_v)</span>
+scores  = Q @ K.T / math.sqrt(d_k)       <span class="c"># step 1, score: (T, T)</span>
+weights = scores.softmax(-1)             <span class="c"># steps 2–3, make positive, divide: (T, T)</span>
+Z       = weights @ V                    <span class="c"># step 4, mix: (T, d_v)</span></pre>
+    <p style="font-size:23px;max-width:none"><span class="mono">softmax(-1)</span> works along each row, so each word's weights add up to 1. Run on our toy's <span class="x">X</span> and the matrices from slides 11–15, the “it” row of Z is the z<sub>it</sub> from slide 23.</p>
+    <p class="callout" style="font-size:23px;max-width:none">These lines, with heads and a batch of sentences added, are <span class="mono">MultiHeadAttention.forward</span> in Part 6's <span class="mono">demo/transformer.py</span>.</p>
   </div>
-  <aside class="notes">The formula, if asked: p(pos, 2i) = sin(pos / 10000^(2i/d)), p(pos, 2i+1) = cos(pos / 10000^(2i/d)). The left columns change fast, like the seconds hand of a clock; the right columns change slowly, like the hour hand. Together they give every position a unique pattern. The paper chose waves partly because a fixed offset (k positions later) is a simple rotation of the pattern, which may make relative positions easy to learn. Toggle the button: with positions, "dog" gets a different output in each sentence, so the model can tell who bit whom. Newer models often use other schemes that encode relative distance directly; that's beyond this course.</aside>
+  <aside class="notes">This closes the loop from the equation to what you will actually write. Read each line against the last slide's matrices: X is T × d, so X @ W_Q is T × d_k; Q @ K.T is T × T, one row per word asking, one column per word answered; softmax(-1) means along the last dimension, the row; weights @ V is T × d_v, one new vector per word. Nothing loops over words: that's the "no step waits" from the last slide, in code. In demo/transformer.py the same four lines appear with two changes: Q, K and V are split into heads (view and transpose give shape n × heads × T × d_k, n sentences at once), and a masked_fill line sits between scores and softmax; the masking slide explains it.</aside>
 </section>
 
 <!-- 26 -->
 <section>
-  <div class="frame">
-    <p class="kicker">One head isn't enough</p>
-    <h2>One head gives one blended answer</h2>
-    <p style="font-size:24px">Everything so far, one W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> and one row of weights per word, is called <strong>one attention head</strong>.</p>
-    <p style="font-size:24px">In “the cat sat on the mat”, the word <span class="x mono">sat</span> wants two things: <strong>who</strong> sat (cat) and <strong>where</strong> (mat).</p>
-    <div class="blur panel" id="blur"></div>
-    <p class="small">The value of a word is its v = xW<sub>V</sub>, what it hands over when picked. Here v<sub>cat</sub> and v<sub>mat</sub> are random stand-ins, 8 numbers each. The 50/50 split is hand-picked: any split blurs, and 50/50 shows it most clearly.</p>
-    <p class="callout" style="font-size:25px">One row of weights can spread over many words, but it hands back one average. Half “cat” plus half “mat” is a blur: a bit of both and all of neither.</p>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">The catch</p>
+    <h2>Shuffle the words, get the same answers</h2>
+    <p style="font-size:23px;max-width:none">“The animal didn't cross the street” and “the street didn't cross the animal” mean different things. Run a tiny self-attention layer on their three content words. Each word starts as 8 random numbers (its <span class="x">x</span>), and W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> are random too: nothing is trained. Each row is that word's output <span class="h">z</span>, rounded. Compare <span class="mono">animal</span> on the left with <span class="mono">animal</span> on the right.</p>
+    <div class="ord" id="ord1"></div>
+    <p class="small" style="margin:0;max-width:none">Why random numbers: our 3-number toy has no vector for “cross”, and the point holds for any vectors. Cell colour is only a guide: rust positive, blue negative.</p>
+    <p class="verdict" id="ord1-v"></p>
+    <p class="callout" style="font-size:25px">Nothing in score, soften or mix knows <em>where</em> a word is. Without positions, self-attention can't tell order: shuffle the words, and the outputs are shuffled the same way, nothing more.</p>
   </div>
-  <aside class="notes">A word often needs several kinds of context at once: its subject, its object, the word next to it, the noun a pronoun points to. One softmax mixes them all into one average, and averaging two different value vectors loses what each one said. Two separate heads, each free to look at one thing, keep "who" and "where" apart, and the next layer gets both. The vectors are random stand-ins for the value vectors of cat and mat.</aside>
+  <aside class="notes">This is the price of dropping the RNN. An RNN knows order for free: it reads in order. Self-attention treats the input as a set: the score between "animal" and "street" is the same wherever each one sits, so every word's output is the same, just listed in a different order. The technical name is "permutation equivariant": shuffle the input, and the output is shuffled the same way, nothing more. The strips are real computations, done in the browser with random weights; the point holds for any weights and any word vectors, which is why we can leave the hand-made toy here.</aside>
 </section>
 
 <!-- 27 -->
+<section>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">The fix</p>
+    <h2>Add a position to each word</h2>
+    <div class="cols" style="grid-template-columns: 1fr 1.1fr; gap:36px; align-items:start">
+      <div style="display:grid;gap:14px;font-size:24px">
+        <p>Before the first layer, add a <strong>position vector</strong> to each word vector: <span class="mono"><span class="x">x<sub>i</sub></span> + p<sub>i</sub></span>, where i is the word's position, counting from 0. Now “animal” at position 0 and “animal” at position 2 are different inputs.</p>
+        <p>The original Transformer used fixed waves: each column is a sine or cosine of the position, slower and slower to the right. Many later models (BERT, GPT) <strong>learn</strong> p<sub>i</sub> instead.</p>
+      </div>
+      <div style="display:grid;gap:6px">
+        <span class="label">p<sub>i</sub>: one row per position, 0 at the top to 23</span>
+        <div class="pe" id="pe-grid" aria-label="Sinusoidal position vectors: one row per position from 0 to 23, 32 columns of sine and cosine waves of decreasing frequency"></div>
+        <span class="small">Drawn with 32 columns so the waves show; the demo next uses 8.</span>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">The formula, if asked: p(pos, 2i) = sin(pos / 10000^(2i/d)), p(pos, 2i+1) = cos(pos / 10000^(2i/d)). The left columns change fast, like the seconds hand of a clock; the right columns change slowly, like the hour hand. Together they give every position a unique pattern. The paper chose waves partly because a fixed offset (k positions later) is a simple rotation of the pattern, which may make relative positions easy to learn. Newer models often use other schemes that encode relative distance directly; that's beyond this course.</aside>
+</section>
+
+<!-- 28 -->
+<section>
+  <div class="frame" style="gap:14px">
+    <p class="kicker">The fix · in numbers</p>
+    <h2>Run it again, with positions</h2>
+    <p style="font-size:23px;max-width:none">The same layer and the same random word vectors. Before scoring, the word at position i (0, 1 or 2) gets p<sub>i</sub> added: 8 numbers, two per wave. Each wave first divides i by a number, 1, 10, 100 or 1000, then takes the sine and the cosine of the result. Dividing by more gives a slower wave, so the right-hand columns barely change from one position to the next.</p>
+    <table class="plain step" id="pe-rows" style="font-size:19px"></table>
+    <p class="small" style="margin:0;max-width:none">For example, p<sub>1</sub>'s first number is sin(1) = 0.84, and its third is sin(1 ÷ 10) = sin(0.1) = 0.10. Angles are in radians.</p>
+    <div class="ord" id="ord2"></div>
+    <div class="ctl-row"><button type="button" id="ord2-pos" aria-pressed="true">Positions added</button><p class="verdict" id="ord2-v" style="margin:0"></p></div>
+  </div>
+  <aside class="notes">Read the table: position 0 is all sines of 0 and cosines of 0, so 0 and 1 alternating; positions 1 and 2 differ mostly in the left columns, the fast waves. The divisors 1, 10, 100, 1000 are 10000^(2k/d) with d = 8 and k = 0..3, the formula from slide 27's notes. "animal" gets p_0 in the first sentence and p_2 in the second, so its input differs, and so does its output. Toggle the button to compare with no positions: back to identical. With positions, the model can tell who crossed whom.</aside>
+</section>
+
+<!-- 29 -->
+<section>
+  <div class="frame">
+    <p class="kicker">One head isn't enough</p>
+    <h2>One head gives one blended answer</h2>
+    <p style="font-size:24px;max-width:none">Everything so far, one W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> and one row of weights per word, is called <strong>one attention head</strong>.</p>
+    <p style="font-size:24px;max-width:none">In “the animal didn't cross the street”, the word <span class="x mono">cross</span> wants two things: <strong>who</strong> crossed (animal) and <strong>what</strong> was crossed (street). Their values, from slide 15:</p>
+    <table class="plain step" id="head-blur" style="font-size:22px"></table>
+    <p class="small" style="max-width:none">“cross” has no toy vector, but it doesn't need one here: only the values it mixes matter. The 50/50 split is hand-picked.</p>
+    <p class="callout" style="font-size:24px;max-width:none">The real limit: one head has one query, so one set of weights per word, so one mixture. When a word needs two different words, it gets back an average of both.</p>
+  </div>
+  <aside class="notes">A word often needs several kinds of context at once: its subject, its object, the word next to it, the noun a pronoun points to. A verb like "cross" wants both who did it and what it was done to. One head has one query per word, so one row of weights; spread it over two words and step 4 averages their values. Here half animal plus half street is [1, 0.5, 0]: "a thing, sometimes alive", which is neither the animal nor the street. Two separate heads, each with its own query, can each put its weight on one word, and gluing their outputs end to end keeps both: who, then what, 6 numbers. The values are the toy's own from slide 15.</aside>
+</section>
+
+<!-- 30 -->
 <section>
   <div class="frame">
     <p class="kicker">Multi-head attention</p>
@@ -801,7 +834,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">The heads don't share weights, so each learns its own idea of what to look for. Because each head works with d/H numbers, eight heads of 64 cost about the same as one head of 512: you get eight different ways of looking for the same price. W_O is d × d; it lets the next layer use any combination of what the heads found. [a ; b] means glue end to end, as in Part 4. Nobody assigns jobs to heads: like Part 4's attention, they're learned from the loss alone. Also, d_k = 64 is the d_k from the √d_k slide.</aside>
 </section>
 
-<!-- 28 -->
+<!-- 31 -->
 <section>
   <div class="frame" style="gap:14px">
     <p class="kicker">Try it · heads</p>
@@ -813,10 +846,10 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     <p class="small" style="max-width:none">Click a word to see where it looks. Weights are illustrative, in the style of what probing trained models finds.</p>
     <p class="stepper-cap" id="hd-cap"></p>
   </div>
-  <aside class="notes">Three patterns that people have found in trained Transformers: heads that look at the previous word, heads that link a word to the one it depends on grammatically (a verb to its subject), and heads that link a pronoun to the noun it refers to. A good paper on this is Clark et al. (2019), "What Does BERT Look At?". Try "sat" in each head, then "it". Caveat: real heads are messier than this, and many don't have a clean job.</aside>
+  <aside class="notes">Three patterns that people have found in trained Transformers: heads that look at the previous word, heads that link a word to the one it depends on grammatically (a verb to its subject), and heads that link a pronoun to the noun it refers to. A good paper on this is Clark et al. (2019), "What Does BERT Look At?". Try "cross" in each head, then "it" in head 2. Caveat: real heads are messier than this, and many don't have a clean job.</aside>
 </section>
 
-<!-- 29 -->
+<!-- 32 -->
 <section>
   <div class="frame" style="gap:14px">
     <p class="kicker">Writing, not just reading</p>
@@ -825,71 +858,154 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
       <div class="amap" id="mask-map" aria-label="Masked attention map: each word may only look at itself and the words before it; the upper triangle is blocked"></div>
       <div style="display:grid;gap:14px;font-size:23px">
         <p>A model that <strong>writes</strong>, one word at a time, learns by guessing each next word, all positions at once.</p>
-        <p>If “cat” could look ahead at “sat”, guessing “sat” would be trivial. So before softmax, every score for a <strong>later</strong> word is set to −∞: its weight becomes exactly 0.</p>
-        <p>This is <strong>masked</strong> self-attention: the decoder of the original Transformer, and the whole of GPT.</p>
+        <p>If “didn't” could look ahead at “cross”, guessing “cross” would be trivial. So before softmax, every score for a <strong>later</strong> word is set to −∞: its weight becomes exactly 0.</p>
+        <p>This is <strong>masked</strong> self-attention: the decoder of the original Transformer, and the whole of GPT. In slide 25's code it is one more line, before softmax:</p>
+        <pre class="cmd" style="font-size:18px">scores = scores.masked_fill(~allowed, float("-inf"))</pre>
         <p class="small">Weights in the map are illustrative.</p>
       </div>
     </div>
   </div>
-  <aside class="notes">This is teacher forcing from Part 3, done in parallel. The RNN decoder never saw the future because it hadn't computed it yet. A Transformer sees the whole target sentence at once during training, so the mask is what keeps it honest. When generating, it still writes one word at a time, feeding each word back in, as in Part 3. An encoder like BERT's has no mask: every word sees both sides, which is what "bidirectional" means in its title. Weights shown are illustrative.</aside>
+  <aside class="notes">This is teacher forcing from Part 3, done in parallel. The RNN decoder never saw the future because it hadn't computed it yet. A Transformer sees the whole target sentence at once during training, so the mask is what keeps it honest. When generating, it still writes one word at a time, feeding each word back in, as in Part 3. An encoder like BERT's has no mask: every word sees both sides, which is what "bidirectional" means in its title. In the code line, allowed is a T × T table of True/False, True where looking is allowed (on and below the diagonal); ~ flips it, so masked_fill writes −∞ into every later word's score. demo/transformer.py does exactly this. Weights shown are illustrative.</aside>
 </section>
 
-<!-- 30 -->
+<!-- 33 -->
 <section>
-  <div class="frame">
+  <div class="frame" style="gap:14px">
+    <p class="kicker">Stacking · back to z<sub>it</sub></p>
+    <h2>Layer 2 needs a vector for “it”: which one?</h2>
+    <p style="font-size:23px;max-width:none">One <strong>layer</strong> (the four steps, for every word) lets each word gather from the others once. Models stack layers: layer 2 takes layer 1's outputs as its word vectors, with its own W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, so “it” can ask a better question using what it gathered. The original Transformer stacks 6. So what should the vector of “it” be for layer 2? Back to the z<sub>it</sub> we kept, which came <span id="use-mix"></span>:</p>
+    <div class="cols" style="gap:30px; align-items:start">
+      <div class="panel" style="gap:8px"><span class="label">replace: “it” becomes z<sub>it</sub></span><div class="mono" id="use-rep" style="font-size:21px;line-height:1.6"></div></div>
+      <div class="panel" style="gap:8px"><span class="label">add back: “it” becomes x<sub>it</sub> + z<sub>it</sub></span><div class="mono" id="use-add" style="font-size:21px;line-height:1.6"></div></div>
+    </div>
+    <p class="callout" style="font-size:23px;max-width:none">Adding is the <strong>skip connection</strong>: x skips around the attention and is added to what comes out. “it” keeps what it was; z only adds context. To add them, z must be as long as x: here d<sub>v</sub> = d = 3; with several heads, W<sub>O</sub> brings the glued heads back to length d (slide 30).</p>
+  </div>
+  <aside class="notes">This picks up the z_it we kept from the √d_k rerun, now that there's somewhere for it to go. Stacking is the reason: one layer gathers context once; in layer 2, "it" asks its question with a vector that already carries what it gathered, so it can ask a better question, and each layer gathers more. That means each layer must hand the next one vector per word. Replacing x with z is the obvious first try, and the numbers show why it fails: z_it is mostly animal's value, so the new "it" is nearly animal's vector, and its pronoun number is 0: nothing in it says this word was ever a pronoun. After a few layers of replacing, every word would be a blend of blends. Adding keeps x_it whole and puts the context on top: still a pronoun, now also a thing and alive. Also called a residual connection. It's why d_v has to equal d: you can only add vectors of the same length; with several heads, W_O brings the glued heads back to length d (slide 30). Next: what stacking buys. The tired/wide slide uses exactly this x_it + z_it in layer 2. After that, the block diagram draws the skip as an arrow around the attention box joining its output at a +, and gives a second reason for it: the + is a short path for blame, like the LSTM's cell state in Part 2.</aside>
+</section>
+
+<!-- 34 -->
+<section>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">Why stack</p>
+    <h2>Why stack: what does “it” refer to?</h2>
+    <svg viewBox="0 0 1180 250" role="img" aria-label="Attention from the word 'it' to every word in the sentence. In layer 1, 'it' looks mostly at the last word and gives animal and street the same weight whichever last word is shown. In layer 2, changing the last word from tired to wide moves the weight from animal to street" style="width:100%">
+      <g id="it-arcs"></g>
+    </svg>
+    <div class="ctl-row"><span class="label">layer</span><button type="button" id="it-l1" aria-pressed="true">layer 1</button><button type="button" id="it-l2" aria-pressed="false">layer 2</button><span class="label" style="margin-left:24px">last word</span><button type="button" id="it-tired" aria-pressed="true">tired</button><button type="button" id="it-wide" aria-pressed="false">wide</button></div>
+    <p class="stepper-cap" id="it-cap"></p>
+    <p class="small">Weights are illustrative, not from a trained model. Trained models do show patterns like this.</p>
+  </div>
+  <aside class="notes">A well-known example from Google's 2017 blog post introducing the Transformer: change one word at the far end and "it" should switch from "animal" to "street", because animals get tired and streets are wide. Start in layer 1 and toggle the last word: the boxes for animal and street don't move. They can't: in layer 1 the weights from "it" to animal and to street come from q_it, k_animal and k_street, and none of those is made from the last word. What layer 1 can do is gather the last word itself into z_it. Now switch to layer 2: the vector of "it" there is x_it + z_it, which carries "tired" or "wide", so its query can look for something that gets tired or something that is wide. Toggle the last word again and the weight moves. The "it" position can reach any word in one hop, but using what one word says to choose among the others takes two layers. That's the reason to stack. Back to slide 3's goal: in layer 2, "it" ends up carrying animal or street, so a French decoder can pick il or elle; after layer 1 alone, it couldn't. Compare an RNN reading left to right: it has already processed "it" by the time it reads "tired", so in a one-direction RNN the memory at "it" can't use that word at all.</aside>
+</section>
+
+<!-- 35 -->
+<section>
+  <div class="frame" style="gap:14px">
     <p class="kicker">Putting it together</p>
     <h2>One Transformer block</h2>
     <svg viewBox="0 0 1180 260" role="img" aria-label="Word vector plus position goes into multi-head self-attention, then add and normalise, then a feed-forward network applied to each word, then add and normalise again. Each sublayer has a skip connection around it. The block repeats N times" style="width:100%">
       <g id="block"></g>
     </svg>
-    <ul style="font-size:23px">
-      <li><strong>Self-attention</strong> moves information <em>between</em> words. The <strong>feed-forward</strong> network (two layers; 512 → 2048 → 512 in the original) then works on each word on its own.</li>
-      <li>The <strong>skip connections</strong> (x + sublayer(x)) are a short path for blame, like the LSTM's cell state in Part 2. With the norm layers (layer normalisation: rescale each word's numbers to a steady size), they're a big part of why stacks of 6 (original Transformer), 24 (BERT-large) or 96 (GPT-3) blocks train at all.</li>
-      <li>A translation Transformer also has Part 4's attention: the decoder's queries against the encoder's keys and values (<strong>cross-attention</strong>).</li>
+    <ul class="wide" style="font-size:22px">
+      <li>Each sublayer has a <strong>skip connection</strong> around it: x + sublayer(x), as on the stacking slide.</li>
+      <li>Then a <strong>norm</strong> (layer normalisation): shift and scale each word's numbers so they average 0 with spread 1.</li>
+      <li>The skips are a short path for blame, like Part 2's cell state; with the norms, they're a big part of why deep stacks train at all: 6 blocks in the original encoder, 24 in BERT-large, 96 in GPT-3.</li>
+      <li>After the last block, each word's vector feeds the prediction: the next word (GPT) or a hidden word (BERT, Part 7).</li>
     </ul>
   </div>
-  <aside class="notes">Part 6 opens this block up and builds the full encoder–decoder. The original stacks 6 of these blocks in the encoder. "Norm" is layer normalisation, which keeps each word's numbers at a steady scale; the original paper puts it after the add, and most newer models put it before the sublayer instead, which trains more stably. Ask: "which of the four earlier parts shows up here?" The skip path echoes Part 2's protected path; cross-attention is Part 4; the encoder–decoder shape is Part 3; and the idea of one set of weights used at every position is Part 1's parameter sharing.</aside>
+  <aside class="notes">Norm keeps the numbers at a steady size from block to block, so no block's output blows up or shrinks away. The original paper puts the norm after the add, as drawn; most newer models put it before the sublayer instead, which trains more stably. The block counts: 6 encoder blocks in "Attention Is All You Need", 24 in BERT-large (Devlin et al., 2018), 96 in GPT-3 (Brown et al., 2020). Stacking is the key idea: in block 2, "it" asks its question with a vector that already carries what it gathered in block 1, so it can ask a better question, and each block gathers more context. Only at the very end does a word's vector get turned into a prediction. A translation Transformer also has Part 4's cross-attention: decoder queries, encoder keys and values; Part 6 opens this up and builds the full encoder–decoder. Ask: "which of the four earlier parts shows up here?" The skip path echoes Part 2's protected path; cross-attention is Part 4; the encoder–decoder shape is Part 3; and the idea of one set of weights used at every position is Part 1's parameter sharing.</aside>
 </section>
 
-<!-- 31 -->
+<!-- 36 -->
+<section>
+  <div class="frame" style="gap:16px">
+    <p class="kicker">Inside the block</p>
+    <h2>The feed-forward network: each word alone</h2>
+    <p style="font-size:24px;max-width:none" id="ffn-why"></p>
+    <p style="font-size:24px;max-width:none">So after attention, each word goes through a small network of its own, the <strong>feed-forward network</strong>:</p>
+    <div class="eq" style="font-size:26px">FFN(a) = max(0, a W<sub>1</sub> + b<sub>1</sub>) W<sub>2</sub> + b<sub>2</sub></div>
+    <ul class="wide" style="font-size:22px">
+      <li>a: one word's vector after attention. W<sub>1</sub>, W<sub>2</sub>: learned matrices; b<sub>1</sub>, b<sub>2</sub>: learned bias vectors.</li>
+      <li>Sizes: d → 4d → d, 512 → 2048 → 512 in the original.</li>
+      <li>max(0, ·) zeroes negatives: max(0, [0.5, −0.3, 1.2]) = [0.5, 0, 1.2].</li>
+      <li>One word at a time: moving information between words stays attention's job.</li>
+    </ul>
+  </div>
+  <aside class="notes">The next slide draws it, with our numbers. Why it's needed: without it, each word's output is just a weighted average of value vectors. The softmax picks the weights, but the values themselves only get scaled and added, so features are never combined in a non-linear way: attention can't compute "a thing AND alive" as its own feature. Point at z_it: each of its numbers lies between the smallest and largest value in that column, which is what an average does. The FFN is the same kind of layer as in any plain neural network: multiply by a matrix, add a bias, zero out the negatives (ReLU), multiply by another matrix, add a bias. Zeroing the negatives is the non-linear step: that bend is what lets it combine features. The same W_1, W_2 are used for every word, Part 1's parameter sharing again.</aside>
+</section>
+
+<!-- 37 -->
+<section>
+  <div class="frame" style="gap:12px">
+    <p class="kicker">Inside the block · the FFN, drawn</p>
+    <h2>One unit that fires for “a thing <em>and</em> alive”</h2>
+    <p style="font-size:22px;max-width:none">Left: the 3 numbers of one word's vector a. Middle: the 12 numbers of max(0, a W<sub>1</sub> + b<sub>1</sub>). We hand-pick one middle unit (weights +1, +1, 0, bias −1.5); a trained FFN learns them all.</p>
+    <div class="ctl-row" id="ffn-in"><span class="label">input</span></div>
+    <svg viewBox="0 0 1180 290" role="img" aria-label="A feed-forward network for one word: 3 input numbers, all connected to 12 middle units, all connected to 3 output numbers. One middle unit adds 'is a thing' and 'is alive', subtracts 1.5, and turns a negative result to 0" style="width:100%">
+      <g id="ffn-net"></g>
+    </svg>
+    <p class="callout" style="font-size:22px;max-width:none" id="ffn-cap"></p>
+    <p class="small" style="max-width:none">Every word goes through this same network on its own. (The real block normalises a first; skipped to keep the numbers readable.)</p>
+  </div>
+  <aside class="notes">Click through the four inputs in order. "it" before attention: alive is only 0.5 and thing is 0, so the sum is negative and the unit gives 0. After attention and the skip, x_it + z_it carries "a thing" and "alive" from the animal, and the unit fires. animal itself fires too. street is a thing but not alive: the sum is −0.5, and max(0, ·) turns it to 0. That zero is the bend: without max, the unit would be a straight line, and adding up straight lines only ever gives another straight line, which is what attention's averages already are. With the bend, the unit answers a question no single input number answers: is this both a thing and alive? The middle layer has 4d units, 12 for our d = 3, 2048 in the original; W_2 then mixes them back down to d numbers, which the skip connection adds to the word. The weights and the bias here are hand-picked; the other 11 units and W_2 are left unlabelled because we haven't picked numbers for them.</aside>
+</section>
+
+<!-- 38 -->
 <section>
   <div class="frame">
     <p class="kicker">The trade</p>
     <h2>RNN layer vs self-attention layer</h2>
-    <table class="plain" style="font-size:24px">
+    <table class="plain" style="font-size:21px">
       <tr><th></th><th>RNN</th><th>self-attention</th></tr>
       <tr><td>steps that must wait for each other</td><td class="n">T</td><td class="n">1</td></tr>
       <tr><td>hops between two far-apart words</td><td class="n">up to T</td><td class="n">1</td></tr>
-      <tr><td>work per layer</td><td class="n">T · d²</td><td class="n">T² · d</td></tr>
+      <tr><td>work: each word through d × d matrices</td><td class="n">T · d²</td><td class="n">T · d²</td></tr>
+      <tr><td>work: every word scored and mixed with every word</td><td class="n">none</td><td class="n">T² · d</td></tr>
       <tr><td>knows word order</td><td>for free</td><td>only if you add positions</td></tr>
-      <tr><td>memory while generating</td><td>fixed: one hidden state</td><td>grows with everything written so far</td></tr>
+      <tr><td>memory while generating</td><td>fixed: one state</td><td>grows with every word written</td></tr>
     </table>
-    <p class="small">T = words in the sentence, d = length of each vector. Rows 1–3 are Table 1 of “Attention Is All You Need”, and they count operations, not seconds.</p>
-    <p class="callout" style="font-size:26px">Counting operations, self-attention is cheaper when the sentence is shorter than the vector size (T &lt; d), which is most sentences. And in training it removes the RNN's step-by-step wait.</p>
+    <p class="small" style="max-width:none">T = words in the sentence, d = length of each vector. Rows 1, 2 and 4 are Table 1 of “Attention Is All You Need”; row 3 is the cost of W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub>, W<sub>O</sub>, which that table leaves out. Work counts operations, not seconds.</p>
+    <p class="callout" style="font-size:23px;max-width:none">Self-attention never does less work than the RNN: it does the same T · d², plus T² · d. What it wins is the first two rows: no step waits for another, and any two words are one hop apart.</p>
   </div>
-  <aside class="notes">The first three rows are Table 1 of "Attention Is All You Need". They count operations, not seconds: real speed also depends on the hardware, the batch size and how well the code uses the GPU. With d = 512, a sentence of 50 words is far cheaper with self-attention; a book of 100,000 words is not, which is why long-context Transformers are an active research area. The last row is where RNNs still win: an RNN generating text carries one fixed-size state, while a Transformer has to keep keys and values for every earlier word. That's why RNN-like and "state space" models are being revived for long streams.</aside>
+  <aside class="notes">Rows 1, 2 and 4 are Table 1 of "Attention Is All You Need". That table's "per layer" cost for self-attention is only row 4, the scoring and mixing; the RNN's T · d² is its d × d matrix applied at every step. A real self-attention layer also multiplies every word by W_Q, W_K, W_V and W_O, four d × d matrices: that's row 3, the same order of work as the RNN. So the extra T² · d is small when T is below d (with d = 512, a 50-word sentence) and dominates when T is far above it (a book of 100,000 words), which is why long-context Transformers are an active research area. Work counts operations, not seconds: real speed depends on the hardware, and an RNN's T · d² comes as T steps in a row while self-attention's comes all at once, which a GPU does far faster. The last row is where RNNs still win: an RNN generating text carries one fixed-size state, while a Transformer has to keep keys and values for every earlier word. That's why RNN-like and "state space" models are being revived for long streams.</aside>
 </section>
 
-<!-- 32 -->
+<!-- 39 -->
 <section>
   <div class="frame" style="gap:14px">
     <p class="kicker">Try it yourself</p>
     <h2>What you can run</h2>
     <table class="plain" style="font-size:21px">
       <tr><th>slide</th><th>do this</th><th>look for</th><th>weights</th></tr>
-      <tr><td class="n">16</td><td>click d<sub>k</sub> = 4, then 64, then 1024</td><td>left side snaps to one key at 100%; right side stays spread</td><td>random</td></tr>
-      <tr><td class="n">19</td><td>switch the last word: tired ↔ wide</td><td>“it” moves its weight from animal to street</td><td>illustrative</td></tr>
-      <tr><td class="n">22–23</td><td>toggle “Positions added”</td><td>dog and man: identical outputs without positions, different with</td><td>random, real layer</td></tr>
-      <tr><td class="n">26</td><td>pick a head, click a word</td><td>each head looks somewhere different</td><td>illustrative</td></tr>
+      <tr><td class="n">20</td><td>click d<sub>k</sub> = 4, then 64, then 1024</td><td>left side snaps to one key at 100%; right side stays spread</td><td>random</td></tr>
+      <tr><td class="n">28</td><td>toggle “Positions added”</td><td>animal, street: identical without positions, different with</td><td style="white-space:nowrap">random, real layer</td></tr>
+      <tr><td class="n">31</td><td>pick a head, click “cross”</td><td>head 2: cross → animal; head 3: cross → street</td><td>illustrative</td></tr>
+      <tr><td class="n">34</td><td>layer 1, then 2: tired ↔ wide</td><td>layer 1: nothing moves; layer 2: animal ↔ street</td><td>illustrative</td></tr>
     </table>
     <p style="font-size:23px">None of these is trained. Trained self-attention runs in Part 6's date translator, <span class="mono">demo/transformer.py</span>:</p>
     <div class="eq" style="font-size:19px;line-height:1.7">uv run demo/transformer.py train    <span class="small"># ~3 min on a laptop CPU</span><br>uv run demo/transformer.py translate "23 Oct 2026" --details</div>
-    <p class="small">Self-attention is <span class="mono">MultiHeadAttention</span> and <span class="mono">EncoderBlock</span> in that file. <span class="mono">--details</span> prints the decoder's cross-attention (Part 4's kind), not the encoder's self-attention.</p>
+    <p class="small" style="max-width:none">Self-attention is <span class="mono">MultiHeadAttention</span> and <span class="mono">EncoderBlock</span> in that file. <span class="mono">--details</span> prints the decoder's cross-attention (Part 4's kind), not the encoder's self-attention.</p>
   </div>
-  <aside class="notes">Part 5 has no script of its own: every experiment in this deck runs in the browser, on random or hand-made weights, so the behaviour is shown, not learned. The "weights" column says which. Slides 24–25 are the only ones that run a real self-attention layer, and its weights are random; the point there holds for any weights. To see self-attention that was actually trained, go to Part 6 and its demo; the README's transformer.py section has the commands and results.</aside>
+  <aside class="notes">Part 5 has no script of its own: every experiment in this deck runs in the browser, on random or hand-made weights, so the behaviour is shown, not learned. The "weights" column says which. Slides 26 and 28 are the only ones that run a real self-attention layer, and its weights are random; the point there holds for any weights. To see self-attention that was actually trained, go to Part 6 and its demo; the README's transformer.py section has the commands and results.</aside>
 </section>
 
-<!-- 33 -->
+<!-- 40 -->
+<section>
+  <div class="frame center">
+    <p class="kicker">A little history</p>
+    <h2>From a side idea to the whole model</h2>
+    <table class="plain" style="font-size:22px">
+      <tr><td class="n">2016</td><td><span class="h">Jianpeng Cheng, Li Dong and Mirella Lapata</span>, <a class="x" href="https://arxiv.org/abs/1601.06733" target="_blank" rel="noopener">Long Short-Term Memory-Networks for Machine Reading</a>: an LSTM that attends to its own earlier words (“intra-attention”). <span class="h">Ankur Parikh and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1606.01933" target="_blank" rel="noopener">A Decomposable Attention Model for Natural Language Inference</a>: attention with no RNN at all.</td></tr>
+      <tr><td class="n">2017</td><td><span class="h">Zhouhan Lin and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1703.03130" target="_blank" rel="noopener">A Structured Self-Attentive Sentence Embedding</a>: several attention “hops” over one sentence.</td></tr>
+      <tr><td class="n">2017</td><td><span class="h">Ashish Vaswani and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>: scaled dot-product self-attention, multiple heads, position encodings. The Transformer.</td></tr>
+      <tr><td class="n">2018</td><td><span class="h">Jacob Devlin and colleagues</span>, <a class="x" href="https://arxiv.org/abs/1810.04805" target="_blank" rel="noopener">BERT</a>: a Transformer encoder, pre-trained on lots of text. <span class="h">Alec Radford and colleagues</span> (OpenAI), the first GPT: a Transformer decoder.</td></tr>
+    </table>
+    <p class="small"><span class="h">Orange</span>: authors · <span class="x">blue</span>: paper titles (click to open on arXiv)</p>
+  </div>
+  <aside class="notes">Self-attention existed before 2017, mostly bolted onto an RNN. The Transformer paper's claim was in the title: you don't need the RNN at all. Its full title is worth knowing for an interview. BERT's full title is "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding". The first GPT paper is "Improving Language Understanding by Generative Pre-Training" (2018), published by OpenAI, not on arXiv. BERT uses the encoder half, GPT the decoder half; the masking slide showed the difference.</aside>
+</section>
+
+<!-- 41 -->
 <section>
   <div class="frame">
     <p class="kicker">Be ready to answer</p>
@@ -908,13 +1024,14 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Cover the hints, ask each question cold, and have someone answer out loud in one or two sentences. Question 1 should come with the equation: softmax(QKᵀ/√d_k)V.</aside>
 </section>
 
-<!-- 34 -->
+<!-- 42 -->
 <section>
   <div class="frame center">
     <p class="kicker">Recap</p>
     <h2>Remember:</h2>
-    <ol style="font-size:31px;gap:22px">
-      <li>Self-attention: every word makes a <strong>query</strong>, <strong>key</strong> and <strong>value</strong>; scores are <span class="mono">q · k / √d<sub>k</sub></span>; softmax; mix the values.</li>
+    <ol style="font-size:29px;gap:18px">
+      <li>The goal: a new vector per word that carries its meaning <em>in this sentence</em>, built without an RNN. z<sub>it</sub> carries “animal”, so a decoder can translate “it” as <em>il</em>.</li>
+      <li>Self-attention: every word makes a <strong>query</strong>, <strong>key</strong> and <strong>value</strong>; scores are <span class="mono" style="white-space:nowrap">q · k / √d<sub>k</sub></span>; softmax; mix the values.</li>
       <li>It's order-blind, so add a <strong>position</strong> to each word.</li>
       <li><strong>Multi-head</strong>: several small attentions in parallel, glued and mixed. Stack blocks with skip connections: that's the Transformer.</li>
     </ol>
@@ -922,7 +1039,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   <aside class="notes">Ask someone to write Z = softmax(QKᵀ/√d_k)V from memory and give the shape of every matrix for T words.</aside>
 </section>
 
-<!-- 35 -->
+<!-- 43 -->
 <section>
   <div class="frame center">
     <p class="kicker">Next</p>
@@ -1005,8 +1122,9 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
 
   // ---- chain vs all-to-all (slide 2)
   (function () {
-    const g = $("chain-vs-all"), words = ["the", "black", "cat", "sat", "down"];
-    const L = words.map((_, i) => 60 + i * 110), R = words.map((_, i) => 660 + i * 110), Y = 200;
+    // the first six words of the running sentence (slide 1)
+    const g = $("chain-vs-all"), words = IT.slice(0, 6);
+    const L = words.map((_, i) => 50 + i * 96), R = words.map((_, i) => 640 + i * 96), Y = 200;
     words.forEach((w, i) => {
       [L, R].forEach((xs) => {
         el("rect", { x: xs[i] - 42, y: Y, width: 84, height: 40, rx: 7, class: "f-panel s-x", "stroke-width": 1.5 }, null, g);
@@ -1021,14 +1139,14 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
         el("path", { d: `M${R[i]} ${Y} C${R[i]} ${Y - h}, ${R[j]} ${Y - h}, ${R[j]} ${Y}`, class: "att-line", "stroke-width": 2, opacity: 0.65 }, null, g);
       }
     });
-    el("text", { x: 280, y: 40, "text-anchor": "middle", "font-size": 22, class: "f-fg" }, "RNN: 5 steps, one after another", g);
+    el("text", { x: 290, y: 40, "text-anchor": "middle", "font-size": 22, class: "f-fg" }, `RNN: ${words.length} steps, one after another`, g);
     el("text", { x: 880, y: 40, "text-anchor": "middle", "font-size": 22, class: "f-fg" }, "self-attention: every pair, all at once", g);
-    el("text", { x: 280, y: 290, "text-anchor": "middle", "font-size": 17, class: "f-m" }, "“the” reaches “down” after 4 hops", g);
-    el("text", { x: 880, y: 290, "text-anchor": "middle", "font-size": 17, class: "f-m" }, "“the” reaches “down” in 1 hop", g);
+    el("text", { x: 290, y: 290, "text-anchor": "middle", "font-size": 17, class: "f-m" }, `“the” reaches “street” after ${words.length - 1} hops`, g);
+    el("text", { x: 880, y: 290, "text-anchor": "middle", "font-size": 17, class: "f-m" }, "“the” reaches “street” in 1 hop", g);
     el("line", { x1: 590, y1: 30, x2: 590, y2: 280, class: "s-m", "stroke-width": 1, "stroke-dasharray": "4 5" }, null, g);
   })();
 
-  // ---- the first try, step by step, then the fix (slides 4–15). Hand-picked vectors.
+  // ---- the first try, step by step, then the fix (slides 5–16). Hand-picked vectors.
   (function () {
     const words = ["animal", "street", "it"], feats = ["is a thing", "is alive", "is a pronoun"], me = 2;
     const X = [[1, 1, 0], [1, 0, 0], [0, 0.5, 1]];
@@ -1043,26 +1161,26 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     const raw = run(X[me], X);
     const q = matvec(X[me], WQ), K = X.map((x) => matvec(x, WK)), qk = run(q, K);
 
-    // setup (slide 4)
+    // setup (slide 5)
     $("ft-x").innerHTML = `<tr><th>word</th>${["a thing", "alive", "a pronoun"].map((t, c) => `<th><span style="white-space:nowrap">number ${c + 1}:</span><br>is it ${t}?</th>`).join("")}<th>so x =</th></tr>`
       + words.map((_, j) => `<tr><td>${w(j)}</td>${X[j].map((v) => `<td class="n">${v}</td>`).join("")}<td class="n x">${vec(X[j])}</td></tr>`).join("");
 
-    // step 1: score (slide 5)
+    // step 1: score (slide 6)
     $("ft-dot").innerHTML = `<tr><th>word j</th><th>x<sub>it</sub> · x<sub>j</sub></th><th>pair up, multiply, add</th><th>score e<sub>it,j</sub></th></tr>`
       + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${vec(X[me])} · ${vec(X[j])}</td><td class="n">${X[me].map((v, c) => `${v}·${X[j][c]}`).join(" + ")}</td><td class="n h">${n(raw.e[j])}</td></tr>`).join("");
 
-    // step 2: exp (slide 6)
+    // step 2: exp (slide 7)
     $("ft-exp").innerHTML = `<tr><th>word j</th><th>score e<sub>it,j</sub></th><th>exp(score) = 2.718<sup>score</sup></th></tr>`
       + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${n(raw.e[j])}</td><td class="n">2.718<sup>${n(raw.e[j])}</sup> = <span class="h">${f2(raw.ex[j])}</span></td></tr>`).join("");
 
-    // step 3: divide by the total (slide 7)
+    // step 3: divide by the total (slide 8)
     const pct = (a) => `${Math.round(a * 100)}%`;
     $("ft-div-lede").innerHTML = `Add the three results: ${raw.ex.map(f2).join(" + ")} = <strong>${f2(raw.S)}</strong>. Divide each by that total. The answer is word j's <strong>weight</strong> a<sub>it,j</sub>: the share of the attention from “it” that goes to word j.`;
     $("ft-div").innerHTML = `<tr><th>word j</th><th>exp(score)</th><th>÷ total</th><th>weight a<sub>it,j</sub></th><th></th></tr>`
       + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${f2(raw.ex[j])}</td><td class="n">${f2(raw.ex[j])} / ${f2(raw.S)}</td><td class="n h">${f2(raw.a[j])} = ${pct(raw.a[j])}</td><td>${bar(raw.a[j])}</td></tr>`).join("")
       + `<tr><td colspan="3" style="color:var(--muted)">all three weights</td><td class="n">${f2(raw.a.reduce((s, v) => s + v, 0))}</td><td></td></tr>`;
 
-    // step 4: mix, one row per word so the column-by-column add is visible (slides 8, 13, 15)
+    // step 4: mix, one row per word so the column-by-column add is visible (slides 9, 14, 16)
     const mixTab = (a, M = X, v = "x") => {
       const rows = M.map((x, j) => x.map((v) => a[j] * v));
       const z = M[0].map((_, c) => rows.reduce((s, r) => s + r[c], 0));
@@ -1073,18 +1191,18 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     };
     $("ft-mix1").innerHTML = mixTab(raw.a);
 
-    // did the mix work? "it" means the animal, so the target is x_animal (slides 8, 13)
+    // did the mix work? "it" means the animal, so the target is x_animal (slides 9, 14)
     const mix = (a, M = X) => M[0].map((_, c) => M.reduce((s, x, j) => s + a[j] * x[c], 0));
     const wantGot = (a, M) => `Wanted: like x<sub>animal</sub> = <span class="x">${vec(X[0])}</span>. Got: <span class="h">z<sub>it</sub></span> = <span class="h">${vec(mix(a, M))}</span>.`;
-    $("ft-cmp1").innerHTML = `<strong>Did it work?</strong> In this sentence “it” means the animal, so a good <span class="h">z<sub>it</sub></span> would look like animal's vector. ${wantGot(raw.a)} Its biggest number is <em>is a pronoun</em>, where animal has 0: “it” put ${pct(raw.a[me])} of its weight on itself, so it mostly copied itself.`;
+    $("ft-cmp1").innerHTML = `<strong>Did it work?</strong> “it” means the animal here. ${wantGot(raw.a)} Its biggest number is <em>is a pronoun</em>: “it” put ${pct(raw.a[me])} of its weight on itself, so it mostly copied itself.`;
     $("ft-cmp2").innerHTML = `${wantGot(qk.a)} Close in every column: “it” has picked up what it refers to.`;
 
-    // what went wrong (slide 9)
+    // what went wrong (slide 10)
     $("ft-p1").innerHTML = `x<sub>it</sub> · x<sub>it</sub> = ${n(raw.e[me])} is the top score, so “it” puts ${pct(raw.a[me])} of its weight on itself.`;
     const sym = n(dot(X[0], X[me]));
-    $("ft-p2").innerHTML = `“it” asking about “animal”: x<sub>it</sub> · x<sub>animal</sub> = ${sym}.<br>“animal” asking about “it”: x<sub>animal</sub> · x<sub>it</sub> = ${sym}.<br>Always the same, but “it” needs “animal”, and “animal” doesn't need “it”.`;
+    $("ft-p2").innerHTML = `“it” asking about “animal”: x<sub>it</sub> · x<sub>animal</sub> = ${sym}.<br>“animal” asking about “it”: x<sub>animal</sub> · x<sub>it</sub> = ${sym}.<br>The score is forced to be the same both ways. But “it” looking for a thing that's alive and “animal” looking for whatever animal needs are different questions, and they get the same number.`;
 
-    // query (slide 10)
+    // query (slide 11)
     // a two-column grid keeps the matrix rows and the stacked sums lined up
     const grid = (rows) => `<span style="display:grid;grid-template-columns:auto auto auto;column-gap:10px">${rows.map((r) => r.map((c) => `<span>${c}</span>`).join("")).join("")}</span>`;
     const mut = (t) => `<span style="color:var(--muted)">${t}</span>`, short = (t) => t.replace(/^is (a )?/, "");
@@ -1094,35 +1212,134 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     $("ft-qsum").innerHTML = grid(xw("q<sub>it</sub>", X[me], WQ, q));
     const wkSays = ["thing row: x's thing number → place 1", "alive row: x's alive number → place 2", "pronoun row: all 0, so x's pronoun number is lost"];
     $("ft-wk").innerHTML = grid(WK.map((r, i) => [i ? "" : "W<sub>K</sub> =", vec(r), mut(`← ${wkSays[i]}`)]));
-    // keys (slide 11), each worked row by row like q_it
+    // keys (slide 12), each worked row by row like q_it
     $("ft-keys").innerHTML = `<tr><th>word</th><th>x</th><th>x W<sub>K</sub>: scale each row, add</th><th>key k</th></tr>`
       + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${vec(X[j])}</td><td class="n">${X[j].map((v, i) => `${v}·${vec(WK[i])}`).join(" + ")}</td><td class="n h">${vec(K[j])}</td></tr>`).join("");
 
-    // steps 1–3 with query and keys (slide 12)
+    // steps 1–3 with query and keys (slide 13)
     $("ft-q").textContent = vec(q);
-    $("ft-qk-tot").innerHTML = `Step 3's total: ${qk.ex.map(f2).join(" + ")} = ${f2(qk.S)}. The weights add up to 1${qk.a.reduce((s, v) => s + +f2(v), 0).toFixed(2) === "1.00" ? "" : ` (${qk.a.map(f2).join(" + ")} shows ${qk.a.reduce((s, v) => s + +f2(v), 0).toFixed(2)} only because each is rounded)`}.`;
+    $("ft-qk-tot").innerHTML = `Step 3's total: ${qk.ex.map(f2).join(" + ")} = ${f2(qk.S)}. The weights add up to 1${qk.a.reduce((s, v) => s + +f2(v), 0).toFixed(2) === "1.00" ? "" : ` (${qk.a.map(f2).join(" + ")} shows ${qk.a.reduce((s, v) => s + +f2(v), 0).toFixed(2)} only because each is rounded)`}. The real recipe also divides each score by √d<sub>k</sub> (d<sub>k</sub> = 3, the length of q and k); skipped here to keep the numbers whole. The √d<sub>k</sub> slide shows why; a later slide adds it.`;
     $("ft-qk").innerHTML = `<tr><th>word j</th><th>key k<sub>j</sub></th><th>step 1: score q<sub>it</sub>·k<sub>j</sub></th><th>step 2: 2.718<sup>score</sup></th><th>step 3: ÷ ${f2(qk.S)} = weight</th><th></th></tr>`
       + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${vec(K[j])}</td><td class="n">${q.map((v, c) => `${v}·${n(K[j][c])}`).join(" + ")} = ${n(qk.e[j])}</td><td class="n">${f2(qk.ex[j])}</td><td class="n h">${f2(qk.a[j])} = ${pct(qk.a[j])}</td><td>${bar(qk.a[j])}</td></tr>`).join("");
 
-    // step 4 with the new weights, and one-way (slide 13)
+    // step 4 with the new weights, and one-way (slide 14)
     $("ft-mix2").innerHTML = mixTab(qk.a);
-    const qa = matvec(X[0], WQ);
-    $("ft-oneway").innerHTML = `And it's one-way now. “animal” has no pronoun number, so its query is q<sub>animal</sub> = x<sub>animal</sub>W<sub>Q</sub> = ${vec(qa)}, and “animal” asking about “it” scores q<sub>animal</sub>·k<sub>it</sub> = ${n(dot(qa, K[me]))}, while “it” asking about “animal” scores ${n(qk.e[0])}.`;
+    // compare weights, not raw scores: softmax normalises each row on its own
+    const qa = matvec(X[0], WQ), an = run(qa, K);
+    $("ft-oneway").innerHTML = `<strong>And it's one-way now.</strong> “it” gives animal ${pct(qk.a[0])}. animal's query is x<sub>animal</sub>W<sub>Q</sub> = ${vec(qa)}: in this toy, animal isn't looking for anything. Every score in its row is ${n(an.e[me])}, so it gives each word ${pct(an.a[me])}, “it” included. ${pct(qk.a[0])} one way, ${pct(an.a[me])} the other. A trained W<sub>Q</sub> gives every word its own question.`;
 
-    // values (slide 14), worked row by row like the keys
+    // values (slide 15), worked row by row like the keys
     const V = X.map((x) => matvec(x, WV));
     const wvSays = ["thing row: x's thing number → place 1", "alive row: x's alive number → place 2", "pronoun row: −0.5 alive, cancelling a pronoun's guess"];
     $("ft-wv").innerHTML = grid(WV.map((r, i) => [i ? "" : "W<sub>V</sub> =", vec(r), mut(`← ${wvSays[i]}`)]));
     $("ft-vals").innerHTML = `<tr><th>word</th><th>x</th><th>x W<sub>V</sub>: scale each row, add</th><th>value v</th></tr>`
       + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${vec(X[j])}</td><td class="n">${X[j].map((v, i) => `${v}·${vec(WV[i])}`).join(" + ")}</td><td class="n h">${vec(V[j])}</td></tr>`).join("");
-    $("ft-kv").innerHTML = `Same word, two vectors. “it” is half alive only as a guess about what it refers to. Its key keeps the guess, for matching: k<sub>it</sub> = ${vec(K[me])}. Its value drops it, since “it” has nothing of its own to hand over: v<sub>it</sub> = ${vec(V[me])}.`;
+    // the echo: what "it" hands back to itself, 4% of its own x (slides 15, 16)
+    const echo = (M) => `${f2(qk.a[me])} · ${vec(M[me])} = ${vec(M[me].map((v) => qk.a[me] * v))}`;
+    $("ft-echo").innerHTML = `The weights now pick well, but step 4 still hands over x, the vector the keys came from. “it” still gets ${pct(qk.a[me])}, so it hands ${echo(X)} back to itself: its own guess and pronoun number, counted as evidence. So give each word a third vector for handing over, its <strong>value</strong>, made from x with W<sub>V</sub> (hand-picked here; a model learns it).`;
+    $("ft-kv").innerHTML = `Same word, two vectors. The key of “it” keeps its half-alive guess, for matching: k<sub>it</sub> = ${vec(K[me])}. Its value drops it, so nothing of its own is handed back: v<sub>it</sub> = ${vec(V[me])}.`;
 
-    // step 4 with values (slide 15)
+    // step 4 with values (slide 16)
     $("ft-mix3").innerHTML = mixTab(qk.a, V, "v");
-    $("ft-cmp3").innerHTML = `${wantGot(qk.a, V)} Mixing x gave ${vec(mix(qk.a))}: “it” fed its own guess and pronoun number back into itself. Mixing values, all of <span class="h">z<sub>it</sub></span> comes from what animal and street hand over.`;
+    $("ft-cmp3").innerHTML = `<strong>The echo is gone.</strong> The part of <span class="h">z<sub>it</sub></span> that came from “it” itself: with x, ${echo(X)}; with values, ${echo(V)}. Every number in <span class="h">z<sub>it</sub></span> now comes from animal and street.`;
+    $("ft-alive").innerHTML = `The <em>is alive</em> number dropped a little, ${f2(mix(qk.a)[1])} → ${f2(mix(qk.a, V)[1])}: the half-alive guess of “it” no longer counts as evidence.`;
+
+    // query, key, value named, with the example's own vectors (slides 17, 18)
+    $("qkv-q").innerHTML = `q<sub>it</sub> = ${vec(q)}: a thing that's alive`;
+    $("qkv-k").innerHTML = `k<sub>animal</sub> = ${vec(K[0])}: a thing, alive`;
+    $("qkv-v").innerHTML = `v<sub>it</sub> = ${vec(V[me])}: nothing of its own`;
+
+    // one head blurs (slide 29): "cross" wants who (animal) and what (street), using the toy's values
+    const half = V[0].map((v, c) => 0.5 * v + 0.5 * V[1][c]);
+    const hrow = (lab, v, says) => `<tr><td>${lab}</td>${v.map((t) => `<td class="n">${n(t)}</td>`).join("")}<td>${says}</td></tr>`;
+    $("head-blur").innerHTML = `<tr><th></th>${feats.map((t) => `<th>${t}</th>`).join("")}<th>reads as</th></tr>`
+      + hrow(`v<sub>animal</sub>, who crossed`, V[0], "the animal")
+      + hrow(`v<sub>street</sub>, what was crossed`, V[1], "the street")
+      + `<tr class="me">${hrow(`one head: 0.5·v<sub>animal</sub> + 0.5·v<sub>street</sub>`, half, "a thing, sometimes alive: <strong>a blur</strong>").slice(4)}`
+      + `<tr class="me"><td>two heads, glued</td><td class="n" colspan="3">${vec(V[0])} ; ${vec(V[1])}</td><td>who and what, both kept</td></tr>`;
+    // the real recipe: scores divided by √d_k, d_k = 3 here (slides 21–23)
+    const dk = q.length, root = Math.sqrt(dk), sc = run(q.map((v) => v / root), K); // (q/√d_k)·k = (q·k)/√d_k
+    $("sc3-root").innerHTML = `√${dk} ≈ ${f2(root)}`;
+    $("sc3-div").innerHTML = `<tr><th>word j</th><th>q<sub>it</sub>·k<sub>j</sub> (slide 13)</th><th>÷ √${dk}</th><th>scaled score e<sub>it,j</sub></th></tr>`
+      + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${n(qk.e[j])}</td><td class="n">${n(qk.e[j])} / ${f2(root)}</td><td class="n h">${f2(sc.e[j])}</td></tr>`).join("");
+    $("sc3-lede").innerHTML = `Step 2: 2.718 to the power of each scaled score. Step 3: add them, ${sc.ex.map(f2).join(" + ")} = <strong>${f2(sc.S)}</strong>, and divide each by that total.`;
+    $("sc3-soft").innerHTML = `<tr><th>word j</th><th>scaled score</th><th>step 2: 2.718<sup>score</sup></th><th>step 3: ÷ ${f2(sc.S)} = weight</th><th></th><th style="color:var(--muted)">slide 13, no ÷√${dk}</th></tr>`
+      + words.map((_, j) => `<tr class="${j === me ? "me" : ""}"><td>${w(j)}</td><td class="n">${f2(sc.e[j])}</td><td class="n">${f2(sc.ex[j])}</td><td class="n h">${f2(sc.a[j])} = ${pct(sc.a[j])}</td><td>${bar(sc.a[j])}</td><td class="n" style="color:var(--muted)">${pct(qk.a[j])}</td></tr>`).join("");
+    $("sc3-cmp").innerHTML = `<strong>Scaling softens the weights.</strong> animal ${pct(qk.a[0])} → ${pct(sc.a[0])}, street ${pct(qk.a[1])} → ${pct(sc.a[1])}, “it” ${pct(qk.a[me])} → ${pct(sc.a[me])}. animal still gets the most.`;
+    $("sc3-mix").innerHTML = mixTab(sc.a, V, "v");
+    // all words at once: the same numbers as whole matrices, one row per word (slide 24)
+    const Q = X.map((x) => matvec(x, WQ));
+    const S = Q.map((qi) => K.map((kj) => dot(qi, kj) / root)), A = Q.map((qi) => run(qi.map((v) => v / root), K).a);
+    const Z = A.map((a) => mix(a, V));
+    const mt = (name, size, M, { fmt = n, words: wl = false, head = false } = {}) => `<div class="m"><span class="mh">${name}<small>${size}</small></span><table>`
+      + (head ? `<tr>${wl ? "<th></th>" : ""}${words.map((t) => `<th>${t}</th>`).join("")}</tr>` : "")
+      + M.map((r, i) => `<tr class="${i === me ? "me" : ""}">${wl ? `<td class="w">${words[i]}</td>` : ""}${r.map((v) => `<td>${fmt(v)}</td>`).join("")}</tr>`).join("") + "</table></div>";
+    const op = (t) => `<span class="op">${t}</span>`;
+    $("mm-qkv").innerHTML = mt(`<span class="x">X</span>`, "T × d = 3 × 3", X, { words: true })
+      + op("× W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub><br>→") + mt("Q", "T × d<sub>k</sub>", Q) + mt("K", "T × d<sub>k</sub>", K) + mt("V", "T × d<sub>v</sub>", V);
+    $("mm-mix").innerHTML = mt(`Q K<sup>⊤</sup> / √${dk}`, "T × T = 3 × 3", S, { fmt: f2, words: true, head: true })
+      + op("softmax,<br>row by row<br>→") + mt("weights", "T × T", A, { fmt: f2, head: true })
+      + op("× V<br>→") + mt("Z", "T × d<sub>v</sub>", Z, { fmt: f2 });
+    // what layer 2 gets for "it": replace with z_it, or add it back to x_it (slide 33)
+    const zit = mix(sc.a, V), top = sc.a.indexOf(Math.max(...sc.a)), kept = X[me].map((v, c) => v + zit[c]);
+    $("use-mix").innerHTML = `${pct(sc.a[top])} from <span class="x mono">${words[top]}</span>`;
+    $("use-rep").innerHTML = `it = <span class="h">z<sub>it</sub></span> = ${vec(zit)}<br>v<sub>${words[top]}</sub> = ${vec(V[top])}: close<br>pronoun number ${n(zit[2])}: “it” is gone`;
+    $("use-add").innerHTML = `it = ${vec(X[me])} + ${vec(zit)}<br>&nbsp;&nbsp;&nbsp;= <span class="h">${vec(kept)}</span><br>pronoun number ${n(kept[2])}: still a pronoun,<br>now also a thing and alive`;
+    // what attention can't do: z_it is an average, so each number sits between the values' numbers in its column (slide 36)
+    const col = (c) => V.map((v) => v[c]);
+    $("ffn-why").innerHTML = `Attention only scales and adds. Our <span class="h">z<sub>it</sub></span> = ${vec(zit)} is a weighted average of the values: ${feats.map((t, c) => { const lo = Math.min(...col(c)), hi = Math.max(...col(c)); return lo === hi ? `<em>${t}</em> stays ${n(lo)}, as in every value` : `<em>${t}</em> ${n(zit[c])} lies between ${n(lo)} and ${n(hi)}`; }).join(", ")}. An average never combines features into a new one, such as “a thing <em>and</em> alive”.`;
+    // the FFN drawn: one hand-picked middle unit, "a thing and alive" (slide 37)
+    (function () {
+      const g = $("ffn-net"), H = 12, pick = 5, wU = [1, 1, 0], bU = -1.5;
+      const ins = [
+        [`“it” before attention: x<sub>it</sub>`, "“it” before attention", X[me]],
+        [`“it” after attention: x<sub>it</sub> + z<sub>it</sub>`, "“it” after attention", kept],
+        [`x<sub>animal</sub>`, "animal", X[0]],
+        [`x<sub>street</sub>`, "street", X[1]]
+      ];
+      const xi = 230, xh = 600, xo = 960, yi = feats.map((_, i) => 75 + i * 75), yh = Array.from({ length: H }, (_, k) => 30 + k * 21), yo = yi;
+      let sel = 0;
+      const btns = ins.map(([, lab], k) => {
+        const b = document.createElement("button"); b.type = "button"; b.textContent = lab;
+        b.addEventListener("click", () => { sel = k; draw(); }); $("ffn-in").appendChild(b); return b;
+      });
+      function draw() {
+        btns.forEach((b, k) => b.setAttribute("aria-pressed", k === sel));
+        const a = ins[sel][2], s = dot(a, wU) + bU, out = Math.max(0, s), on = out > 0, sm = f2(s).replace("-", "−");
+        g.replaceChildren();
+        yi.forEach((y1) => yh.forEach((y2, k) => { if (k !== pick) el("line", { x1: xi, y1, x2: xh, y2, class: "s-m", "stroke-width": 1, opacity: 0.25 }, null, g); }));
+        yh.forEach((y1) => yo.forEach((y2) => el("line", { x1: xh, y1, x2: xo, y2, class: "s-m", "stroke-width": 1, opacity: 0.25 }, null, g)));
+        yi.forEach((y1, i) => {
+          el("line", Object.assign({ x1: xi, y1, x2: xh, y2: yh[pick], class: wU[i] ? "s-h" : "s-m", "stroke-width": wU[i] ? 3 : 1.5 }, wU[i] ? {} : { "stroke-dasharray": "4 4" }), null, g);
+          el("text", { x: xi + (xh - xi) * 0.45, y: y1 + (yh[pick] - y1) * 0.45 - 8, "text-anchor": "middle", "font-size": 16, class: "f-h mono-t" }, wU[i] ? "+1" : "0", g);
+        });
+        feats.forEach((t, i) => {
+          el("circle", { cx: xi, cy: yi[i], r: 24, class: "f-panel s-x", "stroke-width": 2 }, null, g);
+          el("text", { x: xi, y: yi[i] + 6, "text-anchor": "middle", "font-size": 16, "font-weight": 600, class: "f-x mono-t" }, n(a[i]), g);
+          el("text", { x: xi - 36, y: yi[i] + 6, "text-anchor": "end", "font-size": 17, class: "f-fg" }, t, g);
+          el("circle", { cx: xo, cy: yo[i], r: 16, class: "f-panel s-y", "stroke-width": 2 }, null, g);
+        });
+        yh.forEach((y, k) => { if (k !== pick) el("circle", { cx: xh, cy: y, r: 8, class: "f-panel s-m", "stroke-width": 1.5 }, null, g); });
+        const c = el("circle", { cx: xh, cy: yh[pick], r: 14, class: "s-h", "stroke-width": 3 }, null, g);
+        c.style.fill = on ? "var(--accent)" : "var(--bg)";
+        el("text", { x: xh + 26, y: yh[pick] - 4, "font-size": 16, class: "f-h mono-t" }, `${n(a[0])} + ${n(a[1])} − 1.5 = ${sm}`, g);
+        el("text", { x: xh + 26, y: yh[pick] + 16, "font-size": 16, "font-weight": 600, class: "f-h mono-t" }, `max(0, ·) = ${f2(out)}`, g);
+        el("text", { x: xi, y: 18, "text-anchor": "middle", "font-size": 16, class: "f-m" }, "a: d = 3 numbers", g);
+        el("text", { x: xh, y: 18, "text-anchor": "middle", "font-size": 16, class: "f-m" }, "a W₁ + b₁, then max(0, ·): 4d = 12", g);
+        el("text", { x: xo, y: 18, "text-anchor": "middle", "font-size": 16, class: "f-m" }, "× W₂ + b₂: back to d = 3", g);
+        el("text", { x: xh, y: 284, "text-anchor": "middle", "font-size": 15, class: "f-m" }, "other 11 units: learned, not drawn with numbers", g);
+        el("text", { x: xo, y: 284, "text-anchor": "middle", "font-size": 15, class: "f-m" }, "added to the word by the skip", g);
+        $("ffn-cap").innerHTML = `${ins[sel][0]} = ${vec(a)}. The unit adds <em>is a thing</em> and <em>is alive</em> and subtracts 1.5: ${n(a[0])} + ${n(a[1])} − 1.5 = ${sm}. `
+          + (on ? `Positive, so max(0, ·) keeps it: the unit <strong>fires</strong>, ${f2(out)}.` : `Not positive, so max(0, ·) gives <strong>0</strong>: the unit stays off.`)
+          + (sel === 3 ? " street is a thing but not alive: one of the two isn't enough." : sel === 0 ? " Before attention, “it” carries no “thing”." : "");
+      }
+      draw();
+    })();
+    $("sc3-echo").innerHTML = `“it” now gives itself ${pct(sc.a[me])}, up from ${pct(qk.a[me])}. Mixing x, it would echo ${f2(sc.a[me])} · ${vec(X[me])} = ${vec(X[me].map((v) => sc.a[me] * v))} back into itself. Its value is ${vec(V[me])}, so the echo is still zero: values matter more here than on slide 16.`;
+    $("qkv-swap").innerHTML = `Why the score can now be one-way: it is x<sub>i</sub>W<sub>Q</sub> · x<sub>j</sub>W<sub>K</sub>. Swap i and j and you get x<sub>j</sub>W<sub>Q</sub> · x<sub>i</sub>W<sub>K</sub>, which can be a different number, because W<sub>Q</sub> ≠ W<sub>K</sub>. That's how “it” gave animal ${pct(qk.a[0])} while animal gave “it” ${pct(an.a[me])}.`;
   })();
 
-  // ---- why divide by √d_k (slide 18)
+  // ---- why divide by √d_k (slide 20)
   (function () {
     const ds = [4, 16, 64, 256, 1024], btns = [];
     let d = 64, seed = 7;
@@ -1148,52 +1365,37 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
       const sd = (v) => Math.sqrt(v.reduce((s, x) => s + x * x, 0) / v.length);
       const es = e.map((v) => v / Math.sqrt(d)), n = (x) => +x.toFixed(1);
       bars($("sc-raw"), softmax(e)); bars($("sc-sc"), softmax(es));
-      $("sc-raw-m").textContent = `typical score (root-mean-square of these 6) ≈ ±${sd(e).toFixed(1)} · expected √${d} = ${n(Math.sqrt(d))} · biggest weight ${Math.round(Math.max(...softmax(e)) * 100)}%`;
-      $("sc-sc-m").textContent = `typical score ≈ ±${sd(es).toFixed(1)} · expected 1 · biggest weight ${Math.round(Math.max(...softmax(es)) * 100)}%`;
+      // always two short lines, so no d_k or random draw can change the panel's height
+      $("sc-raw-m").innerHTML = `typical score ≈ ±${sd(e).toFixed(1)}, expected √${d} = ${n(Math.sqrt(d))}<br>biggest weight ${Math.round(Math.max(...softmax(e)) * 100)}%`;
+      $("sc-sc-m").innerHTML = `typical score ≈ ±${sd(es).toFixed(1)}, expected 1<br>biggest weight ${Math.round(Math.max(...softmax(es)) * 100)}%`;
     }
     draw();
   })();
 
-  // ---- one row by hand (slide 19)
+  // ---- why stack: what does "it" refer to? (slide 34). Illustrative weights.
   (function () {
-    const words = ["the", "cat", "sat"], X = [[1, 0], [0, 2], [1, 1]];
-    const WQ = [[1, 0], [1, 1]], WK = [[0, 1], [1, 0]], WV = [[1, 1], [0, 1]], me = 2;
-    const f = (v) => `[${v.map((x) => +x.toFixed(2)).join(", ")}]`, m = (M) => `[${M.map(f).join(", ")}]`;
-    const Q = X.map((x) => matvec(x, WQ)), K = X.map((x) => matvec(x, WK)), V = X.map((x) => matvec(x, WV));
-    const e = K.map((k) => dot(Q[me], k) / Math.SQRT2), a = softmax(e);
-    const z = V[0].map((_, c) => V.reduce((s, v, j) => s + a[j] * v[c], 0));
-    let html = `<tr><th>word</th><th>x</th><th>key k = xW<sub>K</sub></th><th>value v = xW<sub>V</sub></th><th>q<sub>sat</sub>·k / √2</th><th>weight</th></tr>`;
-    words.forEach((w, j) => {
-      html += `<tr class="${j === me ? "me" : ""}"><td class="x mono">${w}</td><td class="n">${f(X[j])}</td><td class="n">${f(K[j])}</td><td class="n">${f(V[j])}</td><td class="n">${e[j].toFixed(2)}</td><td class="n h">${Math.round(a[j] * 100)}%</td></tr>`;
-    });
-    $("hand-tab").innerHTML = html;
-    $("hand-mats").innerHTML = `W<sub>Q</sub> = ${m(WQ)}<br>W<sub>K</sub> = ${m(WK)}<br>W<sub>V</sub> = ${m(WV)}<br>q<sub>sat</sub> = x<sub>sat</sub>W<sub>Q</sub> = ${f(Q[me])}`;
-    $("hand-z").innerHTML = `<span class="h">z<sub>sat</sub></span> = ${a.map((x, j) => `${x.toFixed(2)}·${f(V[j])}`).join(" + ")}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="h">${f(z)}</span>`;
-
-    // what z_sat is for (slide 20), from the same numbers
-    const top = a.indexOf(Math.max(...a));
-    $("use-mix").innerHTML = `${Math.round(a[top] * 100)}% from <span class="x mono">${words[top]}</span>`;
-    const x = X[me], r = (v) => v.map((t) => +t.toFixed(2));
-    $("use-add").innerHTML = `<span class="x">x<sub>sat</sub></span> + <span class="h">z<sub>sat</sub></span><br>= ${f(x)} + ${f(r(z))}<br>= <span class="h">${f(x.map((t, c) => r(z)[c] + t))}</span>`;
-  })();
-
-  // ---- what does "it" refer to? (slide 21). Illustrative weights.
-  (function () {
-    const set = (last) => {
+    let layer = 1, last = "tired";
+    const p = (a) => `${Math.round(a * 100)}%`;
+    const draw = () => {
       const words = IT.slice(0, 10).concat(last);
-      const w = last === "tired" ? row(11, { 1: 0.6, 5: 0.1, 7: 0.06, 10: 0.08 }) : row(11, { 1: 0.1, 5: 0.6, 7: 0.06, 10: 0.08 });
+      // layer 1: the same shares for animal (1) and street (5) whichever last word; only the last word (10) is gathered
+      const w = layer === 1 ? row(11, { 1: 0.18, 5: 0.18, 7: 0.06, 10: 0.45 })
+        : last === "tired" ? row(11, { 1: 0.6, 5: 0.1, 7: 0.06, 10: 0.08 }) : row(11, { 1: 0.1, 5: 0.6, 7: 0.06, 10: 0.08 });
       arcs($("it-arcs"), words, 7, w, { y: 195, fs: 18 });
-      $("it-tired").setAttribute("aria-pressed", last === "tired"); $("it-wide").setAttribute("aria-pressed", last === "wide");
-      $("it-cap").innerHTML = last === "tired"
-        ? `“it” puts most of its weight on <span class="x mono">animal</span>: animals get tired. Its new vector <span class="h">z</span> now carries “animal”.`
-        : `One word changed, at the far end, and “it” now looks at <span class="x mono">street</span>: streets are wide.`;
+      [["it-l1", layer === 1], ["it-l2", layer === 2], ["it-tired", last === "tired"], ["it-wide", last === "wide"]].forEach(([id, on]) => $(id).setAttribute("aria-pressed", on));
+      const prop = last === "tired" ? "gets tired" : "is wide", pick = last === "tired" ? 1 : 5;
+      $("it-cap").innerHTML = layer === 1
+        ? `<strong>Layer 1:</strong> “it” gathers <span class="x mono">${last}</span>, what's said about it (${p(w[10])}). animal and street get ${p(w[1])} each, whichever last word you pick: the query of “it” is made from x<sub>it</sub> alone, which doesn't know the last word yet.`
+        : `<strong>Layer 2:</strong> the vector of “it” now carries “${last}”, gathered in layer 1, so its query can look for something that ${prop}: <span class="x mono">${IT[pick]}</span>, ${p(w[pick])}. In French, “it” becomes <em>${last === "tired" ? "il" : "elle"}</em>.`;
     };
-    $("it-tired").addEventListener("click", () => set("tired"));
-    $("it-wide").addEventListener("click", () => set("wide"));
-    set("tired");
+    $("it-l1").addEventListener("click", () => { layer = 1; draw(); });
+    $("it-l2").addEventListener("click", () => { layer = 2; draw(); });
+    $("it-tired").addEventListener("click", () => { last = "tired"; draw(); });
+    $("it-wide").addEventListener("click", () => { last = "wide"; draw(); });
+    draw();
   })();
 
-  // ---- order blindness (slides 24, 25): a real self-attention layer with random weights
+  // ---- order blindness (slides 26, 28): a real self-attention layer with random weights
   // like strip, but each square also prints its number
   const nstrip = (v, m) => {
     const d = strip(v.map((x) => x * 0.6), m);
@@ -1202,7 +1404,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
   };
   const ORD = (function () {
     const d = 8, g = gauss(rng(42)), E = {};
-    ["dog", "bites", "man"].forEach((w) => (E[w] = Array.from({ length: d }, g)));
+    ["animal", "cross", "street"].forEach((w) => (E[w] = Array.from({ length: d }, g)));
     const WQ = randMat(g, d, d, 0.4), WK = randMat(g, d, d, 0.4), WV = randMat(g, d, d, 0.5);
     const pos = (p) => Array.from({ length: d }, (_, i) => (i % 2 ? Math.cos : Math.sin)(p / Math.pow(10000, (i - (i % 2)) / d)));
     const run = (words, usePos) => {
@@ -1210,8 +1412,8 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
       const Q = X.map((x) => matvec(x, WQ)), K = X.map((x) => matvec(x, WK)), V = X.map((x) => matvec(x, WV));
       return Q.map((q) => { const a = softmax(K.map((k) => dot(q, k) / Math.sqrt(d))); return V[0].map((_, c) => V.reduce((s, v, j) => s + a[j] * v[c], 0)); });
     };
-    return function (root, verdict, usePos) {
-      const A = ["dog", "bites", "man"], B = ["man", "bites", "dog"], ZA = run(A, usePos), ZB = run(B, usePos);
+    const draw = function (root, verdict, usePos) {
+      const A = ["animal", "cross", "street"], B = ["street", "cross", "animal"], ZA = run(A, usePos), ZB = run(B, usePos);
       const m = Math.max(...ZA.flat().concat(ZB.flat()).map(Math.abs));
       root.replaceChildren();
       [[A, ZA], [B, ZB]].forEach(([ws, Z]) => {
@@ -1221,9 +1423,11 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
         root.appendChild(col);
       });
       const gap = (w) => Math.max(...ZA[A.indexOf(w)].map((v, i) => Math.abs(v - ZB[B.indexOf(w)][i])));
-      verdict.innerHTML = ["dog", "man"].map((w) => `<span class="mono">${w}</span>: ${gap(w) < 1e-9 ? `<span class="same">identical</span>` : `<span class="diff">different</span>`}`).join(" · ")
-        + (usePos ? " in the two sentences. The model can tell who bit whom." : " in the two sentences.");
+      verdict.innerHTML = ["animal", "street"].map((w) => `<span class="mono">${w}</span>: ${gap(w) < 1e-9 ? `<span class="same">identical</span>` : `<span class="diff">different</span>`}`).join(" · ")
+        + (usePos ? " in the two sentences. The model can tell who crossed whom." : " in the two sentences: who crossed whom is lost.");
     };
+    draw.pos = pos; // the 8-number position vectors the demo adds (slide 28)
+    return draw;
   })();
   ORD($("ord1"), $("ord1-v"), false);
   (function () {
@@ -1231,6 +1435,12 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     const draw = () => { $("ord2-pos").setAttribute("aria-pressed", on); $("ord2-pos").textContent = on ? "Positions added" : "No positions"; ORD($("ord2"), $("ord2-v"), on); };
     $("ord2-pos").addEventListener("click", () => { on = !on; draw(); });
     draw();
+    // the position vectors the demo adds, one row per position (slide 28)
+    // header names each column's formula: sin/cos of i ÷ 10000^(2k/8) = i ÷ 1, 10, 100, 1000
+    const arg = (k) => (k ? `i ÷ ${Math.pow(10, k)}` : "i");
+    $("pe-rows").innerHTML = `<tr><th>wave</th>${[0, 1, 2, 3].map((k) => `<th colspan="2">${["fastest", "slower", "slower still", "slowest"][k]}</th>`).join("")}</tr>`
+      + `<tr><th>column</th>${Array.from({ length: 8 }, (_, c) => `<th>${c % 2 ? "cos" : "sin"}(${arg(c >> 1)})</th>`).join("")}</tr>`
+      + [0, 1, 2].map((p) => `<tr><td class="n">p<sub>${p}</sub> (i = ${p})</td>${ORD.pos(p).map((v) => `<td class="n">${v.toFixed(2)}</td>`).join("")}</tr>`).join("");
     // sinusoidal position vectors
     const grid = $("pe-grid"), d = 32;
     for (let p = 0; p < 24; p++) for (let i = 0; i < d; i++) {
@@ -1239,52 +1449,33 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     }
   })();
 
-  // ---- one head blurs (slide 26)
+  // ---- heads (slide 31). Illustrative weights.
   (function () {
-    const g = gauss(rng(5)), cat = Array.from({ length: 8 }, g), mat = Array.from({ length: 8 }, g);
-    const avg = cat.map((v, i) => (v + mat[i]) / 2), m = Math.max(...cat.concat(mat).map(Math.abs));
-    const rows = [
-      ["v<sub>cat</sub>, value of “cat”", cat, "who"], ["v<sub>mat</sub>, value of “mat”", mat, "where"],
-      ["one head: 50% + 50%", avg, "a blur of both"],
-      ["two heads, glued", null, "who, then where: both kept"]
-    ];
-    const box = $("blur");
-    rows.forEach(([lab, v, note], k) => {
-      const a = document.createElement("span"); a.innerHTML = lab; if (k >= 2) a.style.fontWeight = 600;
-      let s;
-      if (v) s = strip(v, m);
-      else { s = document.createElement("span"); s.style.display = "flex"; s.style.gap = "10px"; s.append(strip(cat, m), strip(mat, m)); s.querySelectorAll(".vec").forEach((x) => (x.style.gridTemplateColumns = "repeat(8, 14px)")); }
-      const n = document.createElement("span"); n.className = "small"; n.textContent = note;
-      box.append(a, s, n);
-    });
-  })();
-
-  // ---- heads (slide 28). Illustrative weights.
-  (function () {
-    const W = ["the", "cat", "sat", "on", "the", "mat", "because", "it", "was", "tired"], n = W.length;
+    // the running sentence: 0 the, 1 animal, 2 didn't, 3 cross, 4 the, 5 street, 6 because, 7 it, 8 was, 9 too, 10 tired
+    const W = IT, n = W.length;
     const heads = [
       { name: "previous word", cap: "Looks one word back. Gives every word a sense of its neighbour, a job the RNN did for free.", rowFor: (i) => row(n, i ? { [i - 1]: 0.8, [i]: 0.1 } : { 0: 0.9 }, 0.005) },
-      { name: "who did it", cap: "Links verbs and describing words to the thing doing or being them: sat → cat, tired → cat.",
-        rowFor: (i) => row(n, ({ 2: { 1: 0.75 }, 7: { 1: 0.7 }, 8: { 7: 0.45, 1: 0.3 }, 9: { 1: 0.5, 7: 0.25 }, 1: { 2: 0.4, 1: 0.3 }, 0: { 1: 0.6 }, 4: { 5: 0.6 } })[i] || { [i]: 0.6 }) },
-      { name: "where", cap: "Links the action to its place: sat → mat, on → mat.",
-        rowFor: (i) => row(n, ({ 2: { 5: 0.6, 3: 0.15 }, 3: { 5: 0.7 }, 5: { 3: 0.4, 2: 0.35 }, 4: { 5: 0.6 } })[i] || { [i]: 0.6 }) }
+      { name: "who", cap: "Links verbs and describing words to who is doing or being them: cross → animal, didn't → animal, was → it, tired → it, it → animal.",
+        rowFor: (i) => row(n, ({ 3: { 1: 0.75 }, 2: { 1: 0.65 }, 8: { 7: 0.6 }, 10: { 7: 0.45, 1: 0.3 }, 7: { 1: 0.7 }, 1: { 3: 0.4, 1: 0.3 }, 0: { 1: 0.6 }, 4: { 5: 0.6 } })[i] || { [i]: 0.6 }) },
+      { name: "what was crossed", cap: "Links the action to what it acts on: cross → street, the → street, street → cross.",
+        rowFor: (i) => row(n, ({ 3: { 5: 0.7 }, 4: { 5: 0.6 }, 5: { 3: 0.55 } })[i] || { [i]: 0.6 }) }
     ];
-    let h = 1, sel = 2;
+    let h = 1, sel = 3; // head "who", word "cross": head 3 then shows cross → street, as on slide 29
     const btns = heads.map((hd, k) => {
       const b = document.createElement("button"); b.type = "button"; b.textContent = `${k + 1} · ${hd.name}`;
       b.addEventListener("click", () => { h = k; draw(); }); $("hd-heads").appendChild(b); return b;
     });
     function draw() {
       btns.forEach((b, k) => b.setAttribute("aria-pressed", k === h));
-      arcs($("hd-arcs"), W, sel, heads[h].rowFor(sel), { y: 195, onPick: (j) => { sel = j; draw(); } });
+      arcs($("hd-arcs"), W, sel, heads[h].rowFor(sel), { y: 195, fs: 18, onPick: (j) => { sel = j; draw(); } });
       $("hd-cap").textContent = heads[h].cap;
     }
     draw();
   })();
 
-  // ---- masked attention map (slide 29). Illustrative weights.
+  // ---- masked attention map (slide 32). Illustrative weights.
   (function () {
-    const W = ["<s>", "the", "cat", "sat", "on", "the"], next = ["the", "cat", "sat", "on", "the", "mat"], n = W.length, g = gauss(rng(11));
+    const W = ["<s>", "the", "animal", "didn't", "cross", "the"], next = ["the", "animal", "didn't", "cross", "the", "street"], n = W.length, g = gauss(rng(11));
     const map = $("mask-map");
     map.style.gridTemplateColumns = `90px repeat(${n}, 1fr) 70px`;
     const add = (cls, t) => { const s = document.createElement("span"); s.className = cls; s.textContent = t; map.appendChild(s); return s; };
@@ -1302,7 +1493,7 @@ table.colsum tr.tot td { border-top: 2px solid var(--fg); font-weight: 600; }
     });
   })();
 
-  // ---- one Transformer block (slide 30)
+  // ---- one Transformer block (slide 35)
   (function () {
     const g = $("block"), Y = 130, H = 64;
     const box = (x, w, t, cls, sub) => {
