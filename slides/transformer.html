@@ -467,7 +467,8 @@ table.hand tr.me td { font-weight: 600; }
       <div style="display:grid;gap:14px;font-size:23px">
         <div class="eq" style="font-size:26px">z ← z + sublayer(z)</div>
         <p>Each sublayer (the attention or the feed-forward) <strong>adds</strong> a correction to z instead of replacing it. Stack 12 sublayers (6 blocks × 2, the paper's encoder) and there's still a straight line from the input to the top: the plus signs.</p>
-        <p>Blame (the gradient) flows back down that line <strong>untouched</strong>: call the sublayer f; the derivative of z + f(z) is 1 + f′(z), never just f′(z). The same trick as the LSTM's belt in Part 2.</p>
+        <p>Blame (the gradient) gets a <strong>shorter path</strong> back: call the sublayer f; the derivative of z + f(z) is 1 + f′(z), not just f′(z). The 1 skips the sublayer. The same trick as the LSTM's belt in Part 2.</p>
+        <p class="small">Not untouched: our model, like the paper, puts a layer norm after each add (next slide), so blame also passes through every norm, and f′ can cancel or add to the 1. Most later models move the norm off the path (“pre-norm”).</p>
         <p class="small">From image models: Kaiming He and colleagues, <a class="x" href="https://arxiv.org/abs/1512.03385" target="_blank" rel="noopener">Deep Residual Learning</a> (2015).</p>
       </div>
       <div class="panel" style="gap:14px">
@@ -475,31 +476,30 @@ table.hand tr.me td { font-weight: 600; }
         <div class="slider-row"><span>blame kept per sublayer</span><input type="range" id="res-f" min="30" max="95" step="5" value="60" aria-label="Fraction of blame each sublayer passes back"><span class="v" id="res-f-v"></span></div>
         <div style="display:grid;gap:10px;margin-top:6px">
           <div class="meter"><span>no skips</span><span class="track"><span class="fill" id="res-no" style="background:var(--bad)"></span></span><span class="v" id="res-no-v"></span></div>
-          <div class="meter"><span>skips: straight path</span><span class="track"><span class="fill" id="res-yes" style="background:var(--output)"></span></span><span class="v" id="res-yes-v"></span></div>
         </div>
-        <p class="small" style="max-width:none">Blame reaching the bottom layer, as a share of what the top got. Illustrative numbers: each sublayer passes back a fixed share, like Part 2's blame race.</p>
+        <p class="small" style="max-width:none">Without skips: blame reaching the bottom layer, as a share of what the top got. Illustrative numbers: each sublayer passes back a fixed share, like Part 2's blame race. With skips, each factor gains the 1, so the product no longer has to shrink.</p>
       </div>
     </div>
   </div>
-  <aside class="notes">Without the skips, blame reaching the bottom is a product of one factor per sublayer, and a product of many numbers below 1 shrinks fast: the vanishing gradient from Part 2, now across layers instead of time steps. With the skips, one of the paths back is the straight line through the plus signs, which multiplies by 1 at every step, so the bottom always gets at least that share. The "with skips" bar shows that one straight path alone, which passes 100% however deep the stack; the paths through the sublayers add to it. Real networks are messier, but the straight path is why 96-block models train at all. Interview phrasing: "residual connections give the gradient an identity path, so deep stacks train".</aside>
+  <aside class="notes">Without the skips, blame reaching the bottom is a product of one factor per sublayer, and a product of many numbers below 1 shrinks fast: the vanishing gradient from Part 2, now across layers instead of time steps. With the skips, each sublayer's factor becomes 1 + f′ instead of f′: the Jacobian gains an identity term, a path back that doesn't go through the sublayer. Don't say the gradient arrives "untouched" or "100%": f′ is a matrix and can partly cancel the 1 or amplify it, and in post-norm models like ours and the paper's, every LayerNorm sits on the straight path and reshapes the gradient too. That is one reason pre-norm (norm inside the branch, z + f(LayerNorm(z))) trains deep stacks more easily: there the straight path really is a chain of identities. Interview phrasing: "residual connections add an identity term to the Jacobian, giving information and gradients a shorter path through deep stacks".</aside>
 </section>
 
 <!-- 7 -->
 <section>
   <div class="frame" style="gap:14px">
     <p class="kicker">Inside a block · 3</p>
-    <h2>Layer norm: a steady scale for every word</h2>
-    <p style="font-size:23px">After each add, take <strong>one word's</strong> d numbers, subtract their mean, divide by their spread (std, standard deviation). Then, slot by slot (⊙), multiply by a learned γ and add a learned β.</p>
+    <h2>Layer norm: a steady scale for every position</h2>
+    <p style="font-size:23px">After each add, take <strong>one position's</strong> d numbers (in our model, one character's), subtract their mean, divide by their spread (std, standard deviation). Then, slot by slot (⊙), multiply by a learned γ and add a learned β.</p>
     <div class="eq" style="font-size:24px">LayerNorm(z) = γ ⊙ ( z − mean(z) ) / std(z) + β</div>
     <div class="panel" style="gap:12px">
-      <div class="slider-row"><span>multiply by</span><input type="range" id="ln-scale" min="-10" max="20" value="0" aria-label="Scale the word vector"><span class="v" id="ln-scale-v"></span></div>
-      <div class="slider-row"><span>add</span><input type="range" id="ln-shift" min="-30" max="30" value="0" aria-label="Shift the word vector"><span class="v" id="ln-shift-v"></span></div>
+      <div class="slider-row"><span>multiply by</span><input type="range" id="ln-scale" min="-10" max="20" value="0" aria-label="Scale the vector"><span class="v" id="ln-scale-v"></span></div>
+      <div class="slider-row"><span>add</span><input type="range" id="ln-shift" min="-30" max="30" value="0" aria-label="Shift the vector"><span class="v" id="ln-shift-v"></span></div>
       <div class="ln-row"><span>a made-up z <span class="small">(8 numbers)</span></span><span id="ln-in"></span><span class="st" id="ln-in-s"></span></div>
       <div class="ln-row"><span>after layer norm <span class="small">(γ = 1, β = 0)</span></span><span id="ln-out"></span><span class="st" id="ln-out-s"></span></div>
     </div>
-    <p class="callout" style="font-size:24px">Scale or shift the input as much as you like: the output doesn't move. Every block hands the next one numbers of about the same size. <span class="small">Rust positive, blue negative.</span></p>
+    <p class="callout" style="font-size:24px">Add any constant, or multiply by any positive number: before γ and β, the output doesn't move. <span class="small">(A negative multiplier would flip its signs; the slider only goes positive.)</span> Every block hands the next one numbers of about the same size. <span class="small">Rust positive, blue negative.</span></p>
   </div>
-  <aside class="notes">Why it's needed: every residual add makes z a bit bigger, and after many blocks the numbers would drift in size, which upsets softmax (Part 5's √d_k slide) and makes training unstable. Layer norm resets every word's vector to mean 0 and spread 1, and γ and β let the model choose a different scale per slot if that helps. "Layer" norm because it normalises across the d numbers of one word, not across the batch (that would be batch norm, from image models). Introduced by Jimmy Ba, Jamie Kiros and Geoffrey Hinton, "Layer Normalization" (2016). The paper normalises after the add ("post-norm"), as our demo does; most models since GPT-2 normalise before each sublayer ("pre-norm"), which trains more stably in deep stacks. That's the one variant worth knowing by name.</aside>
+  <aside class="notes">Why it's needed: every residual add makes z a bit bigger, and after many blocks the numbers would drift in size, which upsets softmax (Part 5's √d_k slide) and makes training unstable. Layer norm resets every position's vector (a word in the paper, a character in our demo) to mean 0 and spread 1, and γ and β let the model choose a different scale per slot if that helps. Strictly, it removes a constant shift and a positive overall scale; the tiny ε added to the spread to avoid dividing by zero makes even that approximate. "Layer" norm because it normalises across the d numbers of one position, not across the batch (that would be batch norm, from image models). Introduced by Jimmy Ba, Jamie Kiros and Geoffrey Hinton, "Layer Normalization" (2016). The paper normalises after the add ("post-norm"), as our demo does; most models since GPT-2 normalise before each sublayer ("pre-norm"), which trains more stably in deep stacks. That's the one variant worth knowing by name.</aside>
 </section>
 
 <!-- 8 -->
@@ -558,6 +558,33 @@ table.hand tr.me td { font-weight: 600; }
     <p class="callout">Same question as Part 4: “for what I'm about to write, which input characters matter?” Score, soften, mix. Only the score and the plumbing changed.</p>
   </div>
   <aside class="notes">This is the slide that ties the course together. Bahdanau-style attention between an encoder and a decoder didn't go away in the Transformer; it became the cross-attention sublayer. What's different: the score is the scaled dot product from Part 5, there are several heads, and it happens in every decoder block. If someone asks "where's the attention from the 2014 translation paper in a Transformer?", this is the answer. The maps we'll draw from the demo are the weights of this sublayer.</aside>
+</section>
+
+<!-- 10b -->
+<section>
+  <div class="frame" style="gap:12px">
+    <p class="kicker">The code</p>
+    <h2>Both blocks, in ten lines</h2>
+    <pre class="cmd" style="font-size:19px;line-height:1.4;padding:14px 22px">class EncoderBlock(nn.Module):
+    def forward(self, x, mask):
+        x = self.norm1(x + self.attn(x, x, mask)[0])
+        return self.norm2(x + self.ff(x))
+
+class DecoderBlock(nn.Module):
+    def forward(self, x, memory, causal, src_mask):
+        x = self.norm1(x + self.self_attn(x, x, causal)[0])
+        c, a = self.cross(x, memory, src_mask)
+        x = self.norm2(x + c)
+        return self.norm3(x + self.ff(x)), a</pre>
+    <p class="small" style="max-width:none">From <span class="mono">demo/transformer.py</span>, unedited (only the <span class="mono">__init__</span> methods, which create the sublayers, left out).</p>
+    <ul style="font-size:19px;gap:2px;max-width:none">
+      <li><span class="mono">x</span>: one row per position, 64 numbers each. Every line is one <span class="mono">z ← LayerNorm(z + sublayer(z))</span>.</li>
+      <li><span class="mono">attn(q_in, kv_in, mask)</span>: queries from the first argument, keys and values from the second. It returns the output and the attention weights; <span class="mono">[0]</span> keeps the output.</li>
+      <li><span class="mono">mask</span>, <span class="mono">src_mask</span>: hide the padding that makes a batch's inputs one length. <span class="mono">causal</span>: also hides later positions (Part 5's mask).</li>
+      <li><span class="mono">memory</span>: the encoder's output. <span class="mono">a</span>: the cross-attention weights, kept to draw the maps. <span class="mono">norm1</span>–<span class="mono">norm3</span>: separate layer norms, each with its own γ, β.</li>
+    </ul>
+  </div>
+  <aside class="notes">This is the payoff of the last few slides: everything since the feed-forward slide fits in these lines. Point at each piece: the self-attention call with x twice (queries, keys and values all from x), the cross-attention call with memory second (keys and values from the encoder), the "x +" that is the residual path, the norm wrapped around it, and the feed-forward. The only line that isn't one sublayer is the cross-attention split into two lines, so its weights a can be returned for the maps. MultiHeadAttention and FeedForward are a few lines each above these in the same file.</aside>
 </section>
 
 <!-- 11 -->
@@ -629,7 +656,7 @@ table.hand tr.me td { font-weight: 600; }
       <tr><td>1–4</td><td class="n">51 characters</td><td class="n">222 ms</td><td class="n">130 ms</td></tr>
     </table>
     <pre class="cmd" style="font-size:19px">uv run demo/transformer.py speed</pre>
-    <p class="callout" style="font-size:24px">On short inputs, a tie. On longer ones the GRU's step-by-step wait shows. On a GPU, which is built for big parallel multiplies, the gap is far larger.</p>
+    <p class="callout" style="font-size:24px">On short inputs, a tie. On longer ones the GRU's step-by-step wait shows. Parallel hardware like a GPU often favours the Transformer more, but we didn't measure that: batch size, input length and attention's T² cost all change the answer. Benchmark it yourself.</p>
   </div>
   <aside class="notes">An honest measurement, not a slogan. With tiny models on a CPU, the per-step work is so small that waiting barely matters, so the two tie at one date. The GRU's cost grows with the number of steps it must take in order (input length plus output length); the Transformer's work grows too (T² for attention), but it comes as a few big matrix multiplies. That's Part 5's table, measured: "steps that must wait for each other: T vs 1". Speeds vary by machine; run the command to get your own.</aside>
 </section>
@@ -712,10 +739,11 @@ uv run demo/transformer.py translate \
         <div><span class="label">answer</span><br><span class="ans" id="yr-out"></span></div>
         <p id="yr-cap"></p>
         <p class="small">Map: decoder block 2, its 4 heads averaged; rows written, columns read. The years 2080–2099 never appear in training.</p>
+        <p class="small">A map shows where attention went, not why the answer came out: the values, the residual path and the feed-forward layers shape it too. So the 2073 vs 2093 contrast is a clue, not a proof.</p>
       </div>
     </div>
   </div>
-  <aside class="notes">The years 2080–2099 never appear in training. On "30 May 2073" it reads the 7 and copies it. On "30 May 2093", for the third digit, its attention doesn't land on the 9: it spreads over the 2 and the 0 and writes "0", a year it knows. In training, a year written as "20.." was always followed by 0–7, and this small model seems to lean on that pattern more than on what it reads. Spelled out, "twenty ninety-three" works: the word "ninety" appears in training in years like "nineteen ninety", and the model learned to read it. Part 4's GRU model, on the same exam, copied the digit 99.9% of the time. A good discussion point: neither architecture "understands" years; they generalise in different ways, and the only way to find out is to test on data unlike the training set.</aside>
+  <aside class="notes">The years 2080–2099 never appear in training. On "30 May 2073" it reads the 7 and copies it. On "30 May 2093", for the third digit, its attention doesn't land on the 9: it spreads over the 2 and the 0 and writes "0", a year it knows. In training, a year written as "20.." was always followed by 0–7, and this small model seems to lean on that pattern more than on what it reads. Treat that as a hypothesis: averaged attention weights don't show cause. To test it, run both dates and swap pieces of the 2073 run into the 2093 run (say, block 2's cross-attention output at that row) to see whether the written digit follows. That's "activation patching", and a good exercise. Spelled out, "twenty ninety-three" works: the word "ninety" appears in training in years like "nineteen ninety", and the model learned to read it. Part 4's GRU model, on the same exam, copied the digit 99.9% of the time. A good discussion point: neither architecture "understands" years; they generalise in different ways, and the only way to find out is to test on data unlike the training set.</aside>
 </section>
 
 <!-- D5 -->
@@ -764,16 +792,16 @@ uv run demo/transformer.py translate \
     <p class="kicker">Be ready to answer</p>
     <h2>Questions</h2>
     <ol style="font-size:22px;gap:7px">
-      <li>Draw the Transformer and name every sublayer. <span class="small">(encoder: self-attention, feed-forward; decoder: masked self-attention, cross-attention, feed-forward; each with add &amp; norm; embeddings + positions below, linear + softmax on top)</span></li>
-      <li>In cross-attention, where do the queries, keys and values come from? <span class="small">(queries from the decoder; keys and values from the encoder's output)</span></li>
-      <li>What does the feed-forward sublayer add? <span class="small">(non-linear work on each position separately; attention only moves information between positions)</span></li>
-      <li>Why residual connections? <span class="small">(blame flows back along the identity path, so deep stacks train; like the LSTM's belt)</span></li>
-      <li>What does layer norm normalise over? <span class="small">(the d numbers of one position's vector, then a learned scale and shift)</span></li>
-      <li>Why can training run in parallel but writing can't? <span class="small">(training feeds the known answer, shifted right, with a mask; writing needs each character before the next)</span></li>
-      <li>Encoder-only, decoder-only, encoder–decoder: one example of each. <span class="small">(BERT; GPT; the original Transformer or T5)</span></li>
+      <li>Draw the Transformer and name every sublayer. <span class="small fragment">(encoder: self-attention, feed-forward; decoder: masked self-attention, cross-attention, feed-forward; each with add &amp; norm; embeddings + positions below, linear + softmax on top)</span></li>
+      <li>In cross-attention, where do the queries, keys and values come from? <span class="small fragment">(queries from the decoder; keys and values from the encoder's output)</span></li>
+      <li>What does the feed-forward sublayer add? <span class="small fragment">(non-linear work on each position separately; attention only moves information between positions)</span></li>
+      <li>Why residual connections? <span class="small fragment">(blame flows back along the identity path, so deep stacks train; like the LSTM's belt)</span></li>
+      <li>What does layer norm normalise over? <span class="small fragment">(the d numbers of one position's vector, then a learned scale and shift)</span></li>
+      <li>Why can training run in parallel but writing can't? <span class="small fragment">(training feeds the known answer, shifted right, with a mask; writing needs each character before the next)</span></li>
+      <li>Encoder-only, decoder-only, encoder–decoder: one example of each. <span class="small fragment">(BERT; GPT; the original Transformer or T5)</span></li>
     </ol>
   </div>
-  <aside class="notes">Cover the hints and ask each one cold. Question 1 should be answered by drawing, with the arrow from the encoder's top into the middle of each decoder block.</aside>
+  <aside class="notes">Each answer stays hidden until you click: ask the question cold, then reveal. Question 1 should be answered by drawing, with the arrow from the encoder's top into the middle of each decoder block.</aside>
 </section>
 
 <!-- 17 -->
@@ -968,7 +996,6 @@ uv run demo/transformer.py translate \
       const no = f ** n;
       $("res-n-v").textContent = n; $("res-f-v").textContent = `${Math.round(f * 100)}%`;
       $("res-no").style.width = `${Math.max(no * 100, 0.4)}%`; $("res-no-v").textContent = no < 0.001 ? no.toExponential(0) : `${(no * 100).toFixed(no < 0.1 ? 1 : 0)}%`;
-      $("res-yes").style.width = "100%"; $("res-yes-v").textContent = "100%";
     }
     ["res-n", "res-f"].forEach((id) => $(id).addEventListener("input", draw));
     draw();
